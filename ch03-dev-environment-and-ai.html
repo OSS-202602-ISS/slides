@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 3 · Dev Environment and AI as First TA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── 토큰 ─────────────────────────────────────────── */
+:root{
+  --ground:#F6F8F6; --surface:#FFFFFF; --surface-2:#ECF1EE; --sunken:#E3EAE6;
+  --line:#D6DEDA; --line-strong:#B9C5BF;
+  --ink:#141E1A; --ink-2:#4B5B56; --ink-3:#78887F;
+  --accent:#0B6E55; --accent-ink:#095643; --accent-soft:#E1F0EA; --accent-line:#9FCDBD;
+  --warn:#8F5410; --warn-soft:#F8EEDD; --warn-line:#E0C79A;
+  --shadow:0 1px 2px rgba(20,30,26,.05), 0 8px 24px -12px rgba(20,30,26,.18);
+  --display:"Gowun Batang","Batang","Malgun Gothic",serif;
+  --body:"IBM Plex Sans KR","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  --mono:"IBM Plex Mono","Consolas","D2Coding",monospace;
+  --topbar:64px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+    --line:#28382F; --line-strong:#3A4E45;
+    --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+    --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+    --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+  --line:#28382F; --line-strong:#3A4E45;
+  --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+  --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+  --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+
+/* ─── 기본 ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-weight:400; font-size:16px; line-height:1.68;
+  word-break:keep-all; overflow-wrap:break-word;
+}
+h1,h2,h3,h4{font-family:var(--display); font-weight:700; line-height:1.28; text-wrap:balance; margin:0;}
+p{margin:0;}
+a{color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent-line);}
+a:hover{border-bottom-color:var(--accent);}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:3px; border-radius:3px;}
+code,kbd{font-family:var(--mono); font-size:.88em; background:var(--surface-2); padding:.12em .38em; border-radius:4px; border:1px solid var(--line);}
+kbd{font-size:.8em; box-shadow:0 1px 0 var(--line-strong);}
+.eyebrow{font-family:var(--body); font-size:.95rem; font-weight:600; letter-spacing:.01em; color:var(--ink-2);}
+
+/* ─── 상단바 ───────────────────────────────────────── */
+.topbar{
+  position:sticky; top:0; z-index:50; height:var(--topbar);
+  display:flex; align-items:center; gap:20px;
+  padding:0 clamp(14px,3vw,36px);
+  background:var(--ground);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex; flex-direction:column; gap:1px; min-width:0;}
+.brand b{font-family:var(--display); font-size:1.02rem; font-weight:700; white-space:nowrap;}
+.brand span{font-family:var(--body); font-size:.8rem; letter-spacing:.01em; color:var(--ink-3);}
+.tabs{display:flex; gap:4px; margin-left:auto; background:var(--surface-2); padding:4px; border-radius:10px; border:1px solid var(--line);}
+.tab{
+  appearance:none; border:0; background:transparent; cursor:pointer;
+  font-family:var(--body); font-size:.86rem; font-weight:600; color:var(--ink-2);
+  padding:7px 13px; border-radius:7px; display:flex; align-items:baseline; gap:7px; white-space:nowrap;
+}
+.tab .min{font-family:var(--mono); font-size:.68rem; font-weight:500; color:var(--ink-3);}
+.tab:hover{color:var(--ink);}
+.tab[aria-selected="true"]{background:var(--surface); color:var(--accent-ink); box-shadow:var(--shadow);}
+.tab[aria-selected="true"] .min{color:var(--accent);}
+
+/* ─── 강의: 슬라이드 ───────────────────────────────── */
+.stage{
+  min-height:calc(100vh - var(--topbar) - 62px);
+  display:flex; align-items:center; justify-content:center;
+  padding:clamp(24px,4vw,56px) clamp(16px,5vw,60px);
+}
+.slide{width:100%; max-width:960px; display:flex; flex-direction:column; gap:clamp(16px,2.2vw,26px);}
+.slide h2{font-size:clamp(1.75rem,3.9vw,2.85rem);}
+.slide h3{font-size:clamp(1.1rem,1.9vw,1.35rem); color:var(--accent-ink);}
+.slide p{font-size:clamp(1.05rem,1.8vw,1.38rem); color:var(--ink-2); max-width:62ch;}
+.slide .lead{font-size:clamp(1.2rem,2.2vw,1.62rem); color:var(--ink);}
+.slide ul{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.55em; font-size:clamp(1.05rem,1.7vw,1.34rem);}
+.slide ul li::marker{color:var(--accent);}
+.rule{height:3px; width:56px; background:var(--accent); border-radius:2px;}
+
+.cover{gap:clamp(20px,3vw,34px);}
+.cover h1{font-size:clamp(2.3rem,6.2vw,4.4rem); letter-spacing:-.015em;}
+.cover .sub{font-size:clamp(1.15rem,2.1vw,1.58rem); color:var(--ink-2);}
+.cover dl{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:18px; margin:0; padding-top:16px; border-top:1px solid var(--line);}
+.cover dt{font-family:var(--body); font-size:.8rem; font-weight:600; letter-spacing:.01em; color:var(--ink-3); margin-bottom:3px;}
+.cover dd{margin:0; font-size:1.05rem; font-weight:500;}
+
+.grid{display:grid; gap:14px;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.g3{grid-template-columns:repeat(auto-fit,minmax(215px,1fr));}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px; display:flex; flex-direction:column; gap:7px; box-shadow:var(--shadow);
+}
+.card h4{font-family:var(--body); font-weight:600; font-size:1.12rem;}
+.card p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+.card .tagline{font-family:var(--body); font-size:.85rem; font-weight:600; letter-spacing:.01em; color:var(--accent);}
+
+.freedoms{display:flex; flex-direction:column; gap:10px; counter-reset:f -1;}
+.freedom{
+  display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:baseline;
+  padding:13px 18px; background:var(--surface); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:0 10px 10px 0;
+}
+.freedom::before{
+  counter-increment:f; content:"Freedom " counter(f);
+  font-family:var(--mono); font-size:.72rem; font-weight:600; color:var(--accent);
+  letter-spacing:.05em; white-space:nowrap;
+}
+.freedom b{font-weight:600;}
+.freedom span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+/* ─── 트랙 비교(필수 A / 선택 B) ───────────────────── */
+.tracks{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(290px,1fr));}
+.track{
+  background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0; padding:18px 20px;
+  display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow);
+}
+.track.optional{background:var(--surface-2); border-left-style:dashed; border-left-color:var(--line-strong); box-shadow:none;}
+.track .badge{
+  align-self:flex-start; font-family:var(--body); font-size:.8rem; font-weight:700;
+  padding:3px 11px; border-radius:20px; background:var(--accent-soft); color:var(--accent-ink);
+}
+.track.optional .badge{background:var(--sunken); color:var(--ink-3);}
+.track h4{font-family:var(--body); font-weight:700; font-size:1.18rem;}
+.track p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+
+.timeline{display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); border-top:2px solid var(--line-strong);}
+.tl-item{padding:16px 14px 0 0; position:relative;}
+.tl-item::before{content:""; position:absolute; top:-6px; left:0; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid var(--ground);}
+.tl-item .yr{font-family:var(--mono); font-size:1.18rem; font-weight:600; color:var(--accent-ink); display:block; margin-bottom:3px;}
+.tl-item p{font-size:.98rem; line-height:1.55;}
+
+.callout{
+  display:flex; gap:14px; padding:16px 20px; border-radius:10px;
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+}
+.callout .mk{font-family:var(--body); font-size:.9rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink); padding-top:2px; white-space:nowrap;}
+.callout p{color:var(--ink); max-width:none;}
+.callout.warn{background:var(--warn-soft); border-color:var(--warn-line);}
+.callout.warn .mk{color:var(--warn);}
+
+table{width:100%; border-collapse:collapse; font-size:1.02rem;}
+th,td{border-bottom:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top;}
+th{font-family:var(--body); font-size:.88rem; letter-spacing:.01em; color:var(--ink-3); font-weight:600; border-bottom:1.5px solid var(--line-strong);}
+td.num{font-variant-numeric:tabular-nums; font-family:var(--mono); white-space:nowrap; color:var(--accent-ink); font-weight:500;}
+.scroll-x{overflow-x:auto;}
+td.where{white-space:normal; font-size:.88em; color:var(--ink-2); width:26%;}
+.where-in{font-size:.9em; color:var(--ink-2); margin-top:8px; padding-top:8px; border-top:1px solid var(--line);}
+@media print{ a[href^="http"]{ text-decoration:underline; text-underline-offset:2px; } }
+
+.slidenav{
+  position:sticky; bottom:0; z-index:40;
+  display:flex; align-items:center; gap:14px;
+  padding:11px clamp(14px,3vw,36px);
+  background:var(--ground); border-top:1px solid var(--line);
+}
+.dots{display:flex; gap:4px; flex:1; flex-wrap:wrap; align-items:center;}
+.dot{
+  min-width:26px; height:24px; padding:0 5px; border-radius:6px; cursor:pointer; line-height:1;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-3);
+  font-family:var(--mono); font-size:.74rem; font-weight:600; font-variant-numeric:tabular-nums;
+}
+.dot:hover{background:var(--surface); border-color:var(--accent); color:var(--accent-ink);}
+.dot[aria-current="true"]{background:var(--accent); border-color:var(--accent); color:var(--ground);}
+.navbtn.edge{padding:7px 10px; font-family:var(--mono);}
+.navbtn{
+  appearance:none; cursor:pointer; font-family:var(--body); font-weight:600; font-size:.85rem;
+  padding:7px 15px; border-radius:8px; border:1px solid var(--line-strong);
+  background:var(--surface); color:var(--ink);
+}
+.navbtn:hover{border-color:var(--accent); color:var(--accent-ink);}
+.navbtn:disabled{opacity:.35; cursor:default;}
+.counter{font-family:var(--mono); font-size:.8rem; font-variant-numeric:tabular-nums; color:var(--ink-3); white-space:nowrap;}
+
+/* ─── 문서형 페인(실습·과제) ───────────────────────── */
+.doc{max-width:840px; margin:0 auto; padding:clamp(28px,5vw,60px) clamp(18px,5vw,40px) 100px; display:flex; flex-direction:column; gap:clamp(26px,3.5vw,38px);}
+.doc-head{display:flex; flex-direction:column; gap:12px;}
+.doc-head h2{font-size:clamp(1.75rem,3.4vw,2.4rem);}
+.doc-head p{color:var(--ink-2); max-width:62ch;}
+
+.step{display:flex; flex-direction:column; gap:14px; padding-top:26px; border-top:1px solid var(--line);}
+.step-head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;}
+.step-no{font-family:var(--mono); font-size:.72rem; font-weight:600; letter-spacing:.08em; color:var(--accent-ink); padding:3px 9px; background:var(--accent-soft); border-radius:20px; white-space:nowrap;}
+.step-head h3{font-size:1.22rem; flex:1; min-width:200px;}
+.budget{font-family:var(--mono); font-size:.78rem; color:var(--ink-3); font-variant-numeric:tabular-nums; white-space:nowrap;}
+.goal{font-size:.95rem; color:var(--ink-2);}
+.why{display:block; margin-top:.3em; padding:.3em .6em; border-left:3px solid var(--accent-line); background:var(--accent-soft); font-size:.9rem; color:var(--ink-2); border-radius:0 4px 4px 0;}
+.why b{color:var(--accent-ink);}
+.step ol{margin:0; padding-left:1.3em; display:flex; flex-direction:column; gap:.5em; font-size:.96rem;}
+.step ol li::marker{font-family:var(--mono); font-weight:600; color:var(--accent);}
+.step ol ul{margin:.35em 0 0; padding-left:1.1em; font-size:.92rem; color:var(--ink-2); display:flex; flex-direction:column; gap:.25em;}
+
+.check{display:flex; align-items:flex-start; gap:11px; padding:11px 15px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; cursor:pointer;}
+.check input{margin:0; width:17px; height:17px; accent-color:var(--accent); flex-shrink:0; margin-top:2px; cursor:pointer;}
+.check span{font-size:.93rem; font-weight:500;}
+.check:has(input:checked){background:var(--accent-soft); border-color:var(--accent-line);}
+.check:has(input:checked) span{color:var(--ink-2); text-decoration:line-through; text-decoration-color:var(--accent-line);}
+
+.progress{
+  position:sticky; top:calc(var(--topbar) + 10px); z-index:30;
+  display:flex; align-items:center; gap:14px; padding:12px 18px;
+  background:var(--surface); border:1px solid var(--line); border-radius:11px; box-shadow:var(--shadow);
+}
+.progress b{font-family:var(--mono); font-size:.9rem; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.bar{flex:1; height:7px; background:var(--sunken); border-radius:4px; overflow:hidden;}
+.bar i{display:block; height:100%; width:0; background:var(--accent); border-radius:4px; transition:width .3s ease;}
+@media (prefers-reduced-motion: reduce){ .bar i{transition:none;} }
+.reset{appearance:none; border:1px solid var(--line-strong); background:transparent; color:var(--ink-3); font-family:var(--body); font-size:.76rem; padding:4px 10px; border-radius:6px; cursor:pointer;}
+.reset:hover{color:var(--ink); border-color:var(--accent);}
+
+.ladder{display:flex; flex-direction:column; counter-reset:l;}
+.rung{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px dashed var(--line);}
+.rung:last-child{border-bottom:0;}
+.rung::before{counter-increment:l; content:counter(l); font-family:var(--mono); font-size:.75rem; font-weight:600; color:var(--ground); background:var(--accent); width:22px; height:22px; border-radius:50%; display:grid; place-items:center;}
+.rung b{font-weight:600;}
+.rung span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+pre{background:var(--sunken); border:1px solid var(--line); border-radius:9px; padding:14px 16px; overflow-x:auto; margin:0;}
+pre code{background:none; border:0; padding:0; font-size:.85rem; line-height:1.6;}
+
+.rubric{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+.rubric .card b{font-family:var(--body); font-size:.95rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink);}
+
+.foot{border-top:1px solid var(--line); padding:22px clamp(18px,5vw,40px); text-align:center;}
+.foot p{font-size:.8rem; color:var(--ink-3);}
+
+/* ─── 인쇄 ─────────────────────────────────────────── */
+@media print{
+  .topbar,.slidenav,.progress{display:none !important;}
+  .pane[hidden]{display:block !important;}
+  .slide[hidden]{display:flex !important;}
+  .stage{display:block; min-height:0; padding:0;}
+  .slide{max-width:none; break-after:page; page-break-after:always; padding:8mm 0;}
+  .slide:last-child{break-after:auto; page-break-after:auto;}
+  body{background:#fff; color:#000; font-size:11pt;}
+  .card,.callout,.check,.step,.track,.tl-item{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <b>Dev Environment and AI as First TA</b>
+    <span>Open Source Software · Chapter 3 · Fall 2026</span>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Class blocks">
+    <button class="tab" role="tab" id="tab-lecture" aria-controls="pane-lecture" aria-selected="true">Lecture <span class="min">60 min</span></button>
+    <button class="tab" role="tab" id="tab-lab" aria-controls="pane-lab" aria-selected="false">Lab <span class="min">90 min</span></button>
+    <button class="tab" role="tab" id="tab-task" aria-controls="pane-task" aria-selected="false">Assignment <span class="min">30 min</span></button>
+  </div>
+</header>
+
+<!-- ══════════ Lecture ══════════ -->
+<section class="pane" id="pane-lecture" role="tabpanel" aria-labelledby="tab-lecture">
+  <div class="stage">
+
+    <article class="slide cover">
+      <p class="eyebrow">Chapter 3 · 2026 Fall</p>
+      <h1>Dev Environment<br>and AI as First TA</h1>
+      <p class="sub">Today this PC becomes a place where you can write and run code.<br>And you learn how to ask AI when the code fails.</p>
+      <dl>
+        <div><dt>Course</dt><dd>Open Source Software</dd></div>
+        <div><dt>Target</dt><dd>Senior (4th-year), Information Systems &amp; Security</dd></div>
+        <div><dt>Today</dt><dd>60 min lecture · 90 min lab · 30 min assignment</dd></div>
+      </dl>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Where we stopped</p>
+      <h2>You can read a project.<br>Now you need a place to run one.</h2>
+      <div class="rule"></div>
+      <p class="lead">Chapter 2 was all browser. You read repositories, issues and READMEs. But you cannot run anything in a browser tab. Today the machine in front of you becomes a development environment (a computer set up to write and run code).</p>
+      <ul>
+        <li><b>Install the three tools</b> — VS Code, Python and Git — with one double-click.</li>
+        <li><b>Say why the same code works on one computer and fails on another</b>, and name the three reasons.</li>
+        <li><b>Make your first virtual environment</b> and install one library inside it.</li>
+        <li><b>Turn an error message into a question an AI can answer</b>, and explain the fix in your own words.</li>
+      </ul>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">The problem</p>
+      <h2>&ldquo;It works on my computer&rdquo;</h2>
+      <div class="rule"></div>
+      <p class="lead">You write code. It runs. You send the same file to a classmate and it fails on their machine. Not one character of your code changed. The computer changed.</p>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">Reason 1</span><h4>A different Python version</h4><p>Your machine has Python 3.12. Theirs has 3.9. Some code that is correct in one version is an error in the other.</p></div>
+        <div class="card"><span class="tagline">Reason 2</span><h4>A missing library</h4><p>Your code uses a library (a package of code someone else wrote). You installed it months ago and forgot about it. Their machine does not have it.</p></div>
+        <div class="card"><span class="tagline">Reason 3</span><h4>A different library version</h4><p>You both have the library, but yours is version 15 and theirs is version 10. The function you use may not exist in version 10.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">The real cost</span>
+        <p>This is not a small annoyance. In a team project it is the difference between "we finished it" and "it only runs on one laptop". <b>Every part of today's class is an answer to this one slide.</b></p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">What we install today</p>
+      <h2>Three tools, three different jobs</h2>
+      <div class="rule"></div>
+      <p class="lead">People say "I installed Python" and mean all three of these. They are separate programs with separate jobs. Know which one you are talking about.</p>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">Editor</span><h4>VS Code</h4><p>Where you write and read code. On its own it is only a text editor. We also install the Python extension (an add-on that gives VS Code a new skill) so that it understands Python files.</p></div>
+        <div class="card"><span class="tagline">Runtime</span><h4>Python</h4><p>The program that actually runs your file. Its other name is the interpreter (the program that reads your Python file and does what it says). VS Code does not run code. Python does.</p></div>
+        <div class="card"><span class="tagline">History</span><h4>Git</h4><p>Saves every version of your work, with a note about why it changed. We install it today and only check its version number. You use it in Chapter 4.</p></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">One thing to remember</span>
+        <p>An installer adds the new tools to PATH (the list of folders where Windows looks when you type a program name). A terminal reads PATH once, at the moment it opens. So a terminal that was already open does not know the new tools exist. <b>After the install, open a new terminal.</b></p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">The main idea of today</p>
+      <h2>A virtual environment is<br>one box per project</h2>
+      <div class="rule"></div>
+      <p class="lead">A virtual environment (a separate box of libraries for one project) lives inside your project folder. Libraries you install go into that box, and nowhere else.</p>
+      <div class="grid g2">
+        <div class="card"><h4>Without a box</h4><p>Every library you install goes into one shared pile on the whole computer. Project A needs version 15 of a library. Project B needs version 10. The shared pile can hold only one of them, so one project breaks.</p></div>
+        <div class="card"><h4>With a box</h4><p>Project A has its own box with version 15. Project B has its own box with version 10. Neither project knows about the other. And you can delete a box and build it again in one minute.</p></div>
+      </div>
+      <table>
+        <thead><tr><th>You do</th><th>What happens</th></tr></thead>
+        <tbody>
+          <tr><td><code>python -m venv .venv</code></td><td>Makes an <b>empty box</b>: a folder <code>.venv</code> with its own Python.</td></tr>
+          <tr><td><kbd>Ctrl+Shift+P</kbd> &rarr; <b>Python: Select Interpreter</b> &rarr; the <code>.venv</code> one</td><td>Tells VS Code: <b>run my code with the Python in the box</b>.</td></tr>
+          <tr><td><b>Terminal &rsaquo; New Terminal</b></td><td>A new terminal opens <b>inside the box</b>: you see <code>(.venv)</code>.</td></tr>
+          <tr><td><code>pip install rich==15.0.0</code></td><td>Puts one library <b>into the box only</b>.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <span class="mk">You will see this today</span>
+        <p>Inside your box, <code>pip list</code> shows a short list and <b>no pandas</b> &mdash; though pandas is installed for the whole computer. Same computer, different box.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">How the box travels</p>
+      <h2>requirements.txt is the list<br>of what is in the box</h2>
+      <div class="rule"></div>
+      <p class="lead">A box is useful on your own machine. A written list of what is inside the box is useful to everyone else.</p>
+      <pre><code>rich==15.0.0
+pandas==3.0.5
+requests==2.34.2</code></pre>
+      <ul>
+        <li><b>One library and one version on each line.</b> The version number is the important part.</li>
+        <li><b>Your classmate types one command</b> &mdash; <code>pip install -r requirements.txt</code> &mdash; and gets the same box you have.</li>
+        <li><b>This is the answer to slide 3.</b> The three reasons code breaks were the Python version, a missing library, and a wrong library version. This file fixes the last two. The Python version comes from the installer &mdash; everyone here has 3.12.</li>
+      </ul>
+      <div class="callout">
+        <span class="mk">Coming up</span>
+        <p>Your team project template already has a <code>requirements.txt</code>. You read it in Chapter 8 and add to it in Chapter 11. Today you only need to know what the file is for.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">This room</p>
+      <h2>These PCs are shared.<br>Two rules.</h2>
+      <div class="rule"></div>
+      <p class="lead">Every PC in this room uses one Windows account, and nothing is erased when the machine restarts. That is good for us: we install once and it stays all semester. It also means the browser remembers whoever used this seat before you.</p>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">At the start</span><h4>Check the avatar</h4><p>Open GitHub and look at the top-right corner. That small round picture is the account this browser is signed in to. <b>If it is not yours, sign out and sign in with your own account.</b> If you skip this, your work goes to someone else's name.</p></div>
+        <div class="card"><span class="tagline">At the end</span><h4>Sign out of GitHub</h4><p>The last thing you do before you leave: click the avatar, then <b>Sign out</b>. Do the same on every other site you signed in to today. The next student sits here with the same Windows account. This is in the closing checklist.</p></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Your files</span>
+        <p>Keep your work in <code>D:\oss\&lt;StudentID&gt;\</code> &mdash; your student number, your folder. Do not put project files on the Desktop or in Documents. Those belong to the shared account, and the next person sees them.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">The skill this course teaches</p>
+      <h2>How to ask AI: four steps</h2>
+      <div class="rule"></div>
+      <p class="lead">Everyone here has used an AI chat. Few people use it well when code fails. These four steps are the difference, and they are the same in every AI tool.</p>
+      <div class="ladder">
+        <div class="rung"><div><b>Paste the error exactly</b><span>Copy the whole error text and paste it. Do not shorten it, and do not describe it in your own words. The exact text holds the file name, the line number and the error type &mdash; that is what the AI reads.</span></div></div>
+        <div class="rung"><div><b>Add one line: what you were trying to do</b><span>"I wanted to print a green word." The error says what broke. Only you can say what you wanted.</span></div></div>
+        <div class="rung"><div><b>When you get an answer, ask why</b><span>"Why does the new code work?" A fix you do not understand will break again in ten minutes, and you will be back at the same place.</span></div></div>
+        <div class="rung"><div><b>Explain the fixed code yourself</b><span>Say it out loud to the person next to you. If you cannot explain it, you are not finished &mdash; go back to step three.</span></div></div>
+      </div>
+      <div class="callout">
+        <span class="mk">Which AI</span>
+        <p>ChatGPT, Gemini or Claude &mdash; use whichever one opens in this browser. <b>Try ChatGPT first: it answers without signing in.</b> This course does not teach one company's tool. It teaches you how to ask.</p>
+      </div>
+      <div class="callout">
+        <span class="mk">Screen capture</span>
+        <p>Can't select the error text (for example, a pop-up window)? Take a picture of it. Press <kbd>Win + Shift + S</kbd>, drag over the part you want, and let go &mdash; the picture is copied. Click in the AI chat box (or a GitHub issue) and press <kbd>Ctrl&nbsp;+&nbsp;V</kbd>. Text is still better when you can copy it: the AI reads text more exactly than a picture.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">What is allowed, and what is not</p>
+      <h2>What AI is for,<br>and what it is not for</h2>
+      <div class="rule"></div>
+      <p class="lead">This is not a speech about honesty. It is a grading rule, and it is the same one you heard in Chapter 2.</p>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">Yes</span><h4>Use AI for these</h4><p>Reading an error message and telling you what it means. Answering a question about a concept. Fixing your English grammar. Explaining what a piece of code does.</p></div>
+        <div class="card"><span class="tagline">No</span><h4>Do not use AI for these</h4><p>Making a whole assignment for you. Handing in code you cannot explain. Pasting an AI answer into your work without checking that it is true.</p></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">The grading rule</span>
+        <p><b>If you cannot explain it, it does not count.</b> I will ask you why your code works. "The AI said so" is not an answer. This is true for every assignment this semester &mdash; and it is why step four exists.</p>
+      </div>
+      <div class="callout">
+        <span class="mk">Why this is fair</span>
+        <p>Professional developers use AI every day. Nobody is asking you to work without it. You are asked to stay the person who understands the code, because you are the one who has to fix it at eleven at night.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Who you ask first</p>
+      <h2>The same order<br>as in Chapter 2</h2>
+      <div class="rule"></div>
+      <p class="lead">When something breaks in the lab today, go down this list in order. Most problems stop at step one or step two.</p>
+      <div class="ladder">
+        <div class="rung"><div><b>Ask AI first</b><span>Copy the error exactly as it appears, then ask. You just learned the four steps &mdash; today is the day you use them.</span></div></div>
+        <div class="rung"><div><b>Check the course FAQ</b><span>Common problems already have answers &mdash; <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/FAQ.md" target="_blank" rel="noopener">course-notice &rsaquo; FAQ.md</a> (sign in to GitHub first).</span></div></div>
+        <div class="rung"><div><b>Ask the person next to you</b><span>Someone in your row has already seen this error. Install problems repeat along a whole row.</span></div></div>
+        <div class="rung"><div><b>Come to the instructor</b><span>If it is still not answered after those three, it is a real question. Call me &mdash; that is what I am here for.</span></div></div>
+      </div>
+      <div class="callout">
+        <span class="mk">Your seat is now fixed</span>
+        <p>From this chapter you keep the same row for the rest of the semester. You chose your own seat, so you are sitting with people you already know &mdash; it is easier to ask a friend than a stranger. <b>If you are sitting alone or as a pair, move now to a row that has space.</b> Nobody sits alone in this room.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Before you switch tabs</p>
+      <h2>Checklist to close</h2>
+      <div class="rule"></div>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Name the three tools and say what each one does. Explain why the same code fails on another computer. Say what a virtual environment holds, and give the four steps for asking AI about an error.</p></div>
+        <div class="card"><span class="tagline">90 min · Lab</span><h4>What's next</h4><p>Install the three tools, check three version numbers, build your first box with <code>rich</code> inside it, then break three small files on purpose and let AI help you read the errors.</p></div>
+      </div>
+      <p class="lead">Switch to the <b>Lab</b> tab above and get started.</p>
+    </article>
+
+  </div>
+
+  <nav class="slidenav" aria-label="Slide navigation">
+    <button class="navbtn edge" id="first" type="button" title="First slide (Home)" aria-label="First slide">⇤</button>
+    <button class="navbtn" id="prev" type="button">← Prev</button>
+    <button class="navbtn" id="next" type="button">Next →</button>
+    <button class="navbtn edge" id="last" type="button" title="Last slide (End)" aria-label="Last slide">⇥</button>
+    <div class="dots" id="dots"></div>
+    <span class="counter" id="counter">1 / 11</span>
+  </nav>
+</section>
+
+<!-- ══════════ Lab ══════════ -->
+<section class="pane" id="pane-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Lab · 90 min · Step by step</p>
+      <h2>Set up this PC, then break three files on purpose</h2>
+      <p>Follow the numbered steps in order, and tick the box at the end of each part. The menu names below are exactly what you see on this PC — the Windows here is in English, so the words match your screen.</p>
+      <div class="callout">
+        <span class="mk">Do the assignment as you go</span>
+        <p>Your assignment is made from this lab: <b>screenshot 1</b> comes from PART 1, <b>screenshot 2</b> from PART 2, and the <b>AI practice log</b> from PART 3. At the end of PART 1, open your <code>[Ch03]</code> issue and <b>paste each screenshot into it right away</b> &mdash; a new screenshot replaces the old one. Not finished? Click the green button at the bottom to save the issue anyway. You can edit it later.</p>
+      </div>
+    </div>
+
+    <div class="progress">
+      <b id="pg-count">0 / 5</b>
+      <span class="bar"><i id="pg-bar"></i></span>
+      <button class="reset" id="pg-reset" type="button">Reset</button>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 0</span><h3>Check the account, then install</h3><span class="budget">15 min</span></div>
+      <p class="goal">Every PC in this room uses one shared Windows account, so we check whose GitHub account this browser is holding before we touch anything else. Then we install the three tools.</p>
+      <ol>
+        <li>Open <a href="https://github.com" target="_blank" rel="noopener">github.com</a> and look at the <b>top-right corner</b>. If the avatar there is not yours, click it, choose <b>Sign out</b>, and sign in with your own account. If nobody is signed in, sign in now.</li>
+        <li>Open <a href="https://github.com/OSS-202602-ISS/course-notice/releases/tag/labsetup" target="_blank" rel="noopener">course-notice &rsaquo; Releases &rsaquo; Lab setup</a> and click <b><code>labsetup.zip</code></b>. It goes to your <b>Downloads</b> folder.</li>
+        <li>Open the Downloads folder. Right-click <code>labsetup.zip</code>, choose <b>Extract All…</b>, then <b>Extract</b>. A folder named <code>labsetup</code> opens.</li>
+        <li>In that folder, <b>double-click <code>install.bat</code></b>. If Windows shows &ldquo;Windows protected your PC&rdquo;, click <b>More info</b>, then <b>Run anyway</b>.</li>
+        <li>It asks you nothing. First it downloads the three installers from their official servers (about 330&nbsp;MB) and checks each file. Then it installs them. The whole run takes about <b>5 to 10 minutes</b>. Do not close the window until it prints <code>DONE</code> and asks you to press a key. Then press any key and the window closes.
+          <ul>
+            <li>It installs <b>Python 3.12</b> (into <code>C:\Python\Python312</code>), <b>VS Code</b> with the Python extension, and <b>Git</b>.</li>
+            <li>It also makes the folder <code>D:\oss</code>. Your own folder goes inside it (you make it in PART 1).</li>
+          </ul>
+        </li>
+        <li>When it is done, open <code>install-result.txt</code> in the same folder and read it. If any line says a tool is missing, raise your hand.</li>
+        <li><b>Close every terminal window that was already open. Then open a new one:</b> press the <kbd>Windows</kbd> key, type <code>cmd</code>, and press <kbd>Enter</kbd>. A terminal reads PATH at the moment it starts, so an old terminal cannot see the tools we just installed.</li>
+      </ol>
+      <div class="callout warn">
+        <span class="mk">Install problem</span>
+        <p>If the window says <code>FAILED</code>, look in <code>install-result.txt</code> for the words <code>DOWNLOAD FAILED</code>, <code>MISSING</code> or <code>NOT FOUND</code>. A download did not finish, or a tool did not install. <b>Double-click <code>install.bat</code> again.</b> It keeps what is already done. If it fails a second time, raise your hand.</p>
+      </div>
+      <label class="check"><input type="checkbox" data-k="s0"><span>My own GitHub avatar is showing · labsetup.zip extracted · install.bat printed DONE · install-result.txt read · a new terminal is open</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 1</span><h3>Three version numbers, then your own folder</h3><span class="budget">10 min</span></div>
+      <p class="goal">Proof that the three tools are installed, and that this terminal can find them. Screenshot 1 for the assignment comes from here.</p>
+      <ol>
+        <li>In the <b>new</b> terminal, type these three commands, one at a time. Each one must print a version number.
+<pre><code>python --version
+code --version
+git --version</code></pre>
+        </li>
+        <li>Check the Python one: it should start with <b>3.12</b> (for example <code>Python 3.12.10</code>).
+          <ul>
+            <li>If the <b>Microsoft Store</b> opens instead of printing a version, this terminal is an old one. Close it, open a new terminal, and try again.</li>
+            <li>If the Store still opens, type the full path instead: <code>C:\Python\Python312\python.exe --version</code>, and tell the instructor.</li>
+          </ul>
+        </li>
+        <li><b>Screenshot 1.</b> Press <kbd>Win + Shift + S</kbd>, drag over the terminal so that all three version lines are inside the picture, and let go. The picture is now copied.</li>
+        <li><b>Paste it now.</b> Open <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch03.md" target="_blank" rel="noopener">your new <code>[Ch03]</code> issue</a>, finish the title (<code>[Ch03] StudentID Name</code>), click under <b>Screenshot 1</b> and press <kbd>Ctrl&nbsp;+&nbsp;V</kbd>. Click the green button at the bottom to save it. Keep this browser tab open.</li>
+        <li>Make your own work folder. Replace the number with <b>your own student ID</b>:
+<pre><code>mkdir D:\oss\20261234</code></pre>
+        </li>
+        <li>Open that folder in VS Code: <b>File &rsaquo; Open Folder…</b> &rarr; choose <code>D:\oss\&lt;your ID&gt;</code> &rarr; <b>Select Folder</b>. If VS Code asks whether you trust the authors of the files in this folder, choose <b>Yes</b>. <b>Do not sign in inside VS Code.</b> If a chat panel opens on the right side, close it &mdash; a sign-in there stays on this shared PC.</li>
+      </ol>
+      <label class="check"><input type="checkbox" data-k="s1"><span>Three version numbers printed · screenshot 1 pasted into my saved issue · D:\oss\&lt;my ID&gt; is open in VS Code</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 2</span><h3>Your first virtual environment</h3><span class="budget">20 min</span></div>
+      <p class="goal">Build one box, put one library into it, and see with your own eyes that the box is separate from the rest of the computer. Screenshot 2 comes from here.</p>
+      <ol>
+        <li>In VS Code open a terminal: <b>Terminal &rsaquo; New Terminal</b>. It starts inside your folder.
+          <span class="why"><b>What is happening:</b> the box will be made in the folder where the terminal is, so we start in your own folder.</span></li>
+        <li>Make the box. It takes about 12 seconds, and a folder named <code>.venv</code> appears in the file list on the left.
+<pre><code>python -m venv .venv</code></pre>
+          <span class="why"><b>What is happening:</b> Python builds a new, <b>empty</b> box. The <code>.venv</code> folder holds its own <code>python.exe</code> and its own shelf for libraries. Nothing is on the shelf yet.</span>
+        </li>
+        <li>Tell VS Code to use it. Press <kbd>Ctrl + Shift + P</kbd> to open the <b>Command Palette</b>, type <b>Python: Select Interpreter</b>, press Enter, and choose the one that has <code>.venv</code> in its path. It is usually at the <b>bottom</b> of the list, marked <b>Workspace</b>. Click it. If the top line already says <code>.venv</code>, it is already chosen &mdash; press <kbd>Esc</kbd>. Then go to step 4.
+          <span class="why"><b>What is happening:</b> this PC now has two Pythons &mdash; one for the whole computer and one in your box. Here you tell VS Code which one runs your code. The name of the chosen one appears in the bottom-right corner.</span></li>
+        <li><b>Open a new terminal again</b> (<b>Terminal &rsaquo; New Terminal</b>). VS Code turns the box on by itself, and you see <code>(.venv)</code> at the left of the prompt.
+          <span class="why"><b>What is happening:</b> a terminal keeps the settings it had when it opened. The old one does not know about the box; the new one opens with the box turned on. <code>(.venv)</code> means &ldquo;you are inside the box now&rdquo;.</span>
+          <ul>
+            <li>Backup only, if <code>(.venv)</code> does not appear: type <code>.venv\Scripts\activate</code> in a <code>cmd</code> terminal.</li>
+          </ul>
+        </li>
+        <li>Install one library into the box. About 14 seconds.
+          <span class="why"><b>What is <code>pip</code>?</b> Python&rsquo;s tool for installing libraries. It comes with Python. <code>pip install &lt;name&gt;</code> downloads a library from <b>PyPI</b> (the public store of Python libraries) and installs it. <code>pip list</code> shows what is installed.</span>
+          <span class="why"><b>What is <code>rich</code>?</b> The project you toured in Chapter 2 (<code>Textualize/rich</code>). It makes text in the terminal look better &mdash; colours, tables, progress bars. We use it today because it is small, installs fast, and you can see it work with one line.</span>
+<pre><code>pip install rich==15.0.0</code></pre>
+          <span class="why"><b>What is happening:</b> <code>pip</code> downloads <code>rich</code> and puts it on <b>the box&rsquo;s shelf only</b>. <code>==15.0.0</code> fixes the version, so everyone in this room gets the same one.</span>
+        </li>
+        <li>Look inside the box:
+<pre><code>pip list</code></pre>
+          You see a short list: <code>rich</code>, the small libraries that rich needs, and <code>pip</code>. <b>This PC has pandas</b> (a library for tables of data &mdash; you saw it in Chapter 2 and will use it in Chapter 9) <b>and many other libraries installed for the whole computer, and none of them are here.</b> That is what a virtual environment does.
+        </li>
+        <li><b>Screenshot 2.</b> Press <kbd>Win + Shift + S</kbd> and drag over the terminal so that <code>(.venv)</code>, the <code>pip list</code> command and the <code>rich</code> line are all inside the picture. <b>Paste it into your issue now:</b> open the issue, click <b>&hellip;</b> &rarr; <b>Edit</b>, paste under <b>Screenshot 2</b>, and save.</li>
+        <li>Run one line and see the colour:
+<pre><code>python -c "from rich import print; print('[bold green]hello[/]')"</code></pre>
+          The word <code>hello</code> is printed in green. <code>rich</code> is the library you use again in Chapter 8.
+          <span class="why"><b>What is happening:</b> the Python in the box finds <code>rich</code> on its own shelf and uses it. This proves the box works.</span>
+        </li>
+      </ol>
+      <div class="callout warn">
+        <span class="mk">If pip list shows pandas</span>
+        <p>Then this terminal is using the whole computer, not your box. Look at the bottom-right corner of VS Code: it shows which interpreter is selected. Choose the <code>.venv</code> one again, and open one more new terminal.</p>
+      </div>
+      <label class="check"><input type="checkbox" data-k="s2"><span>.venv made · interpreter selected · rich installed · pip list checked · screenshot 2 added to my issue · green hello printed</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 3</span><h3>Three broken files, and AI reads them for you</h3><span class="budget">30 min</span></div>
+      <p class="goal">You cannot practise asking about an error until you have one. So we make three, on purpose. Each one is a different kind of error, and each one takes five seconds to type.</p>
+      <p class="goal"><b>Type each file yourself. Do not copy and paste it.</b> Typing is how you notice the missing character. <b>One trap:</b> VS Code types the closing <code>)</code> for you. In <code>bad1.py</code>, delete that <code>)</code>, save the file, and then run it.</p>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th>File</th><th>Type exactly this</th><th>The error you should get</th></tr></thead>
+          <tbody>
+            <tr><td><code>bad1.py</code></td><td><code>print("hello"</code></td><td><code>SyntaxError</code> &mdash; a closing bracket is missing</td></tr>
+            <tr><td><code>bad2.py</code></td><td><code>import ric</code></td><td><code>ModuleNotFoundError</code> &mdash; there is no library with that name</td></tr>
+            <tr><td><code>bad3.py</code></td><td><code>open("data.txt")</code></td><td><code>FileNotFoundError</code> &mdash; that file is not in this folder</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="goal">Do steps 1 to 6 for <b>each</b> of the three files, one file at a time. Step 7 is done <b>once</b>.</p>
+      <ol>
+        <li>Make the file in VS Code (<b>File &rsaquo; New File…</b>, save it with the name above, inside your folder) and type the one line.</li>
+        <li>Run it in the terminal: <code>python bad1.py</code> — then read what comes out.</li>
+        <li>Select the <b>whole</b> error text with the mouse and copy it. All of it, including the file name and the line number.</li>
+        <li>Open your AI tool and paste the error. Under it, add one line about what you were trying to do. Send it.
+          For example: <code>bad1.py</code> &mdash; &ldquo;I wanted to print the word hello.&rdquo; &middot; <code>bad2.py</code> &mdash; &ldquo;I wanted to use the library rich.&rdquo; &middot; <code>bad3.py</code> &mdash; &ldquo;I wanted to open a file called data.txt and read it.&rdquo; Simple English is fine.
+          <span class="why"><b>What is happening:</b> the error says what broke. Only you know what you wanted. Without your line, the AI can only guess.</span></li>
+        <li>Read the explanation. Then ask the second question: <b>"Why does the new code work?"</b></li>
+        <li>Fix the file and run it again. Then say to yourself, in one sentence and in your own words, <b>why it works now</b>.</li>
+        <li><b>For one of the three files</b>, fill in the <b>AI practice log</b> in your <code>[Ch03]</code> issue now: open the issue, click <b>&hellip;</b> &rarr; <b>Edit</b>, write the four parts, and save. &ldquo;Why it works now&rdquo; is the graded part.</li>
+      </ol>
+      <div class="callout">
+        <span class="mk">Which AI tool</span>
+        <p>ChatGPT, Gemini or Claude &mdash; whichever one opens in this browser. <b>Try ChatGPT first; it answers without signing in.</b> If one of them does not open, use another. If none of them opens, tell the instructor at once.</p>
+      </div>
+      <div class="callout warn">
+        <span class="mk">The test at the end</span>
+        <p>Turn to the person next to you and explain one of your three fixes out loud, in one or two sentences. If you cannot, ask the AI why one more time. <b>Then write that same &ldquo;why&rdquo; in your issue.</b></p>
+      </div>
+      <label class="check"><input type="checkbox" data-k="s3"><span>Three files made, run, asked about, fixed · one fix explained out loud · AI practice log written in my issue</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 4</span><h3>Last thing before you leave the room</h3><span class="budget">5 min</span></div>
+      <p class="goal">Do this <b>after</b> the assignment, right before you leave. Four things, in this order. The last one matters to the student who sits here after you.</p>
+      <ol>
+        <li><code>install-result.txt</code> ends with <code>RESULT: OK</code>, and <code>python --version</code> prints 3.12.</li>
+        <li>Your folder <code>D:\oss\&lt;your ID&gt;</code> holds <code>.venv</code> and the three <code>bad</code> files.</li>
+        <li>Your assignment issue is open in <code>practice-pr</code>, with both screenshots and the AI practice log in it. (See the <b>Assignment</b> tab.)</li>
+        <li><b>Sign out of GitHub, and of every other site you signed in to today</b> (ChatGPT, Google, Claude). On GitHub: click your avatar in the top-right corner, then <b>Sign out</b>. This Windows account is shared, so a signed-in browser is handed to the next person.</li>
+      </ol>
+      <label class="check"><input type="checkbox" data-k="s4"><span>Tools checked · files in place · issue opened · signed out of GitHub and every other site</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Stuck?</span><h3>Prompts you can copy and paste</h3></div>
+      <p class="goal">Before you ask your row or the instructor, try AI first — that is step one of the four steps. Replace the parts in &lt; &gt; with what is on your own screen.</p>
+      <div class="callout warn">
+        <span class="mk">Try these</span>
+        <p>Paste one of these into whichever AI tool you use. The first one is for any error. The second one is step three of the four steps. The third one is for the one Windows problem that everybody meets.</p>
+      </div>
+      <pre><code>I ran a Python file and it failed. Here is my whole file:
+&lt;paste the file&gt;
+Here is the error, exactly as it appeared:
+&lt;paste the whole error&gt;
+I was trying to &lt;what you wanted to do&gt;. What does this error mean,
+and what is the smallest change that fixes it?
+
+You told me to change &lt;my old line&gt; into &lt;your new line&gt;. Why does
+the new one work? Explain it in simple English, in three sentences,
+for someone who is learning Python.
+
+I typed &lt;python --version&gt; in a terminal on Windows. The Microsoft
+Store opened instead of printing a version number. What does that
+mean, and what should I check?
+</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ Assignment ══════════ -->
+<section class="pane" id="pane-task" role="tabpanel" aria-labelledby="tab-task" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Mini Assignment #3 · 30 min</p>
+      <h2>Two screenshots and one AI practice log</h2>
+      <p>You hand in proof that this PC is set up, and proof that you can turn an error into a question. Both come from work you already did in the lab.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Assignment</span><h3>What to submit</h3></div>
+      <ol>
+        <li>Open an issue in the course <code>practice-pr</code> repository using the Chapter 3 template &mdash; <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch03.md" target="_blank" rel="noopener"><b>click here to open it with the template ready</b></a> (sign in first).</li>
+        <li>Title: <code>[Ch03] StudentID Name</code> &mdash; for example <code>[Ch03] 20261234 Gildong Hong</code>. Your name goes in the title this time.</li>
+        <li><b>Screenshot 1</b> &mdash; a new terminal showing <code>python --version</code>, <code>code --version</code> and <code>git --version</code>, all three with version numbers.</li>
+        <li><b>Screenshot 2</b> &mdash; a terminal inside your virtual environment showing <code>pip list</code> with <code>rich</code> in it.</li>
+        <li><b>AI practice log</b> &mdash; choose <b>one</b> of your three errors and write four short parts: the error you pasted, what the AI said, what you changed, and why it works now.</li>
+      </ol>
+      <pre><code>Title: [Ch03] 20261234 Gildong Hong
+
+## Screenshot 1 - versions
+(drag the image in here)
+
+## Screenshot 2 - venv with rich
+(drag the image in here)
+
+## AI practice log
+
+**Error I pasted:**
+
+**What the AI said:**
+
+**What I changed:**
+
+**Why it works now:**
+</code></pre>
+      <div class="callout">
+        <span class="mk">How to put an image in</span>
+        <p>Press <kbd>Win + Shift + S</kbd>, drag over the part of the screen you want, and let go. Then click inside the issue box and press <kbd>Ctrl + V</kbd>. The image uploads by itself.</p>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Use the template</span>
+        <p>If you click <b>New issue</b> yourself, choose <b>Chapter 3 submission</b>. The headings are already there. <b>Write under each heading &mdash; do not delete the headings</b>, and do not paste a second copy below.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Peer review</span><h3>Comment on two issues from your row</h3></div>
+      <p class="goal">Reading someone else's error and asking about it is the same skill as asking AI about your own.</p>
+      <ol>
+        <li>Find two issues written by people in your row, in <a href="https://github.com/OSS-202602-ISS/practice-pr/issues" target="_blank" rel="noopener"><code>practice-pr</code> &rsaquo; Issues</a>.</li>
+        <li>Write one comment on each. Ask a real question &mdash; not "good job!". For example: "Did the same error happen to you in another file?" or "What would happen if you left that line as it was?"</li>
+        <li>Answer any question left on your own issue before the deadline.</li>
+      </ol>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Grading</span><h3>How it's graded</h3></div>
+      <p class="goal">We do not grade your coding skill. We look at <b>whether you did the work, and whether you can explain it</b>.</p>
+      <div class="rubric">
+        <div class="card"><b>Complete</b><p>Both screenshots are readable, the four parts of the AI log are your own words, and you left two specific comments on other students' issues.</p></div>
+        <div class="card"><b>Partial</b><p>A screenshot is missing or unreadable, or the AI log only says what the AI said and not what you changed and why. Or the comments on other students are missing or too general.</p></div>
+        <div class="card"><b>Not submitted</b><p>No issue by the deadline. Late work still gets partial credit.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">You must explain it</span>
+        <p>"Why it works now" is the part that is really graded. If you cannot explain your own fix, it does not count as complete &mdash; even if the fixed code is correct.</p>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Deadline</span>
+        <p><b>Before the next class starts.</b> Try to finish in today's 30 minutes. If you do not finish, finish it at home &mdash; but the screenshots have to come from this PC, so take them before you leave.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Next</span><h3>Preview of Chapter 4</h3></div>
+      <p class="goal"><b>Git basics</b> &mdash; you installed Git today and only read its version number. Next time you use it: <code>clone</code>, <code>add</code>, <code>commit</code>, <code>push</code>, <code>pull</code>, and the same buttons inside VS Code.</p>
+      <ul style="margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em; font-size:.95rem;">
+        <li>Come back to the same seat. Your row is fixed from now on.</li>
+        <li>Your folder <code>D:\oss\&lt;your ID&gt;</code> and its <code>.venv</code> stay on this PC. You keep using them.</li>
+        <li>Keep the four steps for asking AI. Every chapter from here has errors in it.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>Open Source Software · Fall 2026 · Chapter 3 course material — based on the official syllabus</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── Tabs ── */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var pane = document.getElementById(t.getAttribute('aria-controls'));
+      var on = (t === tab);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      pane.hidden = !on;
+    });
+    window.scrollTo(0, 0);
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ selectTab(t); });
+    t.addEventListener('keydown', function(e){
+      var i = tabs.indexOf(t), n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowLeft')  n = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (n){ e.preventDefault(); n.focus(); selectTab(n); }
+    });
+  });
+
+  /* ── Slides ── */
+  var slides  = Array.prototype.slice.call(document.querySelectorAll('#pane-lecture .slide'));
+  var dotsBox = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var firstBtn = document.getElementById('first');
+  var lastBtn = document.getElementById('last');
+  var cur = 0;
+
+  slides.forEach(function(s, i){
+    var h = s.querySelector('h1, h2');
+    var t = h ? h.textContent.replace(/\s+/g, ' ').trim() : '';
+    var d = document.createElement('button');
+    d.type = 'button';
+    d.className = 'dot';
+    d.textContent = (i + 1);
+    d.title = (i + 1) + (t ? '. ' + t : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1) + (t ? ': ' + t : ''));
+    d.addEventListener('click', function(){ go(i); });
+    dotsBox.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function go(i){
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function(s, n){ s.hidden = (n !== cur); });
+    dots.forEach(function(d, n){ d.setAttribute('aria-current', n === cur ? 'true' : 'false'); });
+    counter.textContent = (cur + 1) + ' / ' + slides.length;
+    prevBtn.disabled = firstBtn.disabled = (cur === 0);
+    nextBtn.disabled = lastBtn.disabled = (cur === slides.length - 1);
+    window.scrollTo(0, 0);
+  }
+  prevBtn.addEventListener('click', function(){ go(cur - 1); });
+  nextBtn.addEventListener('click', function(){ go(cur + 1); });
+  firstBtn.addEventListener('click', function(){ go(0); });
+  lastBtn.addEventListener('click', function(){ go(slides.length - 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (document.getElementById('pane-lecture').hidden) return;
+    var t = e.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp'){   e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home'){ e.preventDefault(); go(0); }
+    if (e.key === 'End'){  e.preventDefault(); go(slides.length - 1); }
+  });
+  go(0);
+
+  /* ── Lab checklist (browser-only storage) ── */
+  var KEY = 'oss2026-ch03-lab-en';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.check input'));
+  var pgCount = document.getElementById('pg-count');
+  var pgBar = document.getElementById('pg-bar');
+
+  function read(){
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function write(state){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch (e) { /* private/incognito mode etc. — skip saving but keep working */ }
+  }
+  function paint(){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    pgCount.textContent = done + ' / ' + boxes.length;
+    pgBar.style.width = (boxes.length ? (done / boxes.length * 100) : 0) + '%';
+  }
+
+  var saved = read();
+  boxes.forEach(function(b){
+    if (saved[b.dataset.k]) b.checked = true;
+    b.addEventListener('change', function(){
+      var s = read();
+      s[b.dataset.k] = b.checked;
+      write(s);
+      paint();
+    });
+  });
+  document.getElementById('pg-reset').addEventListener('click', function(){
+    boxes.forEach(function(b){ b.checked = false; });
+    write({});
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>
