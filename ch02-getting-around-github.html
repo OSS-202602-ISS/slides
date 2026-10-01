@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 2 · Getting Around GitHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── 토큰 ─────────────────────────────────────────── */
+:root{
+  --ground:#F6F8F6; --surface:#FFFFFF; --surface-2:#ECF1EE; --sunken:#E3EAE6;
+  --line:#D6DEDA; --line-strong:#B9C5BF;
+  --ink:#141E1A; --ink-2:#4B5B56; --ink-3:#78887F;
+  --accent:#0B6E55; --accent-ink:#095643; --accent-soft:#E1F0EA; --accent-line:#9FCDBD;
+  --warn:#8F5410; --warn-soft:#F8EEDD; --warn-line:#E0C79A;
+  --shadow:0 1px 2px rgba(20,30,26,.05), 0 8px 24px -12px rgba(20,30,26,.18);
+  --display:"Gowun Batang","Batang","Malgun Gothic",serif;
+  --body:"IBM Plex Sans KR","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  --mono:"IBM Plex Mono","Consolas","D2Coding",monospace;
+  --topbar:64px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+    --line:#28382F; --line-strong:#3A4E45;
+    --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+    --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+    --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+  --line:#28382F; --line-strong:#3A4E45;
+  --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+  --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+  --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+
+/* ─── 기본 ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-weight:400; font-size:16px; line-height:1.68;
+  word-break:keep-all; overflow-wrap:break-word;
+}
+h1,h2,h3,h4{font-family:var(--display); font-weight:700; line-height:1.28; text-wrap:balance; margin:0;}
+p{margin:0;}
+a{color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent-line);}
+a:hover{border-bottom-color:var(--accent);}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:3px; border-radius:3px;}
+code,kbd{font-family:var(--mono); font-size:.88em; background:var(--surface-2); padding:.12em .38em; border-radius:4px; border:1px solid var(--line);}
+kbd{font-size:.8em; box-shadow:0 1px 0 var(--line-strong);}
+.eyebrow{font-family:var(--body); font-size:.95rem; font-weight:600; letter-spacing:.01em; color:var(--ink-2);}
+
+/* ─── 상단바 ───────────────────────────────────────── */
+.topbar{
+  position:sticky; top:0; z-index:50; height:var(--topbar);
+  display:flex; align-items:center; gap:20px;
+  padding:0 clamp(14px,3vw,36px);
+  background:var(--ground);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex; flex-direction:column; gap:1px; min-width:0;}
+.brand b{font-family:var(--display); font-size:1.02rem; font-weight:700; white-space:nowrap;}
+.brand span{font-family:var(--body); font-size:.8rem; letter-spacing:.01em; color:var(--ink-3);}
+.tabs{display:flex; gap:4px; margin-left:auto; background:var(--surface-2); padding:4px; border-radius:10px; border:1px solid var(--line);}
+.tab{
+  appearance:none; border:0; background:transparent; cursor:pointer;
+  font-family:var(--body); font-size:.86rem; font-weight:600; color:var(--ink-2);
+  padding:7px 13px; border-radius:7px; display:flex; align-items:baseline; gap:7px; white-space:nowrap;
+}
+.tab .min{font-family:var(--mono); font-size:.68rem; font-weight:500; color:var(--ink-3);}
+.tab:hover{color:var(--ink);}
+.tab[aria-selected="true"]{background:var(--surface); color:var(--accent-ink); box-shadow:var(--shadow);}
+.tab[aria-selected="true"] .min{color:var(--accent);}
+
+/* ─── 강의: 슬라이드 ───────────────────────────────── */
+.stage{
+  min-height:calc(100vh - var(--topbar) - 62px);
+  display:flex; align-items:center; justify-content:center;
+  padding:clamp(24px,4vw,56px) clamp(16px,5vw,60px);
+}
+.slide{width:100%; max-width:960px; display:flex; flex-direction:column; gap:clamp(16px,2.2vw,26px);}
+.slide h2{font-size:clamp(1.75rem,3.9vw,2.85rem);}
+.slide h3{font-size:clamp(1.1rem,1.9vw,1.35rem); color:var(--accent-ink);}
+.slide p{font-size:clamp(1.05rem,1.8vw,1.38rem); color:var(--ink-2); max-width:62ch;}
+.slide .lead{font-size:clamp(1.2rem,2.2vw,1.62rem); color:var(--ink);}
+.slide ul{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.55em; font-size:clamp(1.05rem,1.7vw,1.34rem);}
+.slide ul li::marker{color:var(--accent);}
+.rule{height:3px; width:56px; background:var(--accent); border-radius:2px;}
+
+.cover{gap:clamp(20px,3vw,34px);}
+.cover h1{font-size:clamp(2.3rem,6.2vw,4.4rem); letter-spacing:-.015em;}
+.cover .sub{font-size:clamp(1.15rem,2.1vw,1.58rem); color:var(--ink-2);}
+.cover dl{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:18px; margin:0; padding-top:16px; border-top:1px solid var(--line);}
+.cover dt{font-family:var(--body); font-size:.8rem; font-weight:600; letter-spacing:.01em; color:var(--ink-3); margin-bottom:3px;}
+.cover dd{margin:0; font-size:1.05rem; font-weight:500;}
+
+.grid{display:grid; gap:14px;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.g3{grid-template-columns:repeat(auto-fit,minmax(215px,1fr));}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px; display:flex; flex-direction:column; gap:7px; box-shadow:var(--shadow);
+}
+.card h4{font-family:var(--body); font-weight:600; font-size:1.12rem;}
+.card p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+.card .tagline{font-family:var(--body); font-size:.85rem; font-weight:600; letter-spacing:.01em; color:var(--accent);}
+
+.freedoms{display:flex; flex-direction:column; gap:10px; counter-reset:f -1;}
+.freedom{
+  display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:baseline;
+  padding:13px 18px; background:var(--surface); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:0 10px 10px 0;
+}
+.freedom::before{
+  counter-increment:f; content:"Freedom " counter(f);
+  font-family:var(--mono); font-size:.72rem; font-weight:600; color:var(--accent);
+  letter-spacing:.05em; white-space:nowrap;
+}
+.freedom b{font-weight:600;}
+.freedom span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+/* ─── 트랙 비교(필수 A / 선택 B) ───────────────────── */
+.tracks{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(290px,1fr));}
+.track{
+  background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0; padding:18px 20px;
+  display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow);
+}
+.track.optional{background:var(--surface-2); border-left-style:dashed; border-left-color:var(--line-strong); box-shadow:none;}
+.track .badge{
+  align-self:flex-start; font-family:var(--body); font-size:.8rem; font-weight:700;
+  padding:3px 11px; border-radius:20px; background:var(--accent-soft); color:var(--accent-ink);
+}
+.track.optional .badge{background:var(--sunken); color:var(--ink-3);}
+.track h4{font-family:var(--body); font-weight:700; font-size:1.18rem;}
+.track p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+
+.timeline{display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); border-top:2px solid var(--line-strong);}
+.tl-item{padding:16px 14px 0 0; position:relative;}
+.tl-item::before{content:""; position:absolute; top:-6px; left:0; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid var(--ground);}
+.tl-item .yr{font-family:var(--mono); font-size:1.18rem; font-weight:600; color:var(--accent-ink); display:block; margin-bottom:3px;}
+.tl-item p{font-size:.98rem; line-height:1.55;}
+
+.callout{
+  display:flex; gap:14px; padding:16px 20px; border-radius:10px;
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+}
+.callout .mk{font-family:var(--body); font-size:.9rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink); padding-top:2px; white-space:nowrap;}
+.callout p{color:var(--ink); max-width:none;}
+.callout.warn{background:var(--warn-soft); border-color:var(--warn-line);}
+.callout.warn .mk{color:var(--warn);}
+
+table{width:100%; border-collapse:collapse; font-size:1.02rem;}
+th,td{border-bottom:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top;}
+th{font-family:var(--body); font-size:.88rem; letter-spacing:.01em; color:var(--ink-3); font-weight:600; border-bottom:1.5px solid var(--line-strong);}
+td.num{font-variant-numeric:tabular-nums; font-family:var(--mono); white-space:nowrap; color:var(--accent-ink); font-weight:500;}
+.scroll-x{overflow-x:auto;}
+td.where{white-space:normal; font-size:.88em; color:var(--ink-2); width:26%;}
+.where-in{font-size:.9em; color:var(--ink-2); margin-top:8px; padding-top:8px; border-top:1px solid var(--line);}
+@media print{ a[href^="http"]{ text-decoration:underline; text-underline-offset:2px; } }
+
+.slidenav{
+  position:sticky; bottom:0; z-index:40;
+  display:flex; align-items:center; gap:14px;
+  padding:11px clamp(14px,3vw,36px);
+  background:var(--ground); border-top:1px solid var(--line);
+}
+.dots{display:flex; gap:4px; flex:1; flex-wrap:wrap; align-items:center;}
+.dot{
+  min-width:26px; height:24px; padding:0 5px; border-radius:6px; cursor:pointer; line-height:1;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-3);
+  font-family:var(--mono); font-size:.74rem; font-weight:600; font-variant-numeric:tabular-nums;
+}
+.dot:hover{background:var(--surface); border-color:var(--accent); color:var(--accent-ink);}
+.dot[aria-current="true"]{background:var(--accent); border-color:var(--accent); color:var(--ground);}
+.navbtn.edge{padding:7px 10px; font-family:var(--mono);}
+.navbtn{
+  appearance:none; cursor:pointer; font-family:var(--body); font-weight:600; font-size:.85rem;
+  padding:7px 15px; border-radius:8px; border:1px solid var(--line-strong);
+  background:var(--surface); color:var(--ink);
+}
+.navbtn:hover{border-color:var(--accent); color:var(--accent-ink);}
+.navbtn:disabled{opacity:.35; cursor:default;}
+.counter{font-family:var(--mono); font-size:.8rem; font-variant-numeric:tabular-nums; color:var(--ink-3); white-space:nowrap;}
+
+/* ─── 문서형 페인(실습·과제) ───────────────────────── */
+.doc{max-width:840px; margin:0 auto; padding:clamp(28px,5vw,60px) clamp(18px,5vw,40px) 100px; display:flex; flex-direction:column; gap:clamp(26px,3.5vw,38px);}
+.doc-head{display:flex; flex-direction:column; gap:12px;}
+.doc-head h2{font-size:clamp(1.75rem,3.4vw,2.4rem);}
+.doc-head p{color:var(--ink-2); max-width:62ch;}
+
+.step{display:flex; flex-direction:column; gap:14px; padding-top:26px; border-top:1px solid var(--line);}
+.step-head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;}
+.step-no{font-family:var(--mono); font-size:.72rem; font-weight:600; letter-spacing:.08em; color:var(--accent-ink); padding:3px 9px; background:var(--accent-soft); border-radius:20px; white-space:nowrap;}
+.step-head h3{font-size:1.22rem; flex:1; min-width:200px;}
+.budget{font-family:var(--mono); font-size:.78rem; color:var(--ink-3); font-variant-numeric:tabular-nums; white-space:nowrap;}
+.goal{font-size:.95rem; color:var(--ink-2);}
+.step ol{margin:0; padding-left:1.3em; display:flex; flex-direction:column; gap:.5em; font-size:.96rem;}
+.step ol li::marker{font-family:var(--mono); font-weight:600; color:var(--accent);}
+.step ol ul{margin:.35em 0 0; padding-left:1.1em; font-size:.92rem; color:var(--ink-2); display:flex; flex-direction:column; gap:.25em;}
+
+.check{display:flex; align-items:flex-start; gap:11px; padding:11px 15px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; cursor:pointer;}
+.check input{margin:0; width:17px; height:17px; accent-color:var(--accent); flex-shrink:0; margin-top:2px; cursor:pointer;}
+.check span{font-size:.93rem; font-weight:500;}
+.check:has(input:checked){background:var(--accent-soft); border-color:var(--accent-line);}
+.check:has(input:checked) span{color:var(--ink-2); text-decoration:line-through; text-decoration-color:var(--accent-line);}
+
+.progress{
+  position:sticky; top:calc(var(--topbar) + 10px); z-index:30;
+  display:flex; align-items:center; gap:14px; padding:12px 18px;
+  background:var(--surface); border:1px solid var(--line); border-radius:11px; box-shadow:var(--shadow);
+}
+.progress b{font-family:var(--mono); font-size:.9rem; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.bar{flex:1; height:7px; background:var(--sunken); border-radius:4px; overflow:hidden;}
+.bar i{display:block; height:100%; width:0; background:var(--accent); border-radius:4px; transition:width .3s ease;}
+@media (prefers-reduced-motion: reduce){ .bar i{transition:none;} }
+.reset{appearance:none; border:1px solid var(--line-strong); background:transparent; color:var(--ink-3); font-family:var(--body); font-size:.76rem; padding:4px 10px; border-radius:6px; cursor:pointer;}
+.reset:hover{color:var(--ink); border-color:var(--accent);}
+
+.ladder{display:flex; flex-direction:column; counter-reset:l;}
+.rung{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px dashed var(--line);}
+.rung:last-child{border-bottom:0;}
+.rung::before{counter-increment:l; content:counter(l); font-family:var(--mono); font-size:.75rem; font-weight:600; color:var(--ground); background:var(--accent); width:22px; height:22px; border-radius:50%; display:grid; place-items:center;}
+.rung b{font-weight:600;}
+.rung span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+pre{background:var(--sunken); border:1px solid var(--line); border-radius:9px; padding:14px 16px; overflow-x:auto; margin:0;}
+pre code{background:none; border:0; padding:0; font-size:.85rem; line-height:1.6;}
+
+.rubric{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+.rubric .card b{font-family:var(--body); font-size:.95rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink);}
+
+.foot{border-top:1px solid var(--line); padding:22px clamp(18px,5vw,40px); text-align:center;}
+.foot p{font-size:.8rem; color:var(--ink-3);}
+
+/* ─── 인쇄 ─────────────────────────────────────────── */
+@media print{
+  .topbar,.slidenav,.progress{display:none !important;}
+  .pane[hidden]{display:block !important;}
+  .slide[hidden]{display:flex !important;}
+  .stage{display:block; min-height:0; padding:0;}
+  .slide{max-width:none; break-after:page; page-break-after:always; padding:8mm 0;}
+  .slide:last-child{break-after:auto; page-break-after:auto;}
+  body{background:#fff; color:#000; font-size:11pt;}
+  .card,.callout,.check,.step,.track,.tl-item{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <b>Getting Around GitHub</b>
+    <span>Open Source Software · Chapter 2 · Fall 2026</span>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Class blocks">
+    <button class="tab" role="tab" id="tab-lecture" aria-controls="pane-lecture" aria-selected="true">Lecture <span class="min">60 min</span></button>
+    <button class="tab" role="tab" id="tab-lab" aria-controls="pane-lab" aria-selected="false">Lab <span class="min">90 min</span></button>
+    <button class="tab" role="tab" id="tab-task" aria-controls="pane-task" aria-selected="false">Assignment <span class="min">30 min</span></button>
+  </div>
+</header>
+
+<!-- ══════════ Lecture ══════════ -->
+<section class="pane" id="pane-lecture" role="tabpanel" aria-labelledby="tab-lecture">
+  <div class="stage">
+
+    <article class="slide cover">
+      <p class="eyebrow">Chapter 2 · 2026 Fall</p>
+      <h1>Getting Around<br>GitHub</h1>
+      <p class="sub">Every open source project has the same basic parts.<br>Today you learn to read any of them.</p>
+      <dl>
+        <div><dt>Course</dt><dd>Open Source Software</dd></div>
+        <div><dt>Target</dt><dd>Senior (4th-year), Information Systems &amp; Security</dd></div>
+        <div><dt>Today</dt><dd>60 min lecture · 90 min lab · 30 min assignment</dd></div>
+      </dl>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Last week</p>
+      <h2>You have an account.<br>Now learn to read one.</h2>
+      <div class="rule"></div>
+      <p class="lead">You made your account and joined the course organization. But you have not looked inside a real project yet. That starts now.</p>
+      <ul>
+        <li><b>Explain what a repository is</b> — not "where the code lives," but a project's whole home.</li>
+        <li><b>Know what each tab on a repo page is for</b> — Code, Issues, Pull requests, Actions, Insights, About.</li>
+        <li><b>Judge a project by more than its star count.</b> Read activity, issues, and maintainers (the people in charge of a project) instead.</li>
+        <li><b>Read a GitHub issue, and write one</b> (an issue is a page for reporting or discussing something). Use issues the way real projects do — not only for reporting bugs.</li>
+      </ul>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">The core concept</p>
+      <h2>A repository is a project's home —<br>code, history, and conversation, together</h2>
+      <div class="rule"></div>
+      <p class="lead">Everything a project needs is inside its repository. This means more than the code. It also means the full history of how it got here, and the discussion about what comes next.</p>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">Code</span><h4>What it is, right now</h4><p>The files as they are today — the thing you would download and run.</p></div>
+        <div class="card"><span class="tagline">History</span><h4>How it became what it is</h4><p>Every commit (one saved change) ever made, who made it, and why. No change is ever hidden.</p></div>
+        <div class="card"><span class="tagline">Conversation</span><h4>Where it's going next</h4><p>Issues and pull requests are where people discuss the project in public. A pull request is a request to add your change to the project.</p></div>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Reading the page</p>
+      <h2>The parts of a repository page</h2>
+      <div class="rule"></div>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">Code</span><h4>Code tab</h4><p>The files on the branch (a separate line of work) you are viewing. Click a file to read it, click a folder to go deeper.</p></div>
+        <div class="card"><span class="tagline">Issues</span><h4>Issues tab</h4><p>Bug reports, feature requests, and questions — the project's open to-do list and its ongoing conversation.</p></div>
+        <div class="card"><span class="tagline">PRs</span><h4>Pull requests tab</h4><p>Proposed changes waiting for review. Each one is someone asking "can this become part of the code?"</p></div>
+        <div class="card"><span class="tagline">CI</span><h4>Actions tab</h4><p>Automated checks (CI, short for Continuous Integration) that run on every change — tests and builds. Green means they passed.</p></div>
+        <div class="card"><span class="tagline">Stats</span><h4>Insights tab</h4><p>Charts of activity — contributors, how often people commit, how many people visit. Check here to see if a project is still active.</p></div>
+        <div class="card"><span class="tagline">Sidebar</span><h4>About box</h4><p>One-line description, topics/tags, license, and the README (the project's introduction file) shown as a page — read this box before anything else.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">Your screen may show more tabs</span>
+        <p>A repository can also show <b>Discussions</b>, <b>Projects</b>, <b>Wiki</b> or <b>Security</b>. Those are <b>optional</b> &mdash; the maintainers turn them on. The six above are in every project. <b>A missing tab tells you something too:</b> our own <code>course-notice</code> has Issues turned off, because it is only for announcements. (It is private, so it shows <b>404</b> unless you are signed in &mdash; see the FAQ.)</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">First thing to read</p>
+      <h2>The README is the first thing you read</h2>
+      <div class="rule"></div>
+      <p class="lead">A good README answers five questions before you've even opened a single code file. If it cannot answer these in 30 seconds, that tells you something too.</p>
+      <ul>
+        <li><b>What</b> — what does this project actually do, in one sentence?</li>
+        <li><b>Why</b> — what problem does it solve that made someone build it?</li>
+        <li><b>Install</b> — which command do I type to install it?</li>
+        <li><b>Usage</b> — is there example code that shows how to use it?</li>
+        <li><b>License</b> — am I allowed to use it? (Chapter 7 covers this in detail.)</li>
+      </ul>
+      <div class="callout">
+        <span class="mk">Try it now</span>
+        <p>Open any repo's README and check the clock. Can you answer all five in one minute? If not, the README is weak — even if the code itself is good.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">A common mistake</p>
+      <h2>Stars are popularity,<br>not quality</h2>
+      <div class="rule"></div>
+      <p class="lead">A star means someone liked it once. It does not mean the code is good, safe, or still maintained today.</p>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th>Signal</th><th>What to check instead</th><th>Where to look</th></tr></thead>
+          <tbody>
+            <tr><td>Recent commit activity</td><td>Has anyone made a commit in the last few months? Many stars but no recent commits is a warning sign.</td><td class="where"><b>Code</b> tab &mdash; the line just above the file list</td></tr>
+            <tr><td>Open-vs-closed issue ratio</td><td>Are issues getting closed? Or do they stay open with no answer? If they stay open, the maintainer may have too much work, or may have stopped.</td><td class="where"><b>Issues</b> tab &mdash; the <b>Open</b> / <b>Closed</b> buttons at the top</td></tr>
+            <tr><td>Number of maintainers</td><td>Is it one person, or a team? If one person built it and that person stops, the project stops.</td><td class="where"><b>Insights</b> tab &rarr; <b>Contributors</b> in the left menu</td></tr>
+            <tr><td>Last release date</td><td>Was a version released recently? Or are the changes still only on the main branch, with no new version?</td><td class="where"><b>Releases</b>, in the box on the right side of the Code tab</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="mk">Coming up</span>
+        <p>You need this same skill in Chapter 10, where you choose a library that is safe to use. Start looking at these four signals now. Then Chapter 10 will be review for you, not new material.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">More than bug reports</p>
+      <h2>Issues are the project's conversation,<br>not just a bug list</h2>
+      <div class="rule"></div>
+      <div class="grid g2">
+        <div class="card"><h4>More than bugs</h4><p>Issues hold bug reports — but also requests for new features, design questions, and "has anyone tried this?" discussions. Read a project's Issues tab and you are reading its whole conversation.</p></div>
+        <div class="card"><h4>Labels tell you where to start</h4><p>Maintainers tag issues to sort them. Two labels matter most to you right now. <code>good first issue</code> means it is small and easy for beginners. <code>help wanted</code> means the maintainer wants outside help.</p>
+          <p class="where-in"><b>Where to look:</b> the <b>Issues</b> tab, then the <b>Labels</b> button.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">Coming up</span>
+        <p>Chapter 5 is when you open your first pull request. Chapter 6 is when you open one on someone else's project. Today is just about learning to read them.</p>
+      </div>
+      <div class="callout">
+        <span class="mk">You will use these in Chapter 6</span>
+        <p>Today you only need to know the two names. When you look for one later, do not search inside a single project &mdash; most projects have none open. Search all of GitHub at once:
+        <a href="https://github.com/search?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+language%3APython&amp;type=issues" target="_blank" rel="noopener">github.com/search &rsaquo; "good first issue"</a>.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">The template for today's assignment</p>
+      <h2>The parts of a good issue</h2>
+      <div class="rule"></div>
+      <p class="lead">A good issue is one a stranger can read, understand, and act on — without asking you anything. Four parts, every time.</p>
+      <div class="grid g2">
+        <div class="card"><h4>Title</h4><p>Clear enough to search for later. "Crashes on empty input" is better than "bug".</p></div>
+        <div class="card"><h4>Context</h4><p>What were you doing, on what version, on what system? Enough that someone else could see the same problem.</p></div>
+        <div class="card"><h4>Steps</h4><p>The exact steps that cause it — numbered, in order, nothing left out.</p></div>
+        <div class="card"><h4>Expected vs actual</h4><p>What you thought would happen, and what actually happened instead. That difference alone often shows what is wrong.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">Keep this slide open</span>
+        <p>Today's assignment issue uses this exact structure. You'll fill in the same four parts for a project you liked instead of a bug.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Three verbs, three different things</p>
+      <h2>Fork vs Clone vs Star</h2>
+      <div class="rule"></div>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th></th><th>Fork</th><th>Clone</th><th>Star</th></tr></thead>
+          <tbody>
+            <tr><td>What it does</td><td>Copies the whole repo to your own GitHub account</td><td>Downloads the repo's files to your own computer</td><td>Bookmarks the repo to your account — nothing is copied</td></tr>
+            <tr><td>Where the copy lives</td><td>On GitHub, under your username</td><td>On your hard drive</td><td>Nowhere — it's just a marker on the original</td></tr>
+            <tr><td>When you use it</td><td>You want to suggest a change to the original project</td><td>You want to run or edit the code locally</td><td>You want to remember or follow a project</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="mk">Coming up</span>
+        <p>Chapter 6 is when you click Fork for the first time. Just before that, you open your first pull request on someone else's project. Remember this now — it will help you later.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">A repeatable routine</p>
+      <h2>How to read a project<br>without reading everything</h2>
+      <div class="rule"></div>
+      <p class="lead">You will never have time to read every line. Here's the order that gets you 90% of the understanding in 10% of the time.</p>
+      <div class="ladder">
+        <div class="rung"><div><b>README</b><span>What it does, why, and how to run it — always read this first.</span></div></div>
+        <div class="rung"><div><b>About box + topics</b><span>The one-line description and tags tell you the topic in seconds.</span></div></div>
+        <div class="rung"><div><b>Issues</b><span>What is broken or being discussed right now — what the project is really like, not what it says about itself.</span></div></div>
+        <div class="rung"><div><b>Recent commits</b><span>Is anyone actually working on this, and on what?</span></div></div>
+        <div class="rung"><div><b>CONTRIBUTING.md</b><span>If you plan to change the code, this file tells you the rules first — so you do not spend time on the wrong thing.</span></div></div>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Who you ask first</p>
+      <h2>The people sitting next to you</h2>
+      <div class="rule"></div>
+      <p class="lead">You picked your own seat group. That group is the first place you ask for help, all semester. Keep the same seats &mdash; seating is fixed in <b>Chapter 3</b>.</p>
+      <p>The team sheet you filled in is a <b>first draft</b>. In a few weeks you will vote: keep these teams, or re-balance them after the midterm. <b>The class decides.</b></p>
+      <div class="ladder">
+        <div class="rung"><div><b>Ask AI first</b><span>Copy your question, or the error message, exactly as it appears. Asking well is a skill this course teaches.</span></div></div>
+        <div class="rung"><div><b>Check the course FAQ</b><span>Common problems already have answers there &mdash; <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/FAQ.md" target="_blank" rel="noopener">course-notice &rsaquo; FAQ.md</a> (sign in to GitHub first).</span></div></div>
+        <div class="rung"><div><b>Ask the person next to you</b><span>You chose your own seat, so you are asking someone you already know. That is easier than asking a stranger.</span></div></div>
+        <div class="rung"><div><b>Come to the instructor</b><span>A question that survives the first three steps is a real question. Call me — that is what I am here for.</span></div></div>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Before you switch tabs</p>
+      <h2>Checklist to close</h2>
+      <div class="rule"></div>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Name the tabs on any repo page. Read a README in 30 seconds. Look at more than the star count, and explain the difference between fork, clone, and star.</p></div>
+        <div class="card"><span class="tagline">90 min · Lab</span><h4>What's next</h4><p>Check your account, tour one real project together, then scan three whitelist (instructor-approved) projects yourself.</p></div>
+      </div>
+      <p class="lead">Switch to the <b>Lab</b> tab above and get started.</p>
+    </article>
+
+  </div>
+
+  <nav class="slidenav" aria-label="Slide navigation">
+    <button class="navbtn edge" id="first" type="button" title="First slide (Home)" aria-label="First slide">⇤</button>
+    <button class="navbtn" id="prev" type="button">← Prev</button>
+    <button class="navbtn" id="next" type="button">Next →</button>
+    <button class="navbtn edge" id="last" type="button" title="Last slide (End)" aria-label="Last slide">⇥</button>
+    <div class="dots" id="dots"></div>
+    <span class="counter" id="counter">1 / 12</span>
+  </nav>
+</section>
+
+<!-- ══════════ Lab ══════════ -->
+<section class="pane" id="pane-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Lab · 90 min · Step by step</p>
+      <h2>Explore three real projects, with your row</h2>
+      <p>Until now you only read about repositories. Today you open real ones and look inside. Everything happens in the browser — <b>no terminal, no git commands yet</b> (that starts Chapter 4).</p>
+    </div>
+
+    <div class="progress">
+      <b id="pg-count">0 / 4</b>
+      <span class="bar"><i id="pg-bar"></i></span>
+      <button class="reset" id="pg-reset" type="button">Reset</button>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 0</span><h3>Account check</h3><span class="budget">10 min</span></div>
+      <p class="goal">Everything today happens inside your own GitHub account, so we make sure everyone has one before we start.</p>
+      <ol>
+        <li>Sign in to GitHub and check three things. Your account works. Two-factor authentication is on. And you have <b>accepted the course organization invite</b> (you did all three in the Chapter 1 lab).</li>
+        <li>Something missing? Tell me now. The Chapter 1 slides show every step. Your neighbour or the instructor will help you in these ten minutes. Nobody starts the lab without an account.</li>
+        <li>Say hello to the two or three people nearest you. You will compare answers with them in Part 3.</li>
+      </ol>
+      <label class="check"><input type="checkbox" data-k="s0"><span>Signed in, invite accepted, said hello</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 1</span><h3>Guided tour: Textualize/rich</h3><span class="budget">30 min</span></div>
+      <p class="goal">The instructor opens one real repository on the projector and goes through it, tab by tab. Open the same repo in your own browser and follow.</p>
+      <ol>
+        <li>Open <a href="https://github.com/Textualize/rich" target="_blank" rel="noopener">github.com/Textualize/rich</a> in your own browser tab.</li>
+        <li>Follow as the instructor goes through the Code tab, the About box, Issues, Pull requests, Actions, and Insights.</li>
+        <li>If something looks different from the lecture, write it down and ask. That is exactly the kind of question this hour is for.</li>
+      </ol>
+      <label class="check"><input type="checkbox" data-k="s1"><span>Followed the guided tour on my own screen</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 2</span><h3>Explore on your own: fill your Repo Scan Sheet</h3><span class="budget">40 min</span></div>
+      <p class="goal">Work alone for this part — do not write one answer for the whole group. Look at these three projects and fill in what you find. All three are on the course whitelist, and that is why they were chosen.</p>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th>Field</th><th><a href="https://github.com/psf/requests" target="_blank" rel="noopener">psf/requests</a></th><th><a href="https://github.com/Textualize/rich" target="_blank" rel="noopener">Textualize/rich</a></th><th><a href="https://github.com/pandas-dev/pandas" target="_blank" rel="noopener">pandas-dev/pandas</a></th></tr></thead>
+          <tbody>
+            <tr><td>Owner / org</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>License</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>Stars</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>Date of last commit</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>Open issue count</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>Has CONTRIBUTING.md?</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>Primary language</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>One-sentence purpose</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>One thing you'd ask the maintainers</td><td>—</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="goal">Write what you actually find. If you cannot find a value, leave the dash. An empty box is also an answer. Say so in Part 3.</p>
+      <label class="check"><input type="checkbox" data-k="s2"><span>Repo Scan Sheet filled in for all three projects</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 3</span><h3>Compare with your row</h3><span class="budget">10 min</span></div>
+      <p class="goal">Come back together as a row and compare what you found.</p>
+      <ol>
+        <li>Each person says the one biggest difference they saw between the three projects.</li>
+        <li>One person in the row writes down the one thing your row agreed on.</li>
+        <li>If your row does not agree about something — for example, which project is in better condition — ask the instructor.</li>
+      </ol>
+      <label class="check"><input type="checkbox" data-k="s3"><span>Compared answers with my row, and wrote down what we agreed on</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Stretch</span><h3>If you finish early</h3></div>
+      <p class="goal">Find one issue labeled <code>good first issue</code>. The three projects above have none open right now, so use <a href="https://github.com/search?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+language%3APython&amp;type=issues" target="_blank" rel="noopener">GitHub-wide search</a> instead. In one sentence, explain why you think you could try it.</p>
+      <div class="callout">
+        <span class="mk">Try it</span>
+        <p>Open the Issues tab. Filter or search by the <code>good first issue</code> label. Pick one that you think you could try, with what you know today.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Stuck?</span><h3>Prompts you can copy and paste</h3></div>
+      <p class="goal">Before asking your row or the instructor, try AI first — that is step one of the four steps.</p>
+      <div class="callout warn">
+        <span class="mk">Try these</span>
+        <p>Paste one of these into whichever AI tool you use. Replace the parts in &lt; &gt; with the project you are actually looking at.</p>
+      </div>
+      <pre><code>I'm looking at the GitHub repo &lt;owner&gt;/&lt;name&gt;. Explain what this
+project does in plain language, based on its README.
+
+Here is a GitHub issue list from &lt;owner&gt;/&lt;name&gt;: [paste 3-4 issue
+titles]. Which of these looks like a good first issue for a
+beginner, and why?
+
+I can't tell if this GitHub project is actively maintained. Here's
+what I see: [last commit date, open issue count]. What do these
+numbers suggest?
+</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ Assignment ══════════ -->
+<section class="pane" id="pane-task" role="tabpanel" aria-labelledby="tab-task" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Mini Assignment #2 · 30 min</p>
+      <h2>Introduce a project you liked</h2>
+      <p>Choose one of the three whitelist projects you looked at today, or another one you liked. Write about it the way you would write a GitHub issue. This is your first real practice at writing one.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Assignment</span><h3>What to submit</h3></div>
+      <ol>
+        <li>Choose one project you liked from today's lab, or one you found yourself.</li>
+        <li>Open an issue in the course <code>practice-pr</code> repository using the template below &mdash; <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch02.md" target="_blank" rel="noopener"><b>click here to open it with the template ready</b></a> (sign in first; the link works once you are in the course organization).</li>
+        <li>Write about <b>150 words</b> total across the four sections.</li>
+      </ol>
+      <pre><code>Title: [Project Intro] owner/repo-name
+
+Student ID / Name: 20261234 Gildong Hong
+
+## What it does
+
+
+## Why I picked it
+
+
+## One thing I learned from its README
+
+
+## Link
+https://github.com/owner/repo-name
+</code></pre>
+      <div class="callout">
+        <span class="mk">Point</span>
+        <p>This is the exact structure from today's "The parts of a good issue" slide. Here you use it to introduce a project instead of to report a bug. Same skill, different purpose.</p>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Use the template</span>
+        <p>When you click <b>New issue</b>, choose <b>Chapter 2 submission</b>. The headings are already there. <b>Write under each heading &mdash; do not delete the headings</b>, and do not paste a second copy below. Your student ID goes on the first line, because the title carries the project name, not yours.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Peer review</span><h3>Comment on two other students' issues</h3></div>
+      <p class="goal">Reading and answering someone else's issue is half of how people work together on GitHub.</p>
+      <ol>
+        <li>Find two issues written by people in your row, in <a href="https://github.com/OSS-202602-ISS/practice-pr/issues" target="_blank" rel="noopener"><code>practice-pr</code> &rsaquo; Issues</a>.</li>
+        <li>Write one comment on each. Ask a real question — not just "nice project!". For example: "When was this project last updated?" or "What would you use this for in your own project?"</li>
+        <li>Reply to any question left on your own issue before the deadline.</li>
+      </ol>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Grading</span><h3>How it's graded</h3></div>
+      <p class="goal">We do not grade your coding skill. We look at <b>whether you did the work, and whether you can explain it</b>.</p>
+      <div class="rubric">
+        <div class="card"><b>Complete</b><p>Issue follows the template, all four sections are your own words, and you left two specific peer comments.</p></div>
+        <div class="card"><b>Partial</b><p>The issue is there, but a section is missing, too general, or copied. Or the comments on other students are missing or too general ("nice!").</p></div>
+        <div class="card"><b>Not submitted</b><p>No issue by the deadline. Late submissions still get partial credit.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">You must explain it</span>
+        <p>This is true for every mini assignment this semester. If you can't explain why you picked this project, it doesn't count as complete. This is true even if the issue text looks right.</p>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Deadline</span>
+        <p><b>Before the next class starts.</b> Try to finish in today's 30 minutes. If you do not finish, finish it at home.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Next</span><h3>Preview of Chapter 3</h3></div>
+      <p class="goal"><b>Development environment, and AI as a learning helper</b> — install VS Code and Python. Make your first virtual environment, and practice asking AI good questions when your code fails.</p>
+      <ul style="margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em; font-size:.95rem;">
+        <li>Chapter 3 installs VS Code and Python, and you make your first virtual environment.</li>
+        <li>Keep the issue-writing habit. You'll be reading and writing issues all semester. Chapter 5 turns them into your first pull request.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>Open Source Software · Fall 2026 · Chapter 2 course material — based on the official syllabus</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── Tabs ── */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var pane = document.getElementById(t.getAttribute('aria-controls'));
+      var on = (t === tab);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      pane.hidden = !on;
+    });
+    window.scrollTo(0, 0);
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ selectTab(t); });
+    t.addEventListener('keydown', function(e){
+      var i = tabs.indexOf(t), n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowLeft')  n = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (n){ e.preventDefault(); n.focus(); selectTab(n); }
+    });
+  });
+
+  /* ── Slides ── */
+  var slides  = Array.prototype.slice.call(document.querySelectorAll('#pane-lecture .slide'));
+  var dotsBox = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var firstBtn = document.getElementById('first');
+  var lastBtn = document.getElementById('last');
+  var cur = 0;
+
+  slides.forEach(function(s, i){
+    var h = s.querySelector('h1, h2');
+    var t = h ? h.textContent.replace(/\s+/g, ' ').trim() : '';
+    var d = document.createElement('button');
+    d.type = 'button';
+    d.className = 'dot';
+    d.textContent = (i + 1);
+    d.title = (i + 1) + (t ? '. ' + t : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1) + (t ? ': ' + t : ''));
+    d.addEventListener('click', function(){ go(i); });
+    dotsBox.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function go(i){
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function(s, n){ s.hidden = (n !== cur); });
+    dots.forEach(function(d, n){ d.setAttribute('aria-current', n === cur ? 'true' : 'false'); });
+    counter.textContent = (cur + 1) + ' / ' + slides.length;
+    prevBtn.disabled = firstBtn.disabled = (cur === 0);
+    nextBtn.disabled = lastBtn.disabled = (cur === slides.length - 1);
+    window.scrollTo(0, 0);
+  }
+  prevBtn.addEventListener('click', function(){ go(cur - 1); });
+  nextBtn.addEventListener('click', function(){ go(cur + 1); });
+  firstBtn.addEventListener('click', function(){ go(0); });
+  lastBtn.addEventListener('click', function(){ go(slides.length - 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (document.getElementById('pane-lecture').hidden) return;
+    var t = e.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp'){   e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home'){ e.preventDefault(); go(0); }
+    if (e.key === 'End'){  e.preventDefault(); go(slides.length - 1); }
+  });
+  go(0);
+
+  /* ── Lab checklist (browser-only storage) ── */
+  var KEY = 'oss2026-ch02-lab-en';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.check input'));
+  var pgCount = document.getElementById('pg-count');
+  var pgBar = document.getElementById('pg-bar');
+
+  function read(){
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function write(state){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch (e) { /* private/incognito mode etc. — skip saving but keep working */ }
+  }
+  function paint(){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    pgCount.textContent = done + ' / ' + boxes.length;
+    pgBar.style.width = (boxes.length ? (done / boxes.length * 100) : 0) + '%';
+  }
+
+  var saved = read();
+  boxes.forEach(function(b){
+    if (saved[b.dataset.k]) b.checked = true;
+    b.addEventListener('change', function(){
+      var s = read();
+      s[b.dataset.k] = b.checked;
+      write(s);
+      paint();
+    });
+  });
+  document.getElementById('pg-reset').addEventListener('click', function(){
+    boxes.forEach(function(b){ b.checked = false; });
+    write({});
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>
