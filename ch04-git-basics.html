@@ -321,17 +321,17 @@ pre code .o{color:#5B6B64;}
 
     <article class="slide" hidden>
       <p class="eyebrow">The main idea of today</p>
-      <h2>Three places for your work</h2>
+      <h2>Three states of a change</h2>
       <div class="rule"></div>
-      <p class="lead">A change moves through three places, from left to right. Two commands move it.</p>
+      <p class="lead">Your file never leaves your folder. What changes is its <b>state</b> &mdash; what Git has recorded about your change. Two commands change the state.</p>
       <div class="grid g3">
-        <div class="card"><span class="tagline">Place 1</span><h4>Working folder</h4><p>The files you edit. A change here is not saved in Git yet. <code>git status</code> calls it <b>Changes not staged for commit</b>.</p></div>
-        <div class="card"><span class="tagline">Place 2 · git add</span><h4>Staging area</h4><p>The changes you chose for the next photo. You pick them one file at a time. <code>git status</code> calls it <b>Changes to be committed</b>.</p></div>
-        <div class="card"><span class="tagline">Place 3 · git commit</span><h4>History</h4><p>The photo is taken. It gets a short ID and your message, and it stays in history. <code>git status</code> says <b>nothing to commit, working tree clean</b>.</p></div>
+        <div class="card"><span class="tagline">State 1</span><h4>Modified</h4><p>You edited a file. Git sees the change but has not recorded it yet. <code>git status</code> calls it <b>Changes not staged for commit</b>.</p></div>
+        <div class="card"><span class="tagline">State 2 · git add</span><h4>Staged</h4><p>You chose this change for the next photo &mdash; one file or several: <code>git add a.md b.md</code>. <code>git status</code> calls it <b>Changes to be committed</b>.</p></div>
+        <div class="card"><span class="tagline">State 3 · git commit</span><h4>Committed</h4><p>The photo is taken and kept in the history, with a short ID and your message. <code>git status</code> says <b>nothing to commit, working tree clean</b>.</p></div>
       </div>
       <div class="callout">
         <span class="mk">Why two steps</span>
-        <p>You changed five files, but only two belong together. <code>git add</code> lets you choose what goes into one photo. One commit = one idea. Your commit history then reads like a list of what you did.</p>
+        <p>You changed five files, but only two belong together. <code>git add</code> lets you choose those two, and one commit holds both. <b>One commit = one idea</b>, not one file. Your commit history then reads like a list of what you did.</p>
       </div>
     </article>
 
@@ -481,11 +481,29 @@ pre code .o{color:#5B6B64;}
     </article>
 
     <article class="slide" hidden>
+      <p class="eyebrow">Before the break</p>
+      <h2>Homework: fix Chapter 3,<br>then check your results</h2>
+      <div class="rule"></div>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">Chapter 3 · until Fri, Oct 9, 9:00 a.m.</span><h4>Fix your issue</h4><p>① Write the four parts of the AI log <b>as text</b>, in your own words. A screenshot of the chat is not enough.<br>② Leave <b>two comments</b> on classmates&rsquo; Chapter 3 issues in your row. Each one is a real question &mdash; &ldquo;nice&rdquo; does not count.<br>③ Check the <b>bell icon</b> on GitHub. Some of you have a comment from me.</p></div>
+        <div class="card"><span class="tagline">From today</span><h4>Your results</h4><p>You get a paper slip with a <b>private code</b>. Open <b>course-notice › grades.md</b> and find your code.<br><b>C</b> Complete · <b>P</b> Partial · <b>L</b> Late · <b>—</b> not submitted.<br>Do not show your code to anyone.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">Real questions</span>
+        <p>&ldquo;Did the same error happen to you in another file?&rdquo;<br>&ldquo;What would happen if you left that line as it was?&rdquo;<br>&ldquo;Which of bad1, bad2 and bad3 took you the longest, and why?&rdquo;<br>&ldquo;Did the AI give you more than one fix? Why did you pick this one?&rdquo;<br>Not real: &ldquo;nice&rdquo;, &ldquo;good job&rdquo;, &ldquo;+1&rdquo;.</p>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Same text</span>
+        <p>If two people hand in the same text, <b>both</b> get Partial. Do not share your text.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
       <p class="eyebrow">Before you switch tabs</p>
       <h2>Checklist to close</h2>
       <div class="rule"></div>
       <div class="grid g2">
-        <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Say what a repository is. Name the three places (working folder, staging area, history) and the command that moves a change between them. Explain push and pull, and why we never use <code>--global</code> here.</p></div>
+        <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Say what a repository is. Name the three states of a change (modified, staged, committed) and the command that changes each one. Explain push and pull, and why we never use <code>--global</code> here.</p></div>
         <div class="card"><span class="tagline">90 min · Lab</span><h4>What's next</h4><p>Make your own public repository <code>oss-practice</code>, clone it, write an About me section, and push it. Then do the same loop again with the VS Code buttons.</p></div>
       </div>
       <p class="lead">Switch to the <b>Lab</b> tab above and get started.</p>
@@ -633,8 +651,8 @@ git commit -m "Add about me"</code></pre>
           You see <code>Fast-forward</code> and a line with <code>README.md</code>. The change you made in the browser is now in your file.
           <span class="why"><b>What is happening:</b> Git downloads the new commit from <code>origin</code> and adds it on top of your history, then updates your file. You had no new commits of your own, so Git only moves forward &mdash; that is what <b>Fast-forward</b> means. No extra commit is made.</span>
         </li>
-        <li>Now the buttons. In the Explorer, make a folder <code>notes</code> and inside it a file <code>ch04.md</code>. Write two or three lines: what <code>git add</code> and <code>git commit</code> do, in your own words. Save.</li>
-        <li>Open <b>Source Control</b> (<kbd>Ctrl + Shift + G</kbd>). Hover over <code>ch04.md</code> and click <b>+</b> (<b>Stage Changes</b>). The file moves to <b>Staged Changes</b>.
+        <li>Now the buttons, all inside <b>VS Code</b>. Look at the narrow bar on the far left of the VS Code window. Click the <b>first icon</b> (two pages, <b>Explorer</b> &mdash; the file list, <kbd>Ctrl + Shift + E</kbd>). There, make a folder <code>notes</code> and inside it a file <code>ch04.md</code>. Write two or three lines: what <code>git add</code> and <code>git commit</code> do, in your own words. Save.</li>
+        <li>In the same left bar, click the <b>third icon</b>, under the magnifying glass: three small circles joined by lines. That is <b>Source Control</b> (<kbd>Ctrl + Shift + G</kbd>). It shows a small number &mdash; how many files changed. Hover over <code>ch04.md</code> and click <b>+</b> (<b>Stage Changes</b>). The file moves to <b>Staged Changes</b>.
           <span class="why"><b>What is happening:</b> VS Code runs <code>git add</code> on this file for you. <b>Staged Changes</b> is the staging area &mdash; the same list that <code>git status</code> calls <b>Changes to be committed</b>.</span></li>
         <li>Type <code>Add chapter 4 notes</code> in the message box and click <b>✓ Commit</b>.
           <span class="why"><b>What is happening:</b> VS Code runs <code>git commit</code> with the message you typed. The photo goes into the history on this PC only &mdash; GitHub does not have it yet.</span></li>
@@ -710,7 +728,7 @@ and what should I type next? Explain it in simple English.
           <ul>
             <li>Each commit is a <b>real change</b> in the <code>notes/</code> folder: add a new file, or change a file you already have.</li>
             <li>Each message <b>starts with an English verb</b>: <code>Add git command list</code>, <code>Update ch04 notes</code>, <code>Fix typo in commands.md</code>.</li>
-            <li>Ideas: a list of today's commands with one line each · what the three places are · what you do when push is rejected · the shared PC routine in your own words.</li>
+            <li>Ideas: a list of today's commands with one line each · what the three states are · what you do when push is rejected · the shared PC routine in your own words.</li>
           </ul>
         </li>
         <li><code>git push</code>, and check that GitHub shows the new commits.</li>
@@ -746,8 +764,8 @@ https://github.com/&lt;your-username&gt;/oss-practice
         <div class="card"><b>Not submitted</b><p>No issue by the deadline. Late work still gets partial credit.</p></div>
       </div>
       <div class="callout">
-        <span class="mk">You must explain it</span>
-        <p>I may point at one line of your log and ask what that commit changed. If you cannot explain it, it does not count.</p>
+        <span class="mk">Messages are your explanation</span>
+        <p>Each commit message must say what you changed in that commit, starting with a verb. Messages like <code>update</code>, <code>asdf</code> or <code>final</code> count as Partial.</p>
       </div>
       <div class="callout warn">
         <span class="mk">Deadline</span>
