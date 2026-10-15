@@ -191,6 +191,19 @@ td.where{white-space:normal; font-size:.88em; color:var(--ink-2); width:26%;}
 .navbtn:disabled{opacity:.35; cursor:default;}
 .counter{font-family:var(--mono); font-size:.8rem; font-variant-numeric:tabular-nums; color:var(--ink-3); white-space:nowrap;}
 
+/* ─── 두 장소 그림: 내 PC ↔ GitHub ─────────────────── */
+.places{display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:center;}
+.place{background:var(--surface); border:1.5px solid var(--line-strong); border-radius:12px; padding:12px 16px; display:flex; flex-direction:column; gap:7px; box-shadow:var(--shadow);}
+.place h4{font-family:var(--body); font-weight:700; font-size:1.08rem;}
+.place .br{font-family:var(--mono); font-size:.95rem; font-weight:600; padding:4px 10px; border-radius:6px; background:var(--accent-soft); border:1.5px solid var(--accent-line); color:var(--accent-ink);}
+.place .br.later{background:transparent; border-style:dashed; color:var(--ink-2);}
+.place .br.later small{font-family:var(--body); font-weight:500; font-size:.78rem; color:var(--ink-3); margin-left:6px;}
+.flow{display:flex; flex-direction:column; gap:14px; color:var(--accent);}
+.flow div{display:flex; flex-direction:column; align-items:center; gap:2px;}
+.flow b{font-family:var(--mono); font-size:.9rem; font-weight:600; color:var(--accent-ink);}
+.flow svg{display:block; width:130px; height:14px;}
+.places-cap{font-size:clamp(.98rem,1.6vw,1.15rem) !important; color:var(--ink) !important; font-weight:500; margin-top:-6px !important;}
+
 /* ─── 문서형 페인(실습·과제) ───────────────────────── */
 .doc{max-width:840px; margin:0 auto; padding:clamp(28px,5vw,60px) clamp(18px,5vw,40px) 100px; display:flex; flex-direction:column; gap:clamp(26px,3.5vw,38px);}
 .doc-head{display:flex; flex-direction:column; gap:12px;}
@@ -282,7 +295,7 @@ pre code .n::before{content:"← "; font-style:normal;}
     <article class="slide cover">
       <p class="eyebrow">Chapter 5 · 2026 Fall</p>
       <h1>Issues, Branches,<br>Pull Requests</h1>
-      <p class="sub">Last time you pushed to your own repository, alone.<br>Today 37 people share one repository. <b>main belongs to everyone. Your work goes on a branch, and joining it to main is a request.</b></p>
+      <p class="sub">Last time you pushed to your own repository, alone.<br>Today the whole class shares one repository. <b>main belongs to everyone. Your work goes on a branch, and joining it to main is a request.</b></p>
       <dl>
         <div><dt>Course</dt><dd>Open Source Software</dd></div>
         <div><dt>Target</dt><dd>Senior (4th-year), Information Systems &amp; Security</dd></div>
@@ -310,13 +323,22 @@ pre code .n::before{content:"← "; font-style:normal;}
       <p class="eyebrow">Step 2 of the loop</p>
       <h2>A branch is a parallel copy</h2>
       <div class="rule"></div>
-      <p class="lead">A branch starts as an exact copy of <code>main</code>. You commit on your branch, and <code>main</code> does not change. Thirty-seven people can each have their own branch at the same time without touching each other.</p>
+      <p class="lead">A branch starts as an exact copy of <code>main</code>. You commit on your branch, and <code>main</code> does not change. Everyone in the class can have their own branch at the same time without touching each other.</p>
       <div class="grid g2">
         <div class="card"><span class="tagline">main</span><h4>The shared line</h4><p>What everyone has agreed on. Every new branch starts from here.</p></div>
         <div class="card"><span class="tagline">intro/20261234</span><h4>Your line</h4><p>Your commits go here. Nobody else sees them in <code>main</code> until you ask, and somebody says yes.</p></div>
       </div>
       <pre><code><b class="c">git switch -c intro/20261234</b>   <span class="n">make a new branch and move onto it</span>
 <b class="c">git branch</b>                     <span class="n">list branches; * marks the one you are on</span></code></pre>
+      <div class="places" role="img" aria-label="Your PC and GitHub. git clone copies GitHub to your PC. git push sends your branch from your PC to GitHub.">
+        <div class="place"><h4>Your PC (git)</h4><span class="br">main</span><span class="br">intro/20261234</span></div>
+        <div class="flow">
+          <div><b>git push</b><svg viewBox="0 0 130 14" aria-hidden="true"><line x1="2" y1="7" x2="120" y2="7" stroke="currentColor" stroke-width="2.5"/><path d="M116 1 L128 7 L116 13 Z" fill="currentColor"/></svg></div>
+          <div><svg viewBox="0 0 130 14" aria-hidden="true"><line x1="10" y1="7" x2="128" y2="7" stroke="currentColor" stroke-width="2.5"/><path d="M14 1 L2 7 L14 13 Z" fill="currentColor"/></svg><b>git clone</b></div>
+        </div>
+        <div class="place"><h4>GitHub (practice-pr)</h4><span class="br">main</span><span class="br later">intro/20261234<small>after push</small></span></div>
+      </div>
+      <p class="places-cap">You make the branch on your PC. GitHub sees it only after you push.</p>
       <div class="callout">
         <span class="mk">What you see today</span>
         <p><code>Switched to a new branch 'intro/20261234'</code> &mdash; and after that, <code>git branch</code> puts the <code>*</code> next to your branch, not next to <code>main</code>.</p>
@@ -330,7 +352,7 @@ pre code .n::before{content:"← "; font-style:normal;}
       <p class="lead">In Chapter 4 you pushed to <code>main</code> in your own repository. That was fine &mdash; you were the only person there. In a shared repository, <code>main</code> is what everyone pulls. One mistake in it is now everyone's mistake.</p>
       <div class="grid g3">
         <div class="card"><span class="tagline">No review</span><h4>Nobody looked</h4><p>A typo, a deleted file or a password goes in without anyone else looking at it.</p></div>
-        <div class="card"><span class="tagline">Everyone's build</span><h4>37 people pull it</h4><p>The next <code>git pull</code> brings your mistake to every machine. In a team project, the program stops running for the whole team.</p></div>
+        <div class="card"><span class="tagline">Everyone's build</span><h4>Everyone pulls it</h4><p>The next <code>git pull</code> brings your mistake to every machine. In a team project, the program stops running for the whole team.</p></div>
         <div class="card"><span class="tagline">Hard to undo</span><h4>Others build on it</h4><p>After others have pulled and committed on top of it, undoing it is slow work for the instructor.</p></div>
       </div>
       <div class="callout warn">
@@ -377,7 +399,7 @@ pre code .n::before{content:"← "; font-style:normal;}
       <p class="eyebrow">Names matter</p>
       <h2>Your branch name:<br><code>intro/&lt;StudentID&gt;</code></h2>
       <div class="rule"></div>
-      <p class="lead">A branch name tells the team whose work it is and what it is for, before anyone opens it. In <code>practice-pr</code> there will be 37 branches. The name is how you find yours.</p>
+      <p class="lead">A branch name tells the team whose work it is and what it is for, before anyone opens it. In <code>practice-pr</code> there will be one branch for each student. The name is how you find yours.</p>
       <pre><code>intro/20261234        <span class="n">good: what it is / whose it is</span>
 my-branch             <span class="n">bad: whose? for what?</span>
 intro 20261234        <span class="n">wrong: a branch name cannot have a space</span></code></pre>
