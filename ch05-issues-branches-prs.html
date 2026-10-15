@@ -204,6 +204,44 @@ td.where{white-space:normal; font-size:.88em; color:var(--ink-2); width:26%;}
 .flow svg{display:block; width:130px; height:14px;}
 .places-cap{font-size:clamp(.98rem,1.6vw,1.15rem) !important; color:var(--ink) !important; font-weight:500; margin-top:-6px !important;}
 
+/* ─── Chapter 5 diagrams (inline SVG; colours from the tokens above) ─── */
+.dg{--bad:#C0392B; --bad-soft:#FBE9E7;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .dg{--bad:#FF7A6B; --bad-soft:#3A1A16;} }
+:root[data-theme="dark"] .dg{--bad:#FF7A6B; --bad-soft:#3A1A16;}
+.dg svg{display:block; width:100%; height:auto;}
+.dg text{font-family:var(--body); fill:var(--ink-2);}
+.dg .mono{font-family:var(--mono); font-weight:600;}
+.dg .t-ink{fill:var(--ink);} .dg .t-acc{fill:var(--accent-ink);} .dg .t-mut{fill:var(--ink-3);} .dg .t-bad{fill:var(--bad);} .dg .t-on{fill:var(--surface);}
+.dg .s-acc{stroke:var(--accent);} .dg .s-line{stroke:var(--line-strong);} .dg .s-bad{stroke:var(--bad);}
+.dg .f-acc{fill:var(--accent);} .dg .f-soft{fill:var(--accent-soft);} .dg .f-surf{fill:var(--surface);} .dg .f-s2{fill:var(--surface-2);} .dg .f-bad{fill:var(--bad);} .dg .f-badsoft{fill:var(--bad-soft);} .dg .f-line{fill:var(--line-strong);}
+.dg .s-al{stroke:var(--accent-line);} .dg .f-ground{fill:var(--ground);}
+
+/* PR page mock (slide 10) */
+.nb{display:inline-grid; place-items:center; width:24px; height:24px; border-radius:50%; background:var(--warn); color:var(--surface); font-family:var(--mono); font-size:.86rem; font-weight:700; line-height:1; flex-shrink:0; vertical-align:middle;}
+.prm{background:var(--surface); border:1.5px solid var(--line-strong); border-radius:12px; padding:14px 16px; display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow); font-size:.95rem;}
+.prm .ttl{font-family:var(--body); font-weight:600; font-size:1.18rem; color:var(--ink);}
+.prm .ttl span{color:var(--ink-3); font-weight:400;}
+.prm .meta{display:flex; align-items:center; gap:8px; flex-wrap:wrap; color:var(--ink-2);}
+.prm .open{font-weight:600; font-size:.8rem; padding:2px 10px; border-radius:20px; background:var(--accent); color:var(--surface);}
+.prm .mbr{font-family:var(--mono); font-size:.82rem; padding:1px 6px; border-radius:5px; background:var(--accent-soft); color:var(--accent-ink); border:1px solid var(--accent-line);}
+.prm .tabsm{display:flex; gap:4px; border-bottom:1.5px solid var(--line); align-items:center;}
+.prm .tabsm span{padding:5px 12px; font-weight:500; color:var(--ink-2);}
+.prm .tabsm span.nb{padding:0; color:var(--surface); font-weight:700;}
+.prm .tabsm span.on{color:var(--ink); border-bottom:2.5px solid var(--warn); font-weight:600; margin-bottom:-1.5px;}
+.prm .body{display:grid; grid-template-columns:minmax(0,1fr) 200px; gap:14px; align-items:start;}
+.prm .desc{border:1px solid var(--line); border-radius:8px; padding:9px 12px; background:var(--surface-2); display:flex; flex-direction:column; gap:1px; line-height:1.5;}
+.prm .desc b{color:var(--ink); font-weight:600;}
+.prm .diff{border:1px solid var(--line); border-radius:8px; overflow:hidden; font-family:var(--mono); font-size:.8rem;}
+.prm .diff div{padding:3px 10px; border-bottom:1px solid var(--line); color:var(--ink-2);}
+.prm .diff div:last-child{border-bottom:0;}
+.prm .diff .fn{background:var(--surface-2); color:var(--ink); font-weight:600;}
+.prm .diff .add{background:var(--accent-soft); color:var(--accent-ink);}
+.prm .side{font-size:.84rem; color:var(--ink-2); border-top:1px solid var(--line); padding-top:6px; line-height:1.45;}
+.prm .side b{display:block; color:var(--ink); font-weight:600; margin-bottom:3px;}
+.prm .lbl{display:flex; align-items:center; gap:8px;}
+.keys{display:grid; grid-template-columns:1fr 1fr; gap:8px 18px;}
+.keys div{display:flex; align-items:center; gap:10px; font-size:1.02rem; color:var(--ink);}
+
 /* ─── 문서형 페인(실습·과제) ───────────────────────── */
 .doc{max-width:840px; margin:0 auto; padding:clamp(28px,5vw,60px) clamp(18px,5vw,40px) 100px; display:flex; flex-direction:column; gap:clamp(26px,3.5vw,38px);}
 .doc-head{display:flex; flex-direction:column; gap:12px;}
@@ -330,6 +368,19 @@ pre code .n::before{content:"← "; font-style:normal;}
       </div>
       <pre><code><b class="c">git switch -c intro/20261234</b>   <span class="n">make a new branch and move onto it</span>
 <b class="c">git branch</b>                     <span class="n">list branches; * marks the one you are on</span></code></pre>
+      <div class="dg" role="img" aria-label="Commit line picture. main is a line of three commits. From the last one, the branch intro/20261234 goes up and gets three new commits: your commits. main does not change.">
+        <svg viewBox="0 0 720 96" aria-hidden="true">
+          <text class="mono t-ink" x="8" y="75" font-size="16">main</text>
+          <line class="s-line" x1="62" y1="70" x2="300" y2="70" stroke-width="3"/>
+          <line class="s-line" x1="300" y1="70" x2="712" y2="70" stroke-width="3" stroke-dasharray="7 6"/>
+          <circle class="f-line" cx="100" cy="70" r="9"/><circle class="f-line" cx="180" cy="70" r="9"/><circle class="f-line" cx="260" cy="70" r="9"/>
+          <path class="s-acc" d="M260 70 C300 70 300 30 340 30 L540 30" fill="none" stroke-width="3"/>
+          <circle class="f-acc" cx="380" cy="30" r="9"/><circle class="f-acc" cx="450" cy="30" r="9"/><circle class="f-acc" cx="520" cy="30" r="9"/>
+          <text class="mono t-acc" x="556" y="35" font-size="16">intro/20261234</text>
+          <text class="t-acc" x="450" y="12" font-size="13" text-anchor="middle" font-weight="600">your commits</text>
+          <text class="t-mut" x="500" y="93" font-size="13" text-anchor="middle" font-weight="600">main does not change</text>
+        </svg>
+      </div>
       <div class="places" role="img" aria-label="Your PC and GitHub. git clone copies GitHub to your PC. git push sends your branch from your PC to GitHub.">
         <div class="place"><h4>Your PC (git)</h4><span class="br">main</span><span class="br">intro/20261234</span></div>
         <div class="flow">
@@ -350,9 +401,22 @@ pre code .n::before{content:"← "; font-style:normal;}
       <h2>If you push straight to main on GitHub,<br>it breaks for everyone</h2>
       <div class="rule"></div>
       <p class="lead">In Chapter 4 you pushed to <code>main</code> on GitHub, in your own repository. That was fine &mdash; you were the only person there. In a shared repository, <code>main</code> on GitHub is what everyone pulls to their PC. One mistake in it is now on everyone's PC.</p>
+      <div class="dg" role="img" aria-label="main on GitHub has one mistake. Six PCs run git pull from it, and now every PC has the same mistake.">
+        <svg viewBox="0 0 720 196" aria-hidden="true">
+          <defs><marker id="ah4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-soft s-acc" x="250" y="4" width="220" height="46" rx="10" stroke-width="2"/>
+          <text class="t-ink" x="360" y="33" font-size="17" font-weight="700" text-anchor="middle">main on GitHub</text>
+          <rect class="f-badsoft s-bad" x="482" y="14" width="104" height="26" rx="13" stroke-width="1.5"/>
+          <circle class="f-bad" cx="497" cy="27" r="9"/><text class="t-on" x="497" y="32" font-size="13" font-weight="700" text-anchor="middle">!</text>
+          <text class="t-bad" x="512" y="32" font-size="14" font-weight="700">1 mistake</text>
+          <line class="s-acc" x1="360" y1="50" x2="60" y2="126" stroke-width="2" marker-end="url(#ah4)"/><line class="s-acc" x1="360" y1="50" x2="180" y2="126" stroke-width="2" marker-end="url(#ah4)"/><line class="s-acc" x1="360" y1="50" x2="300" y2="126" stroke-width="2" marker-end="url(#ah4)"/><line class="s-acc" x1="360" y1="50" x2="420" y2="126" stroke-width="2" marker-end="url(#ah4)"/><line class="s-acc" x1="360" y1="50" x2="540" y2="126" stroke-width="2" marker-end="url(#ah4)"/><line class="s-acc" x1="360" y1="50" x2="660" y2="126" stroke-width="2" marker-end="url(#ah4)"/>
+          <text class="mono t-acc" x="60" y="143" font-size="12" text-anchor="middle">git pull</text><text class="mono t-acc" x="180" y="143" font-size="12" text-anchor="middle">git pull</text><text class="mono t-acc" x="300" y="143" font-size="12" text-anchor="middle">git pull</text><text class="mono t-acc" x="420" y="143" font-size="12" text-anchor="middle">git pull</text><text class="mono t-acc" x="540" y="143" font-size="12" text-anchor="middle">git pull</text><text class="mono t-acc" x="660" y="143" font-size="12" text-anchor="middle">git pull</text>
+          <rect class="f-surf s-line" x="15" y="150" width="90" height="42" rx="8" stroke-width="1.5"/><text class="t-ink" x="60" y="177" font-size="15" font-weight="600" text-anchor="middle">PC</text><circle class="f-bad" cx="100" cy="152" r="9"/><text class="t-on" x="100" y="157" font-size="13" font-weight="700" text-anchor="middle">!</text><rect class="f-surf s-line" x="135" y="150" width="90" height="42" rx="8" stroke-width="1.5"/><text class="t-ink" x="180" y="177" font-size="15" font-weight="600" text-anchor="middle">PC</text><circle class="f-bad" cx="220" cy="152" r="9"/><text class="t-on" x="220" y="157" font-size="13" font-weight="700" text-anchor="middle">!</text><rect class="f-surf s-line" x="255" y="150" width="90" height="42" rx="8" stroke-width="1.5"/><text class="t-ink" x="300" y="177" font-size="15" font-weight="600" text-anchor="middle">PC</text><circle class="f-bad" cx="340" cy="152" r="9"/><text class="t-on" x="340" y="157" font-size="13" font-weight="700" text-anchor="middle">!</text><rect class="f-surf s-line" x="375" y="150" width="90" height="42" rx="8" stroke-width="1.5"/><text class="t-ink" x="420" y="177" font-size="15" font-weight="600" text-anchor="middle">PC</text><circle class="f-bad" cx="460" cy="152" r="9"/><text class="t-on" x="460" y="157" font-size="13" font-weight="700" text-anchor="middle">!</text><rect class="f-surf s-line" x="495" y="150" width="90" height="42" rx="8" stroke-width="1.5"/><text class="t-ink" x="540" y="177" font-size="15" font-weight="600" text-anchor="middle">PC</text><circle class="f-bad" cx="580" cy="152" r="9"/><text class="t-on" x="580" y="157" font-size="13" font-weight="700" text-anchor="middle">!</text><rect class="f-surf s-line" x="615" y="150" width="90" height="42" rx="8" stroke-width="1.5"/><text class="t-ink" x="660" y="177" font-size="15" font-weight="600" text-anchor="middle">PC</text><circle class="f-bad" cx="700" cy="152" r="9"/><text class="t-on" x="700" y="157" font-size="13" font-weight="700" text-anchor="middle">!</text>
+        </svg>
+      </div>
+      <p class="places-cap">One mistake in main on GitHub goes to every PC.</p>
       <div class="grid g3">
         <div class="card"><span class="tagline">No review</span><h4>Nobody looked</h4><p>A typo, a deleted file or a password goes in without anyone else looking at it.</p></div>
-        <div class="card"><span class="tagline">Everyone's build</span><h4>Everyone pulls it</h4><p>The next <code>git pull</code> brings your mistake to every machine. In a team project, the program stops running for the whole team.</p></div>
         <div class="card"><span class="tagline">Hard to undo</span><h4>Others build on it</h4><p>After others have pulled and committed on top of it, undoing it is slow work for the instructor.</p></div>
       </div>
       <div class="callout warn">
@@ -381,13 +445,16 @@ pre code .n::before{content:"← "; font-style:normal;}
       <h2>The loop: six steps</h2>
       <div class="rule"></div>
       <p class="lead">Almost every open source project works in this loop. You do the first four steps today. Steps five and six are Chapter 6.</p>
-      <div class="timeline">
-        <div class="tl-item"><span class="yr">1 issue</span><p>Say what you will do. Get a number, for example #999.</p></div>
-        <div class="tl-item"><span class="yr">2 branch</span><p><code>git switch -c</code> on your PC &mdash; your own line. GitHub does not see it yet.</p></div>
-        <div class="tl-item"><span class="yr">3 commits</span><p>add, commit on your PC, then push &mdash; push sends your branch to GitHub. The same as Chapter 4, on your branch.</p></div>
-        <div class="tl-item"><span class="yr">4 PR</span><p>On GitHub: ask to merge. Write <code>Closes #999</code>.</p></div>
-        <div class="tl-item"><span class="yr">5 review</span><p>A partner reads it. Chapter 6.</p></div>
-        <div class="tl-item"><span class="yr">6 merge</span><p>The branch joins main on GitHub. The issue closes. Chapter 6.</p></div>
+      <div class="dg" role="img" aria-label="The loop of six steps: 1 issue, 2 branch, 3 commits, 4 PR, 5 review, 6 merge, then back to 1. Steps 1 to 4 are today, steps 5 and 6 are Chapter 6. Steps 2 and 3 happen on your PC, and in step 3 push sends your branch to GitHub. Steps 1, 4, 5 and 6 happen on GitHub.">
+        <svg viewBox="0 0 720 292" aria-hidden="true">
+          <defs><marker id="ah6a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker><marker id="ah6m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-line" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <path class="s-acc" d="M18 32 V22 H702 V32" fill="none" stroke-width="2"/>
+          <rect class="f-ground" x="270" y="12" width="180" height="22"/><text class="t-acc" x="360" y="28" font-size="15" font-weight="700" text-anchor="middle">Today &#183; steps 1&#8211;4</text>
+          <line class="s-acc" x1="168" y1="92" x2="194" y2="92" stroke-width="2.5" marker-end="url(#ah6a)"/><line class="s-acc" x1="346" y1="92" x2="372" y2="92" stroke-width="2.5" marker-end="url(#ah6a)"/><line class="s-acc" x1="524" y1="92" x2="550" y2="92" stroke-width="2.5" marker-end="url(#ah6a)"/><line class="s-line" x1="627" y1="144" x2="627" y2="182" stroke-width="2.5" marker-end="url(#ah6m)"/><line class="s-line" x1="550" y1="236" x2="170" y2="236" stroke-width="2.5" marker-end="url(#ah6m)"/><line class="s-line" x1="93" y1="184" x2="93" y2="146" stroke-width="2.5" marker-end="url(#ah6m)"/>
+          <g><rect class="f-surf s-acc" x="18" y="40" width="150" height="104" rx="12" stroke-width="2"/><text class="mono t-acc" x="30" y="65" font-size="17">1 issue</text><text class="t-ink" x="30" y="86" font-size="12.5">Say what you will do</text><rect class="f-s2 s-line" x="30" y="96" width="56" height="20" rx="10" stroke-width="1"/><text class="t-mut" x="58.0" y="110" font-size="11" font-weight="600" text-anchor="middle">GitHub</text></g><g><rect class="f-surf s-acc" x="196" y="40" width="150" height="104" rx="12" stroke-width="2"/><text class="mono t-acc" x="208" y="65" font-size="17">2 branch</text><text class="mono t-ink" x="208" y="86" font-size="12.5">git switch -c</text><rect class="f-soft s-al" x="208" y="96" width="62" height="20" rx="10" stroke-width="1"/><text class="t-acc" x="239.0" y="110" font-size="11" font-weight="600" text-anchor="middle">your PC</text></g><g><rect class="f-surf s-acc" x="374" y="40" width="150" height="104" rx="12" stroke-width="2"/><text class="mono t-acc" x="386" y="65" font-size="17">3 commits</text><text class="t-ink" x="386" y="86" font-size="12.5">add, commit, push</text><rect class="f-soft s-al" x="386" y="96" width="62" height="20" rx="10" stroke-width="1"/><text class="t-acc" x="417.0" y="110" font-size="11" font-weight="600" text-anchor="middle">your PC</text><rect class="f-s2 s-line" x="386" y="120" width="102" height="20" rx="10" stroke-width="1"/><text class="t-mut" x="437.0" y="134" font-size="11" font-weight="600" text-anchor="middle">push → GitHub</text></g><g><rect class="f-surf s-acc" x="552" y="40" width="150" height="104" rx="12" stroke-width="2"/><text class="mono t-acc" x="564" y="65" font-size="17">4 PR</text><text class="t-ink" x="564" y="86" font-size="12.5">Write Closes #999</text><rect class="f-s2 s-line" x="564" y="96" width="56" height="20" rx="10" stroke-width="1"/><text class="t-mut" x="592.0" y="110" font-size="11" font-weight="600" text-anchor="middle">GitHub</text></g><g opacity="0.75"><rect class="f-s2 s-line" x="552" y="184" width="150" height="104" rx="12" stroke-width="1.5" stroke-dasharray="6 4"/><text class="mono t-mut" x="564" y="209" font-size="17">5 review</text><text class="t-mut" x="564" y="230" font-size="12.5">A partner reads it</text><rect class="f-surf s-line" x="564" y="240" width="56" height="20" rx="10" stroke-width="1"/><text class="t-mut" x="592.0" y="254" font-size="11" font-weight="600" text-anchor="middle">GitHub</text></g><g opacity="0.75"><rect class="f-s2 s-line" x="18" y="184" width="150" height="104" rx="12" stroke-width="1.5" stroke-dasharray="6 4"/><text class="mono t-mut" x="30" y="209" font-size="17">6 merge</text><text class="t-mut" x="30" y="230" font-size="12.5">Branch joins main</text><rect class="f-surf s-line" x="30" y="240" width="56" height="20" rx="10" stroke-width="1"/><text class="t-mut" x="58.0" y="254" font-size="11" font-weight="600" text-anchor="middle">GitHub</text></g>
+          <text class="t-mut" x="360" y="262" font-size="15" font-weight="700" text-anchor="middle">Chapter 6 &#183; steps 5&#8211;6</text>
+          <text class="t-mut" x="104" y="170" font-size="12" font-weight="600">back to 1</text>
+        </svg>
       </div>
       <div class="callout warn">
         <span class="mk">Today you stop at step 4</span>
@@ -446,11 +513,23 @@ intro 20261234        <span class="n">wrong: a branch name cannot have a space</
       <h2>What a reviewer looks at</h2>
       <div class="rule"></div>
       <p class="lead">In Chapter 6 you review a partner's pull request. Today you only read one. Start by knowing what a reviewer checks.</p>
-      <div class="grid g2">
-        <div class="card"><span class="tagline">Files changed</span><h4>Only the files you meant</h4><p>Today that is two files: your page and <code>INDEX.md</code>. If the tab shows many files, something is wrong.</p></div>
-        <div class="card"><span class="tagline">The branch</span><h4>Not main</h4><p>The line under the title says which branch goes into <code>main</code> on GitHub. It must be your <code>intro/</code> branch.</p></div>
-        <div class="card"><span class="tagline">Personal data</span><h4>Nothing private</h4><p>No phone number, no email address, no password. Once it is pushed, it stays in the history.</p></div>
-        <div class="card"><span class="tagline">The description</span><h4>Three lines + Closes</h4><p>Can the reviewer understand the change without asking you? If not, the description is not finished.</p></div>
+      <div class="prm" role="img" aria-label="A drawing of a pull request page. Title: Add intro page for 20261234 #1000. Under the title: wants to merge 1 commit into main from intro/20261234 (badge 2). Tabs: Conversation, Commits, Files changed (2) (badge 1). A description with What, Why, How to check and Closes #999 (badge 3). The changed lines (badge 4). On the right: may close these issues: #999.">
+        <div class="ttl">Add intro page for 20261234 <span>#1000</span></div>
+        <div class="meta"><span class="open">Open</span><span>wants to merge 1 commit into <span class="mbr">main</span> from <span class="mbr">intro/20261234</span></span><span class="nb">2</span></div>
+        <div class="tabsm"><span class="on">Conversation</span><span>Commits</span><span class="lbl">Files changed (2) <span class="nb">1</span></span></div>
+        <div class="body">
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div class="lbl" style="align-items:flex-start;"><span class="nb">3</span><div class="desc" style="flex:1;"><span><b>What:</b> &hellip;</span><span><b>Why:</b> &hellip;</span><span><b>How to check:</b> &hellip;</span><span><b>Closes #999</b></span></div></div>
+            <div class="lbl" style="align-items:flex-start;"><span class="nb">4</span><div class="diff" style="flex:1;"><div class="fn">intros/20261234.md</div><div class="add">+ &hellip;</div><div class="fn">INDEX.md</div><div class="add">+ &hellip;</div></div></div>
+          </div>
+          <div class="side"><b>Successfully merging this pull request may close these issues.</b>#999</div>
+        </div>
+      </div>
+      <div class="keys">
+        <div><span class="nb">1</span><span>Only the files you meant (today: 2)</span></div>
+        <div><span class="nb">2</span><span>Your <code>intro/</code> branch into <code>main</code></span></div>
+        <div><span class="nb">3</span><span>Three lines + <code>Closes #999</code></span></div>
+        <div><span class="nb">4</span><span>Nothing private: no phone, email, password</span></div>
       </div>
     </article>
 
