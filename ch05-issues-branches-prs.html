@@ -239,6 +239,9 @@ td.where{white-space:normal; font-size:.88em; color:var(--ink-2); width:26%;}
 .prm .side{font-size:.84rem; color:var(--ink-2); border-top:1px solid var(--line); padding-top:6px; line-height:1.45;}
 .prm .side b{display:block; color:var(--ink); font-weight:600; margin-bottom:3px;}
 .prm .lbl{display:flex; align-items:center; gap:8px;}
+.ftree{margin:.6em 0 .3em; padding:10px 14px; background:var(--surface-2); border:1px solid var(--line); border-radius:8px; font-family:var(--mono); font-size:.85rem; line-height:1.6; color:var(--ink-2); white-space:pre; overflow-x:auto;}
+.ftree .new{background:var(--accent-soft); color:var(--accent-ink); border:1px solid var(--accent-line); border-radius:4px; padding:0 5px; font-weight:600;}
+.ftree-cap{font-size:.88rem; color:var(--ink-2); margin:0 0 .4em;}
 .keys{display:grid; grid-template-columns:1fr 1fr; gap:8px 18px;}
 .keys div{display:flex; align-items:center; gap:10px; font-size:1.02rem; color:var(--ink);}
 
@@ -661,7 +664,16 @@ git config user.email "12345678+your-github-username@users.noreply.github.com"</
   main</code></pre>
           The <code>*</code> must be next to your branch. If it is next to <code>main</code>, go back to step 1.
         </li>
-        <li>In the VS Code file list on the left, open <code>practice-pr</code>, right-click the <code>intros</code> folder and choose <b>New File…</b>. Name it <code>20261234.md</code> (your ID). Copy these four lines into it and replace the words in brackets:
+        <li>In the VS Code file list on the left, open <code>practice-pr</code>, right-click the <code>intros</code> folder and choose <b>New File…</b>. Name it <code>20261234.md</code> (your ID).
+<div class="ftree" role="img" aria-label="VS Code file list: D:\oss\20261234, practice-pr, .github, intros with INDEX.md and the new file 20261234.md, README.md">D:\oss\20261234
+└─ practice-pr
+   ├─ .github
+   ├─ intros
+   │  ├─ INDEX.md
+   │  └─ <span class="new">20261234.md</span>   ← new file (your ID)
+   └─ README.md</div>
+          <p class="ftree-cap">Your new file goes inside <code>intros</code>, next to <code>INDEX.md</code>.</p>
+           Copy these four lines into it and replace the words in brackets:
 <pre><code>- **Name:** (your name only - no phone number, no email)
 - **Country:** (your country)
 - **Favourite open source project:** (project name) - (one reason)
@@ -741,6 +753,18 @@ git switch intro/20261234         back to your branch; your commit is here</code
             <li>The <b>Files changed</b> tab shows <b>2 files</b>: <code>intros/20261234.md</code> and <code>intros/INDEX.md</code>.</li>
             <li>On the right, under <b>Successfully merging this pull request may close these issues.</b>, you see your issue.</li>
           </ul>
+      <div class="prm" style="margin-top:.6em; break-inside:avoid;" role="img" aria-label="A drawing of a pull request page. Title: Add intro page for 20261234 #1000. Under the title: wants to merge 1 commit into main from intro/20261234 (badge 1). Tabs: Conversation, Commits, Files changed (2) (badge 2). A description with What, Why, How to check and Closes #999. The changed lines. On the right: may close these issues: #999 (badge 3).">
+        <div class="ttl">Add intro page for 20261234 <span>#1000</span></div>
+        <div class="meta"><span class="open">Open</span><span>wants to merge 1 commit into <span class="mbr">main</span> from <span class="mbr">intro/20261234</span></span><span class="nb">1</span></div>
+        <div class="tabsm"><span class="on">Conversation</span><span>Commits</span><span class="lbl">Files changed (2) <span class="nb">2</span></span></div>
+        <div class="body">
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div class="desc"><span><b>What:</b> &hellip;</span><span><b>Why:</b> &hellip;</span><span><b>How to check:</b> &hellip;</span><span><b>Closes #999</b></span></div>
+            <div class="diff"><div class="fn">intros/20261234.md</div><div class="add">+ &hellip;</div><div class="fn">INDEX.md</div><div class="add">+ &hellip;</div></div>
+          </div>
+          <div class="side"><span class="lbl" style="align-items:flex-start;"><span class="nb">3</span><b>Successfully merging this pull request may close these issues.</b></span>#999</div>
+        </div>
+      </div>
         </li>
         <li><b>Do not merge.</b> Your pull request stays open until Chapter 6.
           <span class="why"><b>What is happening:</b> In Chapter 6 a partner reviews your pull request first, and you meet your first merge conflict in it. Both need the pull request to be still open.</span></li>
@@ -774,6 +798,8 @@ git switch intro/20261234         back to your branch; your commit is here</code
           <tbody>
             <tr><td><code>fatal: not a git repository</code></td><td>The terminal is in the wrong folder. Type <code>cd practice-pr</code>.</td></tr>
             <tr><td><code>fatal: a branch named 'intro/&hellip;' already exists</code></td><td>Your branch is already there. Move onto it without <code>-c</code>: <code>git switch intro/20261234</code> (your own ID).</td></tr>
+            <tr><td><code>remote: Repository not found.</code> (shown by <code>git clone</code> or <code>git push</code>)</td><td>You are not a member of the class organization yet, or you are signed in with another account. Raise your hand. Do not retry with a different account.</td></tr>
+            <tr><td><code>remote: Permission to OSS-202602-ISS/practice-pr denied</code> / <code>403</code></td><td>Your account has no Write access yet. Raise your hand. The instructor switches it on; then run the same push again.</td></tr>
           </tbody>
         </table>
       </div>
@@ -817,7 +843,7 @@ Explain in three sentences, for someone who is learning Git.
         <li>Title: <code>[Ch05] StudentID Name</code> &mdash; for example <code>[Ch05] 20261234 Gildong Hong</code>.</li>
         <li><b>My pull request</b> &mdash; the link to your pull request. Copy it from the address bar.</li>
         <li><b>My issue</b> &mdash; the link to your <code>[Task]</code> issue from PART 1.</li>
-        <li><b>Three lines</b> &mdash; copy the what / why / how to check lines from your pull request description and paste them again here.</li>
+        <li><b>Three lines</b> &mdash; copy the what / why / how to check lines and the <code>Closes</code> line from your pull request description and paste them again here.</li>
       </ol>
       <pre><code>Title: [Ch05] 20261234 Gildong Hong
 
@@ -827,11 +853,13 @@ https://github.com/OSS-202602-ISS/practice-pr/pull/1000
 ## My issue
 https://github.com/OSS-202602-ISS/practice-pr/issues/999
 
-## My pull request description, three lines
+## My pull request description, three lines + Closes
 
 **What:** Adds my intro page and one line in intros/INDEX.md.
 
-**Why:** So the class list links to my page. Closes #999.
+**Why:** So the class list links to my page.
+
+Closes #999
 
 **How to check:** Open Files changed: my page has four lines,
 and INDEX.md has one new line in my row.
@@ -862,6 +890,7 @@ and INDEX.md has one new line in my row.
 
     <div class="step">
       <div class="step-head"><span class="step-no">Next</span><h3>Preview of Chapter 6</h3></div>
+      <p class="goal"><b>Next class, Thursday October 22, 1:00 PM, is the midterm</b> (Auditorium, 2nd Floor, Building 11). Chapter 6 is on October 29.</p>
       <p class="goal"><b>Fork and code review</b> &mdash; a partner reviews your open pull request, you answer the review, and it gets merged. You also meet your first <b>merge conflict</b>, on purpose.</p>
       <ul style="margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em; font-size:.95rem;">
         <li>Keep your pull request open. It is the starting point of Chapter 6.</li>
