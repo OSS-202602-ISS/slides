@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 6 · Fork &amp; Code Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── 토큰 ─────────────────────────────────────────── */
+:root{
+  --ground:#F6F8F6; --surface:#FFFFFF; --surface-2:#ECF1EE; --sunken:#E3EAE6;
+  --line:#D6DEDA; --line-strong:#B9C5BF;
+  --ink:#141E1A; --ink-2:#4B5B56; --ink-3:#78887F;
+  --accent:#0B6E55; --accent-ink:#095643; --accent-soft:#E1F0EA; --accent-line:#9FCDBD;
+  --warn:#8F5410; --warn-soft:#F8EEDD; --warn-line:#E0C79A;
+  --shadow:0 1px 2px rgba(20,30,26,.05), 0 8px 24px -12px rgba(20,30,26,.18);
+  --display:"Gowun Batang","Batang","Malgun Gothic",serif;
+  --body:"IBM Plex Sans KR","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  --mono:"IBM Plex Mono","Consolas","D2Coding",monospace;
+  --topbar:64px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+    --line:#28382F; --line-strong:#3A4E45;
+    --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+    --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+    --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+  --line:#28382F; --line-strong:#3A4E45;
+  --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+  --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+  --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+
+/* ─── 기본 ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-weight:400; font-size:16px; line-height:1.68;
+  word-break:keep-all; overflow-wrap:break-word;
+}
+h1,h2,h3,h4{font-family:var(--display); font-weight:700; line-height:1.28; text-wrap:balance; margin:0;}
+p{margin:0;}
+a{color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent-line);}
+a:hover{border-bottom-color:var(--accent);}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:3px; border-radius:3px;}
+code,kbd{font-family:var(--mono); font-size:.88em; background:var(--surface-2); padding:.12em .38em; border-radius:4px; border:1px solid var(--line);}
+kbd{font-size:.8em; box-shadow:0 1px 0 var(--line-strong);}
+.eyebrow{font-family:var(--body); font-size:.95rem; font-weight:600; letter-spacing:.01em; color:var(--ink-2);}
+
+/* ─── 상단바 ───────────────────────────────────────── */
+.topbar{
+  position:sticky; top:0; z-index:50; height:var(--topbar);
+  display:flex; align-items:center; gap:20px;
+  padding:0 clamp(14px,3vw,36px);
+  background:var(--ground);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex; flex-direction:column; gap:1px; min-width:0;}
+.brand b{font-family:var(--display); font-size:1.02rem; font-weight:700; white-space:nowrap;}
+.brand span{font-family:var(--body); font-size:.8rem; letter-spacing:.01em; color:var(--ink-3);}
+.tabs{display:flex; gap:4px; margin-left:auto; background:var(--surface-2); padding:4px; border-radius:10px; border:1px solid var(--line);}
+.tab{
+  appearance:none; border:0; background:transparent; cursor:pointer;
+  font-family:var(--body); font-size:.86rem; font-weight:600; color:var(--ink-2);
+  padding:7px 13px; border-radius:7px; display:flex; align-items:baseline; gap:7px; white-space:nowrap;
+}
+.tab .min{font-family:var(--mono); font-size:.68rem; font-weight:500; color:var(--ink-3);}
+.tab:hover{color:var(--ink);}
+.tab[aria-selected="true"]{background:var(--surface); color:var(--accent-ink); box-shadow:var(--shadow);}
+.tab[aria-selected="true"] .min{color:var(--accent);}
+
+/* ─── 강의: 슬라이드 ───────────────────────────────── */
+.stage{
+  min-height:calc(100vh - var(--topbar) - 62px);
+  display:flex; align-items:center; justify-content:center;
+  padding:clamp(24px,4vw,56px) clamp(16px,5vw,60px);
+}
+.slide{width:100%; max-width:960px; display:flex; flex-direction:column; gap:clamp(16px,2.2vw,26px);}
+.slide h2{font-size:clamp(1.75rem,3.9vw,2.85rem);}
+.slide h3{font-size:clamp(1.1rem,1.9vw,1.35rem); color:var(--accent-ink);}
+.slide p{font-size:clamp(1.05rem,1.8vw,1.38rem); color:var(--ink-2); max-width:62ch;}
+.slide .lead{font-size:clamp(1.2rem,2.2vw,1.62rem); color:var(--ink);}
+.slide ul{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.55em; font-size:clamp(1.05rem,1.7vw,1.34rem);}
+.slide ul li::marker{color:var(--accent);}
+.rule{height:3px; width:56px; background:var(--accent); border-radius:2px;}
+
+.cover{gap:clamp(20px,3vw,34px);}
+.cover h1{font-size:clamp(2.3rem,6.2vw,4.4rem); letter-spacing:-.015em;}
+.cover .sub{font-size:clamp(1.15rem,2.1vw,1.58rem); color:var(--ink-2);}
+.cover dl{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:18px; margin:0; padding-top:16px; border-top:1px solid var(--line);}
+.cover dt{font-family:var(--body); font-size:.8rem; font-weight:600; letter-spacing:.01em; color:var(--ink-3); margin-bottom:3px;}
+.cover dd{margin:0; font-size:1.05rem; font-weight:500;}
+
+.grid{display:grid; gap:14px;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.g3{grid-template-columns:repeat(auto-fit,minmax(215px,1fr));}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px; display:flex; flex-direction:column; gap:7px; box-shadow:var(--shadow);
+}
+.card h4{font-family:var(--body); font-weight:600; font-size:1.12rem;}
+.card p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+.card .tagline{font-family:var(--body); font-size:.85rem; font-weight:600; letter-spacing:.01em; color:var(--accent);}
+
+.freedoms{display:flex; flex-direction:column; gap:10px; counter-reset:f -1;}
+.freedom{
+  display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:baseline;
+  padding:13px 18px; background:var(--surface); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:0 10px 10px 0;
+}
+.freedom::before{
+  counter-increment:f; content:"Freedom " counter(f);
+  font-family:var(--mono); font-size:.72rem; font-weight:600; color:var(--accent);
+  letter-spacing:.05em; white-space:nowrap;
+}
+.freedom b{font-weight:600;}
+.freedom span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+/* ─── 트랙 비교(필수 A / 선택 B) ───────────────────── */
+.tracks{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(290px,1fr));}
+.track{
+  background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0; padding:18px 20px;
+  display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow);
+}
+.track.optional{background:var(--surface-2); border-left-style:dashed; border-left-color:var(--line-strong); box-shadow:none;}
+.track .badge{
+  align-self:flex-start; font-family:var(--body); font-size:.8rem; font-weight:700;
+  padding:3px 11px; border-radius:20px; background:var(--accent-soft); color:var(--accent-ink);
+}
+.track.optional .badge{background:var(--sunken); color:var(--ink-3);}
+.track h4{font-family:var(--body); font-weight:700; font-size:1.18rem;}
+.track p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+
+.timeline{display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); border-top:2px solid var(--line-strong);}
+.tl-item{padding:16px 14px 0 0; position:relative;}
+.tl-item::before{content:""; position:absolute; top:-6px; left:0; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid var(--ground);}
+.tl-item .yr{font-family:var(--mono); font-size:1.18rem; font-weight:600; color:var(--accent-ink); display:block; margin-bottom:3px;}
+.tl-item p{font-size:.98rem; line-height:1.55;}
+
+.callout{
+  display:flex; gap:14px; padding:16px 20px; border-radius:10px;
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+}
+.callout .mk{font-family:var(--body); font-size:.9rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink); padding-top:2px; white-space:nowrap;}
+.callout p{color:var(--ink); max-width:none;}
+.callout.warn{background:var(--warn-soft); border-color:var(--warn-line);}
+.callout.warn .mk{color:var(--warn);}
+
+table{width:100%; border-collapse:collapse; font-size:1.02rem;}
+th,td{border-bottom:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top;}
+th{font-family:var(--body); font-size:.88rem; letter-spacing:.01em; color:var(--ink-3); font-weight:600; border-bottom:1.5px solid var(--line-strong);}
+td.num{font-variant-numeric:tabular-nums; font-family:var(--mono); white-space:nowrap; color:var(--accent-ink); font-weight:500;}
+.scroll-x{overflow-x:auto;}
+td.where{white-space:normal; font-size:.88em; color:var(--ink-2); width:26%;}
+.where-in{font-size:.9em; color:var(--ink-2); margin-top:8px; padding-top:8px; border-top:1px solid var(--line);}
+@media print{ a[href^="http"]{ text-decoration:underline; text-underline-offset:2px; } }
+
+.slidenav{
+  position:sticky; bottom:0; z-index:40;
+  display:flex; align-items:center; gap:14px;
+  padding:11px clamp(14px,3vw,36px);
+  background:var(--ground); border-top:1px solid var(--line);
+}
+.dots{display:flex; gap:4px; flex:1; flex-wrap:wrap; align-items:center;}
+.dot{
+  min-width:26px; height:24px; padding:0 5px; border-radius:6px; cursor:pointer; line-height:1;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-3);
+  font-family:var(--mono); font-size:.74rem; font-weight:600; font-variant-numeric:tabular-nums;
+}
+.dot:hover{background:var(--surface); border-color:var(--accent); color:var(--accent-ink);}
+.dot[aria-current="true"]{background:var(--accent); border-color:var(--accent); color:var(--ground);}
+.navbtn.edge{padding:7px 10px; font-family:var(--mono);}
+.navbtn{
+  appearance:none; cursor:pointer; font-family:var(--body); font-weight:600; font-size:.85rem;
+  padding:7px 15px; border-radius:8px; border:1px solid var(--line-strong);
+  background:var(--surface); color:var(--ink);
+}
+.navbtn:hover{border-color:var(--accent); color:var(--accent-ink);}
+.navbtn:disabled{opacity:.35; cursor:default;}
+.counter{font-family:var(--mono); font-size:.8rem; font-variant-numeric:tabular-nums; color:var(--ink-3); white-space:nowrap;}
+
+/* ─── 문서형 페인(실습·과제) ───────────────────────── */
+.doc{max-width:840px; margin:0 auto; padding:clamp(28px,5vw,60px) clamp(18px,5vw,40px) 100px; display:flex; flex-direction:column; gap:clamp(26px,3.5vw,38px);}
+.doc-head{display:flex; flex-direction:column; gap:12px;}
+.doc-head h2{font-size:clamp(1.75rem,3.4vw,2.4rem);}
+.doc-head p{color:var(--ink-2); max-width:62ch;}
+
+.step{display:flex; flex-direction:column; gap:14px; padding-top:26px; border-top:1px solid var(--line);}
+.step-head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;}
+.step-no{font-family:var(--mono); font-size:.72rem; font-weight:600; letter-spacing:.08em; color:var(--accent-ink); padding:3px 9px; background:var(--accent-soft); border-radius:20px; white-space:nowrap;}
+.step-head h3{font-size:1.22rem; flex:1; min-width:200px;}
+.budget{font-family:var(--mono); font-size:.78rem; color:var(--ink-3); font-variant-numeric:tabular-nums; white-space:nowrap;}
+.goal{font-size:.95rem; color:var(--ink-2);}
+.why{display:block; margin-top:.3em; padding:.3em .6em; border-left:3px solid var(--accent-line); background:var(--accent-soft); font-size:.9rem; color:var(--ink-2); border-radius:0 4px 4px 0;}
+.why b{color:var(--accent-ink);}
+.step ol{margin:0; padding-left:1.3em; display:flex; flex-direction:column; gap:.5em; font-size:.96rem;}
+.step ol li::marker{font-family:var(--mono); font-weight:600; color:var(--accent);}
+.step ol ul{margin:.35em 0 0; padding-left:1.1em; font-size:.92rem; color:var(--ink-2); display:flex; flex-direction:column; gap:.25em;}
+
+.check{display:flex; align-items:flex-start; gap:11px; padding:11px 15px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; cursor:pointer;}
+.check input{margin:0; width:17px; height:17px; accent-color:var(--accent); flex-shrink:0; margin-top:2px; cursor:pointer;}
+.check span{font-size:.93rem; font-weight:500;}
+.check:has(input:checked){background:var(--accent-soft); border-color:var(--accent-line);}
+.check:has(input:checked) span{color:var(--ink-2); text-decoration:line-through; text-decoration-color:var(--accent-line);}
+
+.progress{
+  position:sticky; top:calc(var(--topbar) + 10px); z-index:30;
+  display:flex; align-items:center; gap:14px; padding:12px 18px;
+  background:var(--surface); border:1px solid var(--line); border-radius:11px; box-shadow:var(--shadow);
+}
+.progress b{font-family:var(--mono); font-size:.9rem; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.bar{flex:1; height:7px; background:var(--sunken); border-radius:4px; overflow:hidden;}
+.bar i{display:block; height:100%; width:0; background:var(--accent); border-radius:4px; transition:width .3s ease;}
+@media (prefers-reduced-motion: reduce){ .bar i{transition:none;} }
+.reset{appearance:none; border:1px solid var(--line-strong); background:transparent; color:var(--ink-3); font-family:var(--body); font-size:.76rem; padding:4px 10px; border-radius:6px; cursor:pointer;}
+.reset:hover{color:var(--ink); border-color:var(--accent);}
+
+.ladder{display:flex; flex-direction:column; counter-reset:l;}
+.rung{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px dashed var(--line);}
+.rung:last-child{border-bottom:0;}
+.rung::before{counter-increment:l; content:counter(l); font-family:var(--mono); font-size:.75rem; font-weight:600; color:var(--ground); background:var(--accent); width:22px; height:22px; border-radius:50%; display:grid; place-items:center;}
+.rung b{font-weight:600;}
+.rung span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+pre{background:var(--sunken); border:1px solid var(--line); border-radius:9px; padding:14px 16px; overflow-x:auto; margin:0;}
+pre code{background:none; border:0; padding:0; font-size:.85rem; line-height:1.6;}
+pre code .n{color:#5B6B64; font-style:italic;}
+pre code .n::before{content:"← "; font-style:normal;}
+
+.rubric{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+.rubric .card b{font-family:var(--body); font-size:.95rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink);}
+
+.foot{border-top:1px solid var(--line); padding:22px clamp(18px,5vw,40px); text-align:center;}
+.foot p{font-size:.8rem; color:var(--ink-3);}
+
+/* ─── 인쇄 ─────────────────────────────────────────── */
+@media print{
+  .topbar,.slidenav,.progress{display:none !important;}
+  .pane[hidden]{display:block !important;}
+  .slide[hidden]{display:flex !important;}
+  .stage{display:block; min-height:0; padding:0;}
+  .slide{max-width:none; break-after:page; page-break-after:always; padding:8mm 0;}
+  .slide:last-child{break-after:auto; page-break-after:auto;}
+  body{background:#fff; color:#000; font-size:11pt;}
+  .card,.callout,.check,.step,.track,.tl-item{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <b>Fork &amp; Code Review</b>
+    <span>Open Source Software · Chapter 6 · Fall 2026</span>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Class blocks">
+    <button class="tab" role="tab" id="tab-lecture" aria-controls="pane-lecture" aria-selected="true">Lecture <span class="min">30 min</span></button>
+    <button class="tab" role="tab" id="tab-lab" aria-controls="pane-lab" aria-selected="false">Lab <span class="min">65 min</span></button>
+    <button class="tab" role="tab" id="tab-task" aria-controls="pane-task" aria-selected="false">Assignment <span class="min">5 min</span></button>
+  </div>
+</header>
+
+<!-- ══════════ Lecture ══════════ -->
+<section class="pane" id="pane-lecture" role="tabpanel" aria-labelledby="tab-lecture">
+  <div class="stage">
+
+    <article class="slide cover">
+      <p class="eyebrow">Chapter 6 · 2026 Fall</p>
+      <h1>Fork &amp;<br>Code Review</h1>
+      <p class="sub">How to fix someone else's code politely &mdash; by review, and by solving a conflict.<br>A fork is your own copy of someone else's repository.</p>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">Clone</span><h4>A copy on this PC</h4><p>You did this in Chapter 4. The copy lives in a folder on the computer in front of you.</p></div>
+        <div class="card"><span class="tagline">Branch</span><h4>A side line inside one repository</h4><p>You did this in Chapter 5. Same repository, a separate line of commits.</p></div>
+        <div class="card"><span class="tagline">Fork &mdash; new today</span><h4>A copy on GitHub, in your account</h4><p>A whole repository, copied from someone else's account into yours. You can change it freely. The original does not change.</p></div>
+      </div>
+      <dl>
+        <div><dt>Course</dt><dd>Open Source Software</dd></div>
+        <div><dt>Target</dt><dd>Senior (4th-year), Information Systems &amp; Security</dd></div>
+        <div><dt>Today</dt><dd>Chapter 6 and Chapter 7 in one class</dd></div>
+      </dl>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">The contribution flow</p>
+      <h2>Fork, clone, branch,<br>then ask with a PR</h2>
+      <div class="rule"></div>
+      <p class="lead">In <code>practice-pr</code> you have Write access, so you made a branch inside it. On a stranger's project you have no Write access. So you work in your own copy, and ask the owner to take your change.</p>
+      <div class="ladder">
+        <div class="rung"><div><b>Fork</b><span>On GitHub, copy the project into your account. The original project is now called the <b>upstream</b> (the place your copy came from).</span></div></div>
+        <div class="rung"><div><b>Clone</b><span>Copy <b>your fork</b> to this PC. Not the upstream &mdash; you cannot push there.</span></div></div>
+        <div class="rung"><div><b>Branch</b><span>Make a branch for one change, commit, and push it to your fork. The same commands as Chapter 5.</span></div></div>
+        <div class="rung"><div><b>Pull request to the upstream</b><span>Open a PR from your fork's branch to the upstream's <code>main</code>. The owner reviews it and decides to merge &mdash; or not.</span></div></div>
+      </div>
+      <div class="callout">
+        <span class="mk">Your assignment</span>
+        <p>You do exactly this today, with your partner's <code>oss-practice</code> as the upstream. Every real open source contribution starts with these four steps.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Code review</p>
+      <h2>Three kinds of review comment</h2>
+      <div class="rule"></div>
+      <p class="lead">A review comment is read by a person. Be specific, and be kind. A comment like "bad" or "good job!" helps nobody, because the author cannot act on it.</p>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">Question</span><h4>Ask what you do not understand</h4><p><code>Why did you choose ...?</code><br><code>What happens if ...?</code><br><code>Could you explain line 3?</code></p></div>
+        <div class="card"><span class="tagline">Suggestion</span><h4>Say one change, and why</h4><p><code>Could you add why you like it?</code><br><code>I suggest ... because ...</code><br><code>Maybe move this line to the top?</code></p></div>
+        <div class="card"><span class="tagline">Praise</span><h4>Name the good part exactly</h4><p><code>This line is clear because ...</code><br><code>Nice example &mdash; I did not know ...</code></p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">Comment on the code, not the person</span>
+        <p>Write "this line is missing a reason", not "you forgot the reason". Short English is fine. <b>A polite question is the strongest review comment.</b></p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Merge conflict</p>
+      <h2>Why a conflict happens:<br>two answers for the same line</h2>
+      <div class="rule"></div>
+      <p class="lead"><code>intros/INDEX.md</code> has one part for each row of this room: <code>## Row A</code> to <code>## Row J</code>. In Chapter 5, you added one line under the comment in your row's part. Then my own PR was merged, and it added one line under the comment in <b>every</b> row's part. Now, in your row's part, the same place has two different answers.</p>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">main now says</span><h4>Under the comment: the instructor's line</h4><p>My line was merged first, so it is already in <code>main</code> &mdash; in all ten rows.</p></div>
+        <div class="card"><span class="tagline">Your branch says</span><h4>Under the comment: your line</h4><p>Your branch was made before that merge. It puts your line in the same place, in your row.</p></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Git cannot choose</span>
+        <p>Git joins changes by itself when they touch different lines. When two branches change <b>the same place</b>, Git does not guess which one is right. It stops and asks a person. That stop is a merge conflict. <b>It is not an error. Nothing is broken.</b></p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Reading the markers</p>
+      <h2>&lt;&lt;&lt;&lt;&lt;&lt;&lt;&nbsp; =======&nbsp; &gt;&gt;&gt;&gt;&gt;&gt;&gt;</h2>
+      <div class="rule"></div>
+      <p class="lead">When Git stops, it writes both answers into the file and puts three marker lines around them. This is your row's part of the real file, from a real conflict on the instructor's PC. The other nine rows joined by themselves &mdash; only your row stops:</p>
+      <pre><code>## Row C
+
+&lt;!-- add your line below this comment --&gt;
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+- [20261234](20261234.md)
+=======
+- [teacher](teacher.md)
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/main</code></pre>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span><h4>Start: your side</h4><p>From here down to the <code>=======</code> line is what <b>your branch</b> has.</p></div>
+        <div class="card"><span class="tagline">=======</span><h4>The middle</h4><p>The line between the two answers.</p></div>
+        <div class="card"><span class="tagline">&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/main</span><h4>End: the other side</h4><p>Above this line, down from <code>=======</code>, is what <b>main</b> has.</p></div>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Resolving it</p>
+      <h2>Choose, then delete<br>the three marker lines</h2>
+      <div class="rule"></div>
+      <p class="lead">To resolve a conflict you edit the file so it says what it should say, and remove every marker line. For <code>INDEX.md</code> the right answer is easy: <b>keep both lines</b> in your row. Every line belongs in the list.</p>
+      <pre><code>## Row C
+
+&lt;!-- add your line below this comment --&gt;
+- [20261234](20261234.md)    <span class="n">your line</span>
+- [teacher](teacher.md)      <span class="n">the instructor's line</span></code></pre>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">In the lab &mdash; you</span><h4>On GitHub</h4><p>Your PR page has a <b>Resolve conflicts</b> button. It opens the file with the markers in a web editor. Delete the three marker lines, click <b>Mark as resolved</b>, then <b>Commit merge</b>.</p></div>
+        <div class="card"><span class="tagline">Now &mdash; the instructor shows</span><h4>On this PC</h4><p><code>git merge origin/main</code> makes the same conflict in a local folder. VS Code shows the markers with buttons above them. Edit, then <code>git add</code>, <code>git commit</code>, <code>git push</code>.</p></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Check before you save</span>
+        <p>Search the file for <code>&lt;&lt;&lt;</code> and <code>&gt;&gt;&gt;</code>. If one marker line is left, it goes into <code>main</code> as text, and everybody sees it.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">This room</p>
+      <h2>Two places remember you.<br>Clear both.</h2>
+      <div class="rule"></div>
+      <p class="lead">The browser remembers your GitHub login. <b>Windows also remembers it</b>: the first time you push, Git saves a login key in the Windows Credential Manager. This PC has one shared Windows account, so the next student would push with your name.</p>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">At the start</span><h4>Three checks</h4><p>① The GitHub avatar in the browser is <b>yours</b>. ② <code>cmdkey /list | findstr github</code> prints <b>nothing</b>. If it prints a line, run <code>cmdkey /delete:git:https://github.com</code>. ③ Work only in <code>D:\oss\&lt;StudentID&gt;\</code>.</p></div>
+        <div class="card"><span class="tagline">At the end</span><h4>Three steps</h4><p>① Sign out of GitHub in the browser. ② Run <code>cmdkey /delete:git:https://github.com</code>. ③ Close VS Code.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">Same as Chapter 4</span>
+        <p>Nothing new here. It is on this slide because a review with your name on it must be written by you.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Before you switch tabs</p>
+      <h2>Checklist to close</h2>
+      <div class="rule"></div>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">30 min · Lecture</span><h4>What you can do now</h4><p>Say what a fork is and how it is different from a clone and a branch. Name the four steps of a contribution. Write a question, a suggestion and a praise comment. Read the three conflict markers and say how to resolve them.</p></div>
+        <div class="card"><span class="tagline">65 min · Lab</span><h4>What's next</h4><p>Review your partner's PR and ask for one change. Make the change your partner asks for. Resolve the <code>INDEX.md</code> conflict on GitHub. Get an Approve, then merge your own PR.</p></div>
+      </div>
+      <p class="lead">After the break, switch to the <b>Lab</b> tab and start with PART 0.</p>
+    </article>
+
+  </div>
+
+  <nav class="slidenav" aria-label="Slide navigation">
+    <button class="navbtn edge" id="first" type="button" title="First slide (Home)" aria-label="First slide">⇤</button>
+    <button class="navbtn" id="prev" type="button">← Prev</button>
+    <button class="navbtn" id="next" type="button">Next →</button>
+    <button class="navbtn edge" id="last" type="button" title="Last slide (End)" aria-label="Last slide">⇥</button>
+    <div class="dots" id="dots"></div>
+    <span class="counter" id="counter">1 / 8</span>
+  </nav>
+</section>
+
+<!-- ══════════ Lab ══════════ -->
+<section class="pane" id="pane-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Lab A · 5 + 60 min · With a partner</p>
+      <h2>Review, fix, resolve, merge</h2>
+      <p>Today your Chapter 5 pull request finally gets merged. First your partner reviews it, then you fix what they ask, then you resolve the conflict in <code>INDEX.md</code>, and then you merge it yourself. Follow the parts in order and tick the box at the end of each part.</p>
+    </div>
+
+    <div class="callout">
+      <span class="mk">AI rule, again</span>
+      <p>When something fails, ask AI first with the four steps: paste the message exactly, say what you were trying to do, ask why, then explain the fix yourself. <b>If you cannot explain it, it does not count.</b> A review comment written by AI and not understood by you is not your review.</p>
+    </div>
+
+    <div class="progress">
+      <b id="pg-count">0 / 4</b>
+      <span class="bar"><i id="pg-bar"></i></span>
+      <button class="reset" id="pg-reset" type="button">Reset</button>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 0</span><h3>Start routine, and find your partner</h3><span class="budget">5 min</span></div>
+      <p class="goal">The same three checks as Chapter 4, then one minute to know who your partner is.</p>
+      <ol>
+        <li>Open <a href="https://github.com" target="_blank" rel="noopener">github.com</a>. The avatar in the <b>top-right corner</b> must be yours. If it is not, click it, choose <b>Sign out</b>, and sign in with your own account.</li>
+        <li>Open a terminal (<kbd>Windows</kbd> key, type <code>cmd</code>, <kbd>Enter</kbd>) and type:
+<pre><code>cmdkey /list | findstr github</code></pre>
+          It must print <b>nothing</b>. If it prints a line, delete that saved login:
+<pre><code>cmdkey /delete:git:https://github.com</code></pre>
+        </li>
+        <li>You work only in <code>D:\oss\&lt;your ID&gt;\</code>. Your <code>practice-pr</code> folder from Chapter 5 is in there. Sitting at a different PC? <code>git clone https://github.com/OSS-202602-ISS/practice-pr.git</code> &rarr; <code>cd practice-pr</code> &rarr; the two <code>git config</code> lines &rarr; <code>git switch intro/&lt;your ID&gt;</code>.</li>
+        <li><b>Your partner</b> is the person next to you in your row. In a row of four, make two pairs. In a row of three, go in a circle: A reviews B, B reviews C, C reviews A. <b>Do not sign in inside VS Code.</b> If a chat panel opens on the right side, close it &mdash; a sign-in there stays on this shared PC.</li>
+      </ol>
+      <div class="callout warn">
+        <span class="mk">If you missed the last chapter</span>
+        <p>No PR in <code>practice-pr</code>? Do Chapter 5 PART 1&ndash;3 now, quickly: issue, branch <code>intro/&lt;your ID&gt;</code>, your intro file, one line in <code>intros/INDEX.md</code>, push, open the PR. Your partner can review it a little later. No <code>oss-practice</code> repository from Chapter 4? Make it on GitHub now (Public, tick <b>Add a README</b>) &mdash; you need it for the assignment and for Chapter 7.</p>
+      </div>
+      <label class="check"><input type="checkbox" data-k="s0"><span>My avatar · cmdkey prints nothing · I know my partner</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART A1</span><h3>Review your partner's PR &mdash; ask for one change</h3><span class="budget">15 min</span></div>
+      <p class="goal">Read your partner's intro file and ask for one specific change. You submit a review of the type <b>Request changes</b>.</p>
+      <ol>
+        <li>Open <a href="https://github.com/OSS-202602-ISS/practice-pr/pulls" target="_blank" rel="noopener"><code>practice-pr</code> &rsaquo; Pull requests</a> and click your partner's PR (its branch is <code>intro/&lt;partner's ID&gt;</code>).</li>
+        <li>You will probably see that the PR has a conflict. <b>That is expected. Do not touch it</b> &mdash; your partner resolves it in PART A3.</li>
+        <li>Click the <b>Files changed</b> tab. Read <code>intros/&lt;partner's ID&gt;.md</code>.
+          <span class="why"><b>What is happening:</b> this tab shows only what the PR adds or removes, not the whole repository. Green lines with <code>+</code> are new. The intro file is all green because the whole file is new; in <code>INDEX.md</code> only one line is green &mdash; your partner's line.</span></li>
+        <li>Above the changed code, click <b>Review changes</b>. Write <b>one</b> specific request, using the patterns from the lecture. For example:
+<pre><code>Could you add why you like it? One sentence is enough.</code></pre>
+        </li>
+        <li>Choose <b>Request changes</b>, then click <b>Submit review</b>.
+          <span class="why"><b>What is happening:</b> GitHub saves your comment on the PR as a review with the result <b>Changes requested</b>, and your partner gets a notification. Nothing in the files changes &mdash; the author makes the change.</span></li>
+        <li>Your partner now does the same on your PR. Wait for their request before you start PART A2.</li>
+      </ol>
+      <div class="callout warn">
+        <span class="mk">Not allowed in a review</span>
+        <p>"Good job!", "OK", "LGTM" only, or a request the author cannot act on. Ask for a change the author can make in two minutes.</p>
+      </div>
+      <label class="check"><input type="checkbox" data-k="s1"><span>I submitted one Request changes review on my partner's PR</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART A2</span><h3>Make the change your partner asked for</h3><span class="budget">15 min</span></div>
+      <p class="goal">A review is a conversation. You answer it with a new commit on the same branch. The PR updates by itself when you push.</p>
+      <ol>
+        <li>Open your PR and read your partner's request in the <b>Conversation</b> tab.</li>
+        <li>In VS Code, open the folder <code>D:\oss\&lt;your ID&gt;\practice-pr</code>. Open a terminal (<b>Terminal &rsaquo; New Terminal</b>) and go to your branch:
+<pre><code>git switch intro/20261234
+git status</code></pre>
+          Use <b>your own</b> student ID. <code>git status</code> must say <code>On branch intro/&lt;your ID&gt;</code>.
+        </li>
+        <li>Edit <code>intros/&lt;your ID&gt;.md</code> the way your partner asked. Save. No phone numbers, no e-mail addresses.</li>
+        <li>Commit and push:
+<pre><code>git add intros/20261234.md
+git commit -m "Add why I like it"
+git push</code></pre>
+          A small window <b>Connect to GitHub</b> appears &mdash; click <b>Sign in with your browser</b>. The browser opens; check the avatar is yours, then Authorize.
+          <span class="why"><b>What is happening:</b> <code>git push</code> sends your new commit to the same branch on GitHub. A PR follows its branch, so the new commit appears in the <b>same</b> PR by itself &mdash; you do not open a new PR.</span>
+        </li>
+        <li>On your PR page, reply to the review in one line, for example <code>Done &mdash; I added one sentence. Please look again.</code></li>
+      </ol>
+      <div class="callout warn">
+        <span class="mk">Do not fix the conflict here</span>
+        <p>Do not run <code>git pull</code> on <code>main</code> or <code>git merge</code> in this folder. You fix the conflict on GitHub in the next part. It is the shortest way for a conflict of one line.</p>
+      </div>
+      <label class="check"><input type="checkbox" data-k="s2"><span>Change committed and pushed · the new commit shows on my PR · I replied to the review</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART A3</span><h3>Resolve the conflict, get an Approve, merge</h3><span class="budget">30 min</span></div>
+      <p class="goal">Keep both lines in <code>INDEX.md</code>, delete the three marker lines, and merge your own PR after your partner approves.</p>
+      <ol>
+        <li>On your PR page, scroll to the bottom and click <b>Resolve conflicts</b>.</li>
+        <li>The web editor shows <code>intros/INDEX.md</code> with the markers. Change it so that <b>both lines stay</b> and <b>the three marker lines are gone</b>:
+<pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; ...                  delete this whole line
+- [20261234](20261234.md)       keep
+=======                         delete this whole line
+- [teacher](teacher.md)         keep
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; ...                  delete this whole line</code></pre>
+          The words after <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> are branch names; they may be different from the lecture slide. The rule is the same: keep the list lines, delete the marker lines. If other students' lines from your row are there too, keep them all.
+        </li>
+        <li>Click <b>Mark as resolved</b>, then <b>Commit merge</b>.
+          <span class="why"><b>What is happening:</b> GitHub makes a new commit on <b>your branch</b>, a merge commit: it brings everything new from <code>main</code> into your branch &mdash; the other nine rows join by themselves, and your row is what you just wrote. <code>main</code> does not change yet.</span></li>
+        <li>Tell your partner: "Please approve." Your partner opens your PR &rsaquo; <b>Files changed</b> &rsaquo; <b>Review changes</b>, chooses <b>Approve</b>, and clicks <b>Submit review</b>.
+          <span class="why"><b>What is happening:</b> Approve is the same kind of review as Request changes, with the answer &ldquo;ready to merge&rdquo;. It does not merge anything &mdash; the author still clicks the button.</span></li>
+        <li>Now merge. At the bottom of your PR, click <b>Merge pull request</b>. If a different option is on the button, open the dropdown and choose <b>Create a merge commit</b> &mdash; <b>not</b> Squash. Then click <b>Confirm merge</b>.
+          <span class="why"><b>What is happening:</b> GitHub adds one new commit to <code>main</code>, the merge commit. It joins the last commit of <code>main</code> and the last commit of your branch, so every commit of your PR comes into <code>main</code> with its history. Squash would put them in as one new commit instead.</span></li>
+        <li>Open <code>intros/INDEX.md</code> on <code>main</code> and find your line. Your Chapter 5 issue closes by itself, because your PR says <code>Closes #N</code>.</li>
+      </ol>
+      <div class="callout warn">
+        <span class="mk">The conflict came back?</span>
+        <p>If a student <b>from your own row</b> merged just before you, your row's part changed again, and your PR has a new conflict. Students in other rows never cause this. It can happen <b>three times at most</b> (your row has up to four people). Do steps 1&ndash;3 again &mdash; it takes one minute. <b>In a busy repository this is normal.</b></p>
+      </div>
+      <div class="callout">
+        <span class="mk">No conflict on your PR?</span>
+        <p>If your PR page has no <b>Resolve conflicts</b> button, there is no conflict for you. This happens if you merged your PR already in Chapter 5, or you made your branch after the instructor's line was in <code>main</code> (for example, you did Chapter 5 at home). Skip steps 1&ndash;3 &mdash; the instructor's demo in the lecture showed you this part. You still review your partner, and your partner still reviews you. For the checkbox, "conflict resolved" means "I watched the demo".</p>
+      </div>
+      <label class="check"><input type="checkbox" data-k="s3"><span>Conflict resolved on GitHub · partner approved · I merged with a merge commit · my line is in main</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Stuck?</span><h3>Prompts you can copy and paste</h3></div>
+      <p class="goal">Try AI first. Replace the parts in &lt; &gt; with what is on your own screen.</p>
+      <pre><code>I have a merge conflict in a Markdown file. Here is the file with
+the conflict markers, exactly as it appears:
+&lt;paste the file&gt;
+Both lines should stay in the list. Show me the file after the
+conflict is resolved, and explain what each marker line means.
+
+My partner asked me in a code review: "&lt;paste the request&gt;".
+Here is my file: &lt;paste the file&gt;. Help me write one clear
+English sentence that answers the request. Keep my own idea.
+
+I ran &lt;git push&gt; and got this message:
+&lt;paste the whole message&gt;
+I was trying to update my pull request. What does it mean?</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ Assignment ══════════ -->
+<section class="pane" id="pane-task" role="tabpanel" aria-labelledby="tab-task" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Mini Assignment #6 · Explained today, done at home</p>
+      <h2>Fork your partner's repository and send one PR</h2>
+      <p>This is the contribution flow from the lecture, done for real: fork, clone, branch, pull request to the upstream. Your partner's <code>oss-practice</code> is the upstream.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Assignment</span><h3>What to do</h3></div>
+      <ol>
+        <li><b>Fork.</b> Open <code>https://github.com/&lt;partner&gt;/oss-practice</code> and click <b>Fork</b>. You already have a repository named <code>oss-practice</code>, so in <b>Repository name</b> type a new name: <code>oss-practice-&lt;partner&gt;</code>. Click <b>Create fork</b>.
+          <span class="why"><b>What is happening:</b> GitHub copies your partner's repository, with its history, into your account under the new name. Your partner's repository does not change. Your partner&rsquo;s repository is now the <b>upstream</b> of your fork.</span></li>
+        <li><b>Clone your fork</b> into your own folder, then set your name and e-mail <b>for this repository only</b> (the same two lines as Chapter 4 &mdash; never <code>--global</code>):
+In VS Code: <b>File &rsaquo; Open Folder…</b> &rarr; <code>D:\oss\&lt;your ID&gt;</code> (at home: any folder), then <b>Terminal &rsaquo; New Terminal</b>.
+<pre><code>git clone https://github.com/&lt;you&gt;/oss-practice-&lt;partner&gt;.git
+cd oss-practice-&lt;partner&gt;
+git config user.name "&lt;your GitHub username&gt;"
+git config user.email "&lt;your noreply address&gt;"</code></pre>
+          <span class="why"><b>What is happening:</b> Git copies <b>your fork</b> to this PC and saves its address under the name <code>origin</code>. So every <code>git push</code> from this folder goes to your fork, not to your partner's repository.</span>
+        </li>
+        <li><b>Branch, change, push.</b> Make the branch first. Then open <code>README.md</code> of the new folder in VS Code and fix one typo, or add one friendly line (for example, one open source project your partner might like). No personal information. A small window <b>Connect to GitHub</b> appears &mdash; click <b>Sign in with your browser</b>. The browser opens; check the avatar is yours, then Authorize.
+<pre><code>git switch -c fix-readme
+git add README.md
+git commit -m "Fix a typo in README"
+git push -u origin fix-readme</code></pre>
+          <span class="why"><b>What is happening:</b> the new branch and its commit go to your fork on GitHub (<code>origin</code>). <code>-u</code> connects this branch to <code>origin/fix-readme</code>, so next time, on this branch, a plain <code>git push</code> is enough. Your partner's repository still has not changed.</span>
+        </li>
+        <li><b>Pull request to the upstream.</b> Open your partner's repository &rsaquo; <b>Pull requests</b> &rsaquo; <b>New pull request</b> &rsaquo; click <b>compare across forks</b>. Base: <code>&lt;partner&gt;/oss-practice</code>, <code>main</code>. Head: <code>&lt;you&gt;/oss-practice-&lt;partner&gt;</code>, <code>fix-readme</code>. Write the three lines from Chapter 5 (what, why, how to check), then click <b>Create pull request</b>.
+          <span class="why"><b>What is happening:</b> the PR lives in your partner's repository and asks them to take the commits of <code>fix-readme</code> from your fork into their <code>main</code>. Their <code>main</code> does not change until they merge it.</span></li>
+        <li><b>Submit.</b> Open an issue in <code>practice-pr</code> with the Chapter 6 template &mdash; <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch06.md" target="_blank" rel="noopener"><b>click here to open it with the template ready</b></a> (sign in first). Title: <code>[Ch06] StudentID Name</code>.</li>
+      </ol>
+      <pre><code>Title: [Ch06] 20261234 Gildong Hong
+
+## My pull request to my partner's repository
+https://github.com/&lt;partner&gt;/oss-practice/pull/1
+
+## What I changed, in one line
+
+## The review I wrote in class
+https://github.com/OSS-202602-ISS/practice-pr/pull/&lt;number&gt;</code></pre>
+      <div class="callout">
+        <span class="mk">When you receive a PR</span>
+        <p>Your partner sends a PR to your <code>oss-practice</code>. Leave one review comment on it &mdash; a question, a suggestion or a praise, as in the lecture. Merging it is your choice.</p>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Links, not screenshots</span>
+        <p>Paste the PR link as text. The grader clicks it. <b>Write under each heading &mdash; do not delete the headings.</b></p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Grading</span><h3>How it's graded</h3></div>
+      <p class="goal">We look at <b>whether the flow is complete, and whether you can explain it</b>.</p>
+      <div class="rubric">
+        <div class="card"><b>Complete</b><p>The PR goes from your fork to your partner's <code>oss-practice</code>, it changes one real thing, it has a three-line description, and the issue has both links.</p></div>
+        <div class="card"><b>Partial</b><p>The PR is inside your own repository instead of to the upstream, or the description is missing, or a link is missing. If two submissions are the same text, both are Partial.</p></div>
+        <div class="card"><b>Not submitted</b><p>No issue by the deadline. Late work still gets partial credit.</p></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Deadline</span>
+        <p><b>11:59 PM the night before the next class</b> &mdash; the exact date is in the ecampus notice. The Chapter 7 assignment has the same deadline &mdash; see the Chapter 7 deck.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Next</span><h3>Next: Chapter 7</h3></div>
+      <p class="goal">After the break we open the <b>Chapter 7 &mdash; Licensing</b> deck. Keep this browser signed in and VS Code open. The closing routine is at the end of Chapter 7, not here.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>Open Source Software · Fall 2026 · Chapter 6 course material — based on the official syllabus</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── Tabs ── */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var pane = document.getElementById(t.getAttribute('aria-controls'));
+      var on = (t === tab);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      pane.hidden = !on;
+    });
+    window.scrollTo(0, 0);
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ selectTab(t); });
+    t.addEventListener('keydown', function(e){
+      var i = tabs.indexOf(t), n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowLeft')  n = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (n){ e.preventDefault(); n.focus(); selectTab(n); }
+    });
+  });
+
+  /* ── Slides ── */
+  var slides  = Array.prototype.slice.call(document.querySelectorAll('#pane-lecture .slide'));
+  var dotsBox = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var firstBtn = document.getElementById('first');
+  var lastBtn = document.getElementById('last');
+  var cur = 0;
+
+  slides.forEach(function(s, i){
+    var h = s.querySelector('h1, h2');
+    var t = h ? h.textContent.replace(/\s+/g, ' ').trim() : '';
+    var d = document.createElement('button');
+    d.type = 'button';
+    d.className = 'dot';
+    d.textContent = (i + 1);
+    d.title = (i + 1) + (t ? '. ' + t : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1) + (t ? ': ' + t : ''));
+    d.addEventListener('click', function(){ go(i); });
+    dotsBox.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function go(i){
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function(s, n){ s.hidden = (n !== cur); });
+    dots.forEach(function(d, n){ d.setAttribute('aria-current', n === cur ? 'true' : 'false'); });
+    counter.textContent = (cur + 1) + ' / ' + slides.length;
+    prevBtn.disabled = firstBtn.disabled = (cur === 0);
+    nextBtn.disabled = lastBtn.disabled = (cur === slides.length - 1);
+    window.scrollTo(0, 0);
+  }
+  prevBtn.addEventListener('click', function(){ go(cur - 1); });
+  nextBtn.addEventListener('click', function(){ go(cur + 1); });
+  firstBtn.addEventListener('click', function(){ go(0); });
+  lastBtn.addEventListener('click', function(){ go(slides.length - 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (document.getElementById('pane-lecture').hidden) return;
+    var t = e.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp'){   e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home'){ e.preventDefault(); go(0); }
+    if (e.key === 'End'){  e.preventDefault(); go(slides.length - 1); }
+  });
+  go(0);
+
+  /* ── Lab checklist (browser-only storage) ── */
+  var KEY = 'oss2026-ch06-lab-en';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.check input'));
+  var pgCount = document.getElementById('pg-count');
+  var pgBar = document.getElementById('pg-bar');
+
+  function read(){
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function write(state){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch (e) { /* private/incognito mode etc. — skip saving but keep working */ }
+  }
+  function paint(){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    pgCount.textContent = done + ' / ' + boxes.length;
+    pgBar.style.width = (boxes.length ? (done / boxes.length * 100) : 0) + '%';
+  }
+
+  var saved = read();
+  boxes.forEach(function(b){
+    if (saved[b.dataset.k]) b.checked = true;
+    b.addEventListener('change', function(){
+      var s = read();
+      s[b.dataset.k] = b.checked;
+      write(s);
+      paint();
+    });
+  });
+  document.getElementById('pg-reset').addEventListener('click', function(){
+    boxes.forEach(function(b){ b.checked = false; });
+    write({});
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>

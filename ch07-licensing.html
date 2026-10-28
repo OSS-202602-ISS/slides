@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 7 · Licensing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── 토큰 ─────────────────────────────────────────── */
+:root{
+  --ground:#F6F8F6; --surface:#FFFFFF; --surface-2:#ECF1EE; --sunken:#E3EAE6;
+  --line:#D6DEDA; --line-strong:#B9C5BF;
+  --ink:#141E1A; --ink-2:#4B5B56; --ink-3:#78887F;
+  --accent:#0B6E55; --accent-ink:#095643; --accent-soft:#E1F0EA; --accent-line:#9FCDBD;
+  --warn:#8F5410; --warn-soft:#F8EEDD; --warn-line:#E0C79A;
+  --shadow:0 1px 2px rgba(20,30,26,.05), 0 8px 24px -12px rgba(20,30,26,.18);
+  --display:"Gowun Batang","Batang","Malgun Gothic",serif;
+  --body:"IBM Plex Sans KR","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  --mono:"IBM Plex Mono","Consolas","D2Coding",monospace;
+  --topbar:64px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+    --line:#28382F; --line-strong:#3A4E45;
+    --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+    --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+    --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+  --line:#28382F; --line-strong:#3A4E45;
+  --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+  --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+  --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+
+/* ─── 기본 ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-weight:400; font-size:16px; line-height:1.68;
+  word-break:keep-all; overflow-wrap:break-word;
+}
+h1,h2,h3,h4{font-family:var(--display); font-weight:700; line-height:1.28; text-wrap:balance; margin:0;}
+p{margin:0;}
+a{color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent-line);}
+a:hover{border-bottom-color:var(--accent);}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:3px; border-radius:3px;}
+code,kbd{font-family:var(--mono); font-size:.88em; background:var(--surface-2); padding:.12em .38em; border-radius:4px; border:1px solid var(--line);}
+kbd{font-size:.8em; box-shadow:0 1px 0 var(--line-strong);}
+.eyebrow{font-family:var(--body); font-size:.95rem; font-weight:600; letter-spacing:.01em; color:var(--ink-2);}
+
+/* ─── 상단바 ───────────────────────────────────────── */
+.topbar{
+  position:sticky; top:0; z-index:50; height:var(--topbar);
+  display:flex; align-items:center; gap:20px;
+  padding:0 clamp(14px,3vw,36px);
+  background:var(--ground);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex; flex-direction:column; gap:1px; min-width:0;}
+.brand b{font-family:var(--display); font-size:1.02rem; font-weight:700; white-space:nowrap;}
+.brand span{font-family:var(--body); font-size:.8rem; letter-spacing:.01em; color:var(--ink-3);}
+.tabs{display:flex; gap:4px; margin-left:auto; background:var(--surface-2); padding:4px; border-radius:10px; border:1px solid var(--line);}
+.tab{
+  appearance:none; border:0; background:transparent; cursor:pointer;
+  font-family:var(--body); font-size:.86rem; font-weight:600; color:var(--ink-2);
+  padding:7px 13px; border-radius:7px; display:flex; align-items:baseline; gap:7px; white-space:nowrap;
+}
+.tab .min{font-family:var(--mono); font-size:.68rem; font-weight:500; color:var(--ink-3);}
+.tab:hover{color:var(--ink);}
+.tab[aria-selected="true"]{background:var(--surface); color:var(--accent-ink); box-shadow:var(--shadow);}
+.tab[aria-selected="true"] .min{color:var(--accent);}
+
+/* ─── 강의: 슬라이드 ───────────────────────────────── */
+.stage{
+  min-height:calc(100vh - var(--topbar) - 62px);
+  display:flex; align-items:center; justify-content:center;
+  padding:clamp(24px,4vw,56px) clamp(16px,5vw,60px);
+}
+.slide{width:100%; max-width:960px; display:flex; flex-direction:column; gap:clamp(16px,2.2vw,26px);}
+.slide h2{font-size:clamp(1.75rem,3.9vw,2.85rem);}
+.slide h3{font-size:clamp(1.1rem,1.9vw,1.35rem); color:var(--accent-ink);}
+.slide p{font-size:clamp(1.05rem,1.8vw,1.38rem); color:var(--ink-2); max-width:62ch;}
+.slide .lead{font-size:clamp(1.2rem,2.2vw,1.62rem); color:var(--ink);}
+.slide ul{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.55em; font-size:clamp(1.05rem,1.7vw,1.34rem);}
+.slide ul li::marker{color:var(--accent);}
+.rule{height:3px; width:56px; background:var(--accent); border-radius:2px;}
+
+.cover{gap:clamp(20px,3vw,34px);}
+.cover h1{font-size:clamp(2.3rem,6.2vw,4.4rem); letter-spacing:-.015em;}
+.cover .sub{font-size:clamp(1.15rem,2.1vw,1.58rem); color:var(--ink-2);}
+.cover dl{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:18px; margin:0; padding-top:16px; border-top:1px solid var(--line);}
+.cover dt{font-family:var(--body); font-size:.8rem; font-weight:600; letter-spacing:.01em; color:var(--ink-3); margin-bottom:3px;}
+.cover dd{margin:0; font-size:1.05rem; font-weight:500;}
+
+.grid{display:grid; gap:14px;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.g3{grid-template-columns:repeat(auto-fit,minmax(215px,1fr));}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px; display:flex; flex-direction:column; gap:7px; box-shadow:var(--shadow);
+}
+.card h4{font-family:var(--body); font-weight:600; font-size:1.12rem;}
+.card p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+.card .tagline{font-family:var(--body); font-size:.85rem; font-weight:600; letter-spacing:.01em; color:var(--accent);}
+
+.freedoms{display:flex; flex-direction:column; gap:10px; counter-reset:f -1;}
+.freedom{
+  display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:baseline;
+  padding:13px 18px; background:var(--surface); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:0 10px 10px 0;
+}
+.freedom::before{
+  counter-increment:f; content:"Freedom " counter(f);
+  font-family:var(--mono); font-size:.72rem; font-weight:600; color:var(--accent);
+  letter-spacing:.05em; white-space:nowrap;
+}
+.freedom b{font-weight:600;}
+.freedom span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+/* ─── 트랙 비교(필수 A / 선택 B) ───────────────────── */
+.tracks{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(290px,1fr));}
+.track{
+  background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0; padding:18px 20px;
+  display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow);
+}
+.track.optional{background:var(--surface-2); border-left-style:dashed; border-left-color:var(--line-strong); box-shadow:none;}
+.track .badge{
+  align-self:flex-start; font-family:var(--body); font-size:.8rem; font-weight:700;
+  padding:3px 11px; border-radius:20px; background:var(--accent-soft); color:var(--accent-ink);
+}
+.track.optional .badge{background:var(--sunken); color:var(--ink-3);}
+.track h4{font-family:var(--body); font-weight:700; font-size:1.18rem;}
+.track p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+
+.timeline{display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); border-top:2px solid var(--line-strong);}
+.tl-item{padding:16px 14px 0 0; position:relative;}
+.tl-item::before{content:""; position:absolute; top:-6px; left:0; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid var(--ground);}
+.tl-item .yr{font-family:var(--mono); font-size:1.18rem; font-weight:600; color:var(--accent-ink); display:block; margin-bottom:3px;}
+.tl-item p{font-size:.98rem; line-height:1.55;}
+
+.callout{
+  display:flex; gap:14px; padding:16px 20px; border-radius:10px;
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+}
+.callout .mk{font-family:var(--body); font-size:.9rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink); padding-top:2px; white-space:nowrap;}
+.callout p{color:var(--ink); max-width:none;}
+.callout.warn{background:var(--warn-soft); border-color:var(--warn-line);}
+.callout.warn .mk{color:var(--warn);}
+
+table{width:100%; border-collapse:collapse; font-size:1.02rem;}
+th,td{border-bottom:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top;}
+th{font-family:var(--body); font-size:.88rem; letter-spacing:.01em; color:var(--ink-3); font-weight:600; border-bottom:1.5px solid var(--line-strong);}
+td.num{font-variant-numeric:tabular-nums; font-family:var(--mono); white-space:nowrap; color:var(--accent-ink); font-weight:500;}
+.scroll-x{overflow-x:auto;}
+td.where{white-space:normal; font-size:.88em; color:var(--ink-2); width:26%;}
+.where-in{font-size:.9em; color:var(--ink-2); margin-top:8px; padding-top:8px; border-top:1px solid var(--line);}
+@media print{ a[href^="http"]{ text-decoration:underline; text-underline-offset:2px; } }
+
+.slidenav{
+  position:sticky; bottom:0; z-index:40;
+  display:flex; align-items:center; gap:14px;
+  padding:11px clamp(14px,3vw,36px);
+  background:var(--ground); border-top:1px solid var(--line);
+}
+.dots{display:flex; gap:4px; flex:1; flex-wrap:wrap; align-items:center;}
+.dot{
+  min-width:26px; height:24px; padding:0 5px; border-radius:6px; cursor:pointer; line-height:1;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-3);
+  font-family:var(--mono); font-size:.74rem; font-weight:600; font-variant-numeric:tabular-nums;
+}
+.dot:hover{background:var(--surface); border-color:var(--accent); color:var(--accent-ink);}
+.dot[aria-current="true"]{background:var(--accent); border-color:var(--accent); color:var(--ground);}
+.navbtn.edge{padding:7px 10px; font-family:var(--mono);}
+.navbtn{
+  appearance:none; cursor:pointer; font-family:var(--body); font-weight:600; font-size:.85rem;
+  padding:7px 15px; border-radius:8px; border:1px solid var(--line-strong);
+  background:var(--surface); color:var(--ink);
+}
+.navbtn:hover{border-color:var(--accent); color:var(--accent-ink);}
+.navbtn:disabled{opacity:.35; cursor:default;}
+.counter{font-family:var(--mono); font-size:.8rem; font-variant-numeric:tabular-nums; color:var(--ink-3); white-space:nowrap;}
+
+/* ─── 문서형 페인(실습·과제) ───────────────────────── */
+.doc{max-width:840px; margin:0 auto; padding:clamp(28px,5vw,60px) clamp(18px,5vw,40px) 100px; display:flex; flex-direction:column; gap:clamp(26px,3.5vw,38px);}
+.doc-head{display:flex; flex-direction:column; gap:12px;}
+.doc-head h2{font-size:clamp(1.75rem,3.4vw,2.4rem);}
+.doc-head p{color:var(--ink-2); max-width:62ch;}
+
+.step{display:flex; flex-direction:column; gap:14px; padding-top:26px; border-top:1px solid var(--line);}
+.step-head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;}
+.step-no{font-family:var(--mono); font-size:.72rem; font-weight:600; letter-spacing:.08em; color:var(--accent-ink); padding:3px 9px; background:var(--accent-soft); border-radius:20px; white-space:nowrap;}
+.step-head h3{font-size:1.22rem; flex:1; min-width:200px;}
+.budget{font-family:var(--mono); font-size:.78rem; color:var(--ink-3); font-variant-numeric:tabular-nums; white-space:nowrap;}
+.goal{font-size:.95rem; color:var(--ink-2);}
+.why{display:block; margin-top:.3em; padding:.3em .6em; border-left:3px solid var(--accent-line); background:var(--accent-soft); font-size:.9rem; color:var(--ink-2); border-radius:0 4px 4px 0;}
+.why b{color:var(--accent-ink);}
+.step ol{margin:0; padding-left:1.3em; display:flex; flex-direction:column; gap:.5em; font-size:.96rem;}
+.step ol li::marker{font-family:var(--mono); font-weight:600; color:var(--accent);}
+.step ol ul{margin:.35em 0 0; padding-left:1.1em; font-size:.92rem; color:var(--ink-2); display:flex; flex-direction:column; gap:.25em;}
+
+.check{display:flex; align-items:flex-start; gap:11px; padding:11px 15px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; cursor:pointer;}
+.check input{margin:0; width:17px; height:17px; accent-color:var(--accent); flex-shrink:0; margin-top:2px; cursor:pointer;}
+.check span{font-size:.93rem; font-weight:500;}
+.check:has(input:checked){background:var(--accent-soft); border-color:var(--accent-line);}
+.check:has(input:checked) span{color:var(--ink-2); text-decoration:line-through; text-decoration-color:var(--accent-line);}
+
+.progress{
+  position:sticky; top:calc(var(--topbar) + 10px); z-index:30;
+  display:flex; align-items:center; gap:14px; padding:12px 18px;
+  background:var(--surface); border:1px solid var(--line); border-radius:11px; box-shadow:var(--shadow);
+}
+.progress b{font-family:var(--mono); font-size:.9rem; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.bar{flex:1; height:7px; background:var(--sunken); border-radius:4px; overflow:hidden;}
+.bar i{display:block; height:100%; width:0; background:var(--accent); border-radius:4px; transition:width .3s ease;}
+@media (prefers-reduced-motion: reduce){ .bar i{transition:none;} }
+.reset{appearance:none; border:1px solid var(--line-strong); background:transparent; color:var(--ink-3); font-family:var(--body); font-size:.76rem; padding:4px 10px; border-radius:6px; cursor:pointer;}
+.reset:hover{color:var(--ink); border-color:var(--accent);}
+
+.ladder{display:flex; flex-direction:column; counter-reset:l;}
+.rung{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px dashed var(--line);}
+.rung:last-child{border-bottom:0;}
+.rung::before{counter-increment:l; content:counter(l); font-family:var(--mono); font-size:.75rem; font-weight:600; color:var(--ground); background:var(--accent); width:22px; height:22px; border-radius:50%; display:grid; place-items:center;}
+.rung b{font-weight:600;}
+.rung span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+pre{background:var(--sunken); border:1px solid var(--line); border-radius:9px; padding:14px 16px; overflow-x:auto; margin:0;}
+pre code{background:none; border:0; padding:0; font-size:.85rem; line-height:1.6;}
+
+.rubric{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+.rubric .card b{font-family:var(--body); font-size:.95rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink);}
+
+.foot{border-top:1px solid var(--line); padding:22px clamp(18px,5vw,40px); text-align:center;}
+.foot p{font-size:.8rem; color:var(--ink-3);}
+
+/* ─── 인쇄 ─────────────────────────────────────────── */
+@media print{
+  .topbar,.slidenav,.progress{display:none !important;}
+  .pane[hidden]{display:block !important;}
+  .slide[hidden]{display:flex !important;}
+  .stage{display:block; min-height:0; padding:0;}
+  .slide{max-width:none; break-after:page; page-break-after:always; padding:8mm 0;}
+  .slide:last-child{break-after:auto; page-break-after:auto;}
+  body{background:#fff; color:#000; font-size:11pt;}
+  .card,.callout,.check,.step,.track,.tl-item{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <b>Licensing</b>
+    <span>Open Source Software · Chapter 7 · Fall 2026</span>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Class blocks">
+    <button class="tab" role="tab" id="tab-lecture" aria-controls="pane-lecture" aria-selected="true">Lecture <span class="min">20 min</span></button>
+    <button class="tab" role="tab" id="tab-lab" aria-controls="pane-lab" aria-selected="false">Lab <span class="min">30 min</span></button>
+    <button class="tab" role="tab" id="tab-task" aria-controls="pane-task" aria-selected="false">Assignment <span class="min">5 min</span></button>
+  </div>
+</header>
+
+<!-- ══════════ Lecture ══════════ -->
+<section class="pane" id="pane-lecture" role="tabpanel" aria-labelledby="tab-lecture">
+  <div class="stage">
+
+    <article class="slide cover">
+      <p class="eyebrow">Chapter 7 · 2026 Fall</p>
+      <h1>Licensing</h1>
+      <p class="sub">A license answers one question:<br><b>&ldquo;If I use this code, what must I do?&rdquo;</b></p>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">Permissions</span><h4>What you may do</h4><p>Use it, change it, share it, use it in a product you sell.</p></div>
+        <div class="card"><span class="tagline">Conditions</span><h4>What you must do</h4><p>Keep the copyright notice. Sometimes more. <b>This is the part that matters today.</b></p></div>
+        <div class="card"><span class="tagline">Limitations</span><h4>What you do not get</h4><p>No warranty. If the code breaks, the authors are not responsible.</p></div>
+      </div>
+      <dl>
+        <div><dt>Course</dt><dd>Open Source Software</dd></div>
+        <div><dt>Before</dt><dd>Chapter 6 &mdash; how to fix someone else's code</dd></div>
+        <div><dt>Today</dt><dd>When you may <b>use</b> someone else's code</dd></div>
+      </dl>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Three licenses, one table</p>
+      <h2>MIT, Apache 2.0, GPL 3.0:<br>what you must do</h2>
+      <div class="rule"></div>
+      <p class="lead">All three let you use, change and share the code, also in a product you sell. The difference is only in what you must do when you <b>give your program to other people</b>.</p>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th>License</th><th>Type</th><th>What you must do when you share it</th></tr></thead>
+          <tbody>
+            <tr><td><b>MIT</b></td><td>permissive</td><td>Keep the copyright notice and the license text. That is all. You do not have to share your own source code.</td></tr>
+            <tr><td><b>Apache 2.0</b></td><td>permissive</td><td>Keep the notices and give a copy of the license. <b>Mark the files you changed.</b> You also get a patent license from the contributors.</td></tr>
+            <tr><td><b>GPL 3.0</b></td><td>copyleft</td><td>Keep the notices and mark your changes. <b>Your whole program must use GPL 3.0 too, and you must make its source code available.</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="mk">Two words</span>
+        <p><b>Permissive</b> (a license that asks for very little) &mdash; you keep a notice and do what you like. <b>Copyleft</b> (a license that must pass on to your program) &mdash; if you share a program that includes GPL code, your program must be GPL too.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Our whitelist</p>
+      <h2>Why every library on<br>the whitelist is permissive</h2>
+      <div class="rule"></div>
+      <p class="lead">The course whitelist uses the MIT/BSD/Apache family &mdash; all permissive. That was a choice, and it was made for your team project.</p>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">MIT</span><h4><code>rich</code></h4><p>The library you installed in Chapter 3 and use again in Chapter 8.</p></div>
+        <div class="card"><span class="tagline">Apache-2.0</span><h4><code>requests</code></h4><p>For calling web APIs. Apache: mark files you change.</p></div>
+        <div class="card"><span class="tagline">BSD-3-Clause</span><h4><code>pandas</code></h4><p>BSD is permissive, like MIT: keep the notice.</p></div>
+      </div>
+      <ul>
+        <li><b>Your team chooses its own license.</b> With only permissive libraries inside, your project can use MIT, like the course template does.</li>
+        <li><b>The answer to &ldquo;may we use this?&rdquo; is always yes</b> &mdash; as long as you keep the notices.</li>
+        <li><b>A GPL library would decide your license for you.</b> Want a library that is not on the list? Ask the instructor first.</li>
+      </ul>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Two files</p>
+      <h2>LICENSE and THIRD_PARTY.md<br>are different files</h2>
+      <div class="rule"></div>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">LICENSE</span><h4>The rules for <b>your</b> code</h4><p>One file in the root of your repository. It says what other people may do with the code you wrote. GitHub reads it and shows the license name on the repository page. Today you add one to <code>oss-practice</code>.</p></div>
+        <div class="card"><span class="tagline">THIRD_PARTY.md</span><h4>The list of <b>other people's</b> code</h4><p>Every library your project uses, with its version, its license and what you use it for. The team project template already has one &mdash; you fill it in for your own project.</p></div>
+      </div>
+      <pre><code>| Library | Version | License | What we use it for |
+|---|---|---|---|
+| rich    | 15.0.0  | MIT     | Printing the result table in the terminal |</code></pre>
+      <div class="callout">
+        <span class="mk">One sentence</span>
+        <p>LICENSE is what you give. THIRD_PARTY.md is what you took. <b>A real project needs both.</b></p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">The trap</p>
+      <h2>No license means<br>you may not copy it</h2>
+      <div class="rule"></div>
+      <p class="lead">Many people think that public code with no license is free for everyone. It is the opposite. Code is under copyright from the moment someone writes it. <b>A license is the permission. No license, no permission.</b></p>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">What GitHub allows</span><h4>You can view it and fork it</h4><p>Because the owner accepted GitHub's terms of service. That is all. It does not mean you may copy it into your project.</p></div>
+        <div class="card"><span class="tagline">What you can do</span><h4>Ask, or choose another one</h4><p>Open an issue and politely ask the owner to add a license. Or choose another library that has one.</p></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Your own repository</span>
+        <p>Your <code>oss-practice</code> has no license yet. Right now nobody may legally reuse your code. In ten minutes you change that.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Before you switch tabs</p>
+      <h2>Checklist to close</h2>
+      <div class="rule"></div>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">20 min · Lecture</span><h4>What you can do now</h4><p>Say the one question a license answers. Say what MIT, Apache 2.0 and GPL 3.0 each ask you to do. Explain why the whitelist is all permissive. Say the difference between LICENSE and THIRD_PARTY.md, and what "no license" means.</p></div>
+        <div class="card"><span class="tagline">30 min · Lab</span><h4>What's next</h4><p>Add an MIT LICENSE to your <code>oss-practice</code> on GitHub. Then an eight-question true-or-false quiz, with hands up. Then the topic survey for the team project.</p></div>
+      </div>
+      <p class="lead">The eight quiz slides come next. We use them <b>after</b> you add your LICENSE. Switch to the <b>Lab</b> tab now.</p>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Quiz · 1 of 8 · True or false?</p>
+      <h2>Minh finds a public repository on GitHub. It has no LICENSE file.</h2>
+      <div class="rule"></div>
+      <p class="lead">&ldquo;It is public, so I may copy its code into our team project.&rdquo;</p>
+      <div class="callout"><span class="mk">Hands up</span><p>True &mdash; one hand. False &mdash; two hands.</p></div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Quiz · 2 of 8 · True or false?</p>
+      <h2>Sita builds an app and sells it. The app uses an MIT library.</h2>
+      <div class="rule"></div>
+      <p class="lead">&ldquo;The MIT license allows this.&rdquo;</p>
+      <div class="callout"><span class="mk">Hands up</span><p>True &mdash; one hand. False &mdash; two hands.</p></div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Quiz · 3 of 8 · True or false?</p>
+      <h2>Aziz gives his program to a friend. The program uses an MIT library.</h2>
+      <div class="rule"></div>
+      <p class="lead">&ldquo;Because of MIT, Aziz must also give his own source code to the friend.&rdquo;</p>
+      <div class="callout"><span class="mk">Hands up</span><p>True &mdash; one hand. False &mdash; two hands.</p></div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Quiz · 4 of 8 · True or false?</p>
+      <h2>Linh changes two files of an Apache 2.0 library and shares the result.</h2>
+      <div class="rule"></div>
+      <p class="lead">&ldquo;Apache 2.0 asks her to put a notice in the two files saying that she changed them.&rdquo;</p>
+      <div class="callout"><span class="mk">Hands up</span><p>True &mdash; one hand. False &mdash; two hands.</p></div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Quiz · 5 of 8 · True or false?</p>
+      <h2>Ram puts a GPL 3.0 library into his program and gives the program to other people.</h2>
+      <div class="rule"></div>
+      <p class="lead">&ldquo;Ram may keep his own part of the source code secret.&rdquo;</p>
+      <div class="callout"><span class="mk">Hands up</span><p>True &mdash; one hand. False &mdash; two hands.</p></div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Quiz · 6 of 8 · True or false?</p>
+      <h2>Dilnoza changes a GPL 3.0 program and runs it only on her own computer. She never gives it to anyone.</h2>
+      <div class="rule"></div>
+      <p class="lead">&ldquo;The GPL does not ask her to publish her changes.&rdquo;</p>
+      <div class="callout"><span class="mk">Hands up</span><p>True &mdash; one hand. False &mdash; two hands.</p></div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Quiz · 7 of 8 · True or false?</p>
+      <h2>A team uses only libraries from the course whitelist.</h2>
+      <div class="rule"></div>
+      <p class="lead">&ldquo;They are all permissive, so the team does not need to write anything about them.&rdquo;</p>
+      <div class="callout"><span class="mk">Hands up</span><p>True &mdash; one hand. False &mdash; two hands.</p></div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Quiz · 8 of 8 · True or false?</p>
+      <h2>A team adds a LICENSE file and a THIRD_PARTY.md file.</h2>
+      <div class="rule"></div>
+      <p class="lead">&ldquo;LICENSE is for the team's own code. THIRD_PARTY.md lists the libraries they use and their licenses.&rdquo;</p>
+      <div class="callout"><span class="mk">Hands up</span><p>True &mdash; one hand. False &mdash; two hands.</p></div>
+    </article>
+
+  </div>
+
+  <nav class="slidenav" aria-label="Slide navigation">
+    <button class="navbtn edge" id="first" type="button" title="First slide (Home)" aria-label="First slide">⇤</button>
+    <button class="navbtn" id="prev" type="button">← Prev</button>
+    <button class="navbtn" id="next" type="button">Next →</button>
+    <button class="navbtn edge" id="last" type="button" title="Last slide (End)" aria-label="Last slide">⇥</button>
+    <div class="dots" id="dots"></div>
+    <span class="counter" id="counter">1 / 14</span>
+  </nav>
+</section>
+
+<!-- ══════════ Lab ══════════ -->
+<section class="pane" id="pane-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Lab B · 25 + 5 min · Step by step</p>
+      <h2>Add a LICENSE, answer the quiz, fill in the survey</h2>
+      <p>Three short parts, then the closing routine for the whole class. Everything today happens in the browser.</p>
+    </div>
+
+    <div class="callout">
+      <span class="mk">AI rule, again</span>
+      <p>You may ask AI what a license means. Then check the answer against the license text itself &mdash; AI is often wrong about licenses. <b>If you cannot explain it, it does not count.</b></p>
+    </div>
+
+    <div class="progress">
+      <b id="pg-count">0 / 4</b>
+      <span class="bar"><i id="pg-bar"></i></span>
+      <button class="reset" id="pg-reset" type="button">Reset</button>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART B1</span><h3>Add an MIT LICENSE to oss-practice</h3><span class="budget">10 min</span></div>
+      <p class="goal">GitHub has a license picker. It writes the whole license text for you.</p>
+      <ol>
+        <li>Open your own repository: <code>https://github.com/&lt;you&gt;/oss-practice</code>.</li>
+        <li>Above the list of files, open the <b>Add file</b> menu and click <b>Create new file</b>.</li>
+        <li>In the file name field, type <code>LICENSE</code> &mdash; all capital letters, no extension.</li>
+        <li>A button <b>Choose a license template</b> appears under the file name. Click it.</li>
+        <li>On the left, choose <b>MIT License</b>. Check the line <code>Copyright (c) &lt;year&gt; &lt;name&gt;</code>: your name or your GitHub username is fine. <b>No student ID.</b> This repository is public.</li>
+        <li>Click <b>Review and submit</b>. Then click <b>Commit changes...</b>, keep the message, and click <b>Commit changes</b>.
+          <span class="why"><b>What is happening:</b> the template only filled in the text. <b>Commit changes</b> makes one new commit on <code>main</code> of your repository on GitHub, and that commit adds one file, <code>LICENSE</code>, at the top of the repository. Nothing on this PC changes.</span></li>
+        <li>Go back to the main page of the repository. The license name now shows on the right side of the page.
+          <span class="why"><b>What is happening:</b> GitHub reads the <code>LICENSE</code> file at the top of a repository, recognizes the MIT text, and shows its name in the <b>About</b> box. In the assignment you read this same box on other projects.</span></li>
+      </ol>
+      <div class="callout warn">
+        <span class="mk">Your local folder is now one commit behind</span>
+        <p>You made this commit on GitHub, not on this PC. The next time you work in <code>D:\oss\&lt;your ID&gt;\oss-practice</code>, run <code>git pull</code> first.</p>
+      </div>
+      <label class="check"><input type="checkbox" data-k="b1"><span>LICENSE committed · MIT shows on my repository page · no student ID in it</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART B2</span><h3>True or false: eight questions</h3><span class="budget">10 min</span></div>
+      <p class="goal">The instructor shows the quiz slides (Lecture tab, slides 7&ndash;14). For each one, raise your hands: <b>one hand for true, two hands for false.</b> The instructor gives the answer and a one-line reason after each question.</p>
+      <ol>
+        <li>Decide alone first. Then raise your hands.</li>
+        <li>If you got one wrong, write the question number and the reason in one line. Keep this note &mdash; it helps you with today's assignment.</li>
+      </ol>
+      <label class="check"><input type="checkbox" data-k="b2"><span>Eight answers given · wrong ones written down with the reason</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART B3</span><h3>Topic survey for the team project</h3><span class="budget">5 min</span></div>
+      <p class="goal">Your answers help the instructor plan the team projects. There are no wrong answers.</p>
+      <ol>
+        <li>Open the survey in <code>practice-pr</code> &mdash; <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=survey-topic.md" target="_blank" rel="noopener"><b>click here to open it with the template ready</b></a>.</li>
+        <li>Title: <code>[Survey] StudentID Name</code> &mdash; for example <code>[Survey] 20261234 Gildong Hong</code>.</li>
+        <li>Answer two things: one or two topics you like, and track A or B.</li>
+        <li>Click <b>Create</b>. One survey per person.
+          <span class="why"><b>What is happening:</b> your answers are saved as one issue in <code>practice-pr</code>, and everyone in this class can read it. The instructor reads all the <code>[Survey]</code> issues and uses only the topics and tracks.</span></li>
+      </ol>
+      <label class="check"><input type="checkbox" data-k="b3"><span>Survey issue created</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 4</span><h3>Last thing before you leave the room</h3><span class="budget">5 min</span></div>
+      <p class="goal">Do this <b>after</b> the assignment explanation, right before you leave. The closing routine for Chapters 6 and 7 together.</p>
+      <ol>
+        <li>Check your work: your Chapter 5 PR is <b>merged</b> (Chapter 6 lab), your <code>oss-practice</code> shows <b>MIT</b>, and your <b>[Survey]</b> issue exists.</li>
+        <li><b>Sign out of GitHub, and of every other site you signed in to today</b> (ChatGPT, Google, Claude). On GitHub: click your avatar, then <b>Sign out</b>.</li>
+        <li>Delete the login that Git saved in Windows, then check that it is gone:
+<pre><code>cmdkey /delete:git:https://github.com
+cmdkey /list | findstr github</code></pre>
+          The second command must print nothing. If the first one prints <code>CMDKEY: Element not found.</code>, that is fine too &mdash; nothing was saved.
+        </li>
+        <li><b>Close VS Code.</b></li>
+      </ol>
+      <label class="check"><input type="checkbox" data-k="s4"><span>PR merged · LICENSE added · survey done · signed out of every site · cmdkey empty · VS Code closed</span></label>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ Assignment ══════════ -->
+<section class="pane" id="pane-task" role="tabpanel" aria-labelledby="tab-task" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Mini Assignment #7 · Explained today, done at home</p>
+      <h2>License research sheet: three libraries</h2>
+      <p>Choose three libraries from the course whitelist. For each one, find its license <b>at the source</b>, and write what it asks you to do in one line.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Assignment</span><h3>What to do</h3></div>
+      <ol>
+        <li>Choose <b>three</b> libraries from the course whitelist &mdash; ones you may use in your team project:
+          <ul>
+            <li><code>rich</code> · <code>typer</code> · <code>tabulate</code> · <code>streamlit</code> · <code>Flask</code> · <code>pandas</code> · <code>openpyxl</code> · <code>python-dateutil</code> · <code>requests</code> · <code>beautifulsoup4</code></li>
+            <li><code>schedule</code> · <code>loguru</code> · <code>PyYAML</code> · <code>python-dotenv</code> · <code>validators</code> · <code>faker</code> · <code>qrcode</code> · <code>Pillow</code> · <code>pytest</code></li>
+          </ul>
+          The same list is in <code>course-notice</code> as <code>project-library-whitelist.md</code>.
+        </li>
+        <li>Find the repository from the library's PyPI page: <b>Project links &rsaquo; Source</b> (it may not be on GitHub). If the <b>About</b> box shows a license name, use it. If it says <b>Other</b>, or the repository is not on GitHub, open the repository's <code>LICENSE</code> file and write the license name from its first lines. If there is no name in the About box, the <code>LICENSE</code> file is the answer.</li>
+        <li>Write one line: what must <b>you</b> do if your team uses it? Use the table from the lecture, in your own words.</li>
+        <li>Copy the URL of the <code>LICENSE</code> file as your source.</li>
+        <li>Open an issue in <code>practice-pr</code> with the Chapter 7 template &mdash; <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch07.md" target="_blank" rel="noopener"><b>click here to open it with the template ready</b></a>. Title: <code>[Ch07] StudentID Name</code>. Fill in the table.</li>
+      </ol>
+      <pre><code>Title: [Ch07] 20261234 Gildong Hong
+
+| Library | License | What I must do (one line) | Source URL |
+|---|---|---|---|
+| &lt;library 1&gt; | | | |
+| &lt;library 2&gt; | | | |
+| &lt;library 3&gt; | | | |
+
+## My oss-practice LICENSE
+https://github.com/&lt;you&gt;/oss-practice/blob/main/LICENSE</code></pre>
+      <div class="callout warn">
+        <span class="mk">Source means the library's own page</span>
+        <p>Not a blog, not an AI answer. The URL must go to the library's own repository. <b>Write under each heading &mdash; do not delete the table.</b></p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Grading</span><h3>How it's graded</h3></div>
+      <div class="rubric">
+        <div class="card"><b>Complete</b><p>Three libraries from the whitelist, each with the right license, a one-line duty in your own words, and a source URL to the library's own repository. Your LICENSE link works.</p></div>
+        <div class="card"><b>Partial</b><p>A row is missing, a license is wrong, the duty line is copied from somewhere, or a source URL is not the library's own page. If two submissions are the same text, both are Partial.</p></div>
+        <div class="card"><b>Not submitted</b><p>No issue by the deadline. Late work still gets partial credit.</p></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Deadline</span>
+        <p><b>11:59 PM the night before the next class</b> &mdash; the exact date is in the ecampus notice. Same deadline as the Chapter 6 assignment. Two issues: <code>[Ch06]</code> and <code>[Ch07]</code>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Next</span><h3>What comes next</h3></div>
+      <p class="goal">The next class is <b>Chapter 8 &mdash; Python Refresher &amp; First OSS Use</b>: you install someone else's code, run it, and change one thing.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>Open Source Software · Fall 2026 · Chapter 7 course material — based on the official syllabus</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── Tabs ── */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var pane = document.getElementById(t.getAttribute('aria-controls'));
+      var on = (t === tab);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      pane.hidden = !on;
+    });
+    window.scrollTo(0, 0);
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ selectTab(t); });
+    t.addEventListener('keydown', function(e){
+      var i = tabs.indexOf(t), n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowLeft')  n = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (n){ e.preventDefault(); n.focus(); selectTab(n); }
+    });
+  });
+
+  /* ── Slides ── */
+  var slides  = Array.prototype.slice.call(document.querySelectorAll('#pane-lecture .slide'));
+  var dotsBox = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var firstBtn = document.getElementById('first');
+  var lastBtn = document.getElementById('last');
+  var cur = 0;
+
+  slides.forEach(function(s, i){
+    var h = s.querySelector('h1, h2');
+    var t = h ? h.textContent.replace(/\s+/g, ' ').trim() : '';
+    var d = document.createElement('button');
+    d.type = 'button';
+    d.className = 'dot';
+    d.textContent = (i + 1);
+    d.title = (i + 1) + (t ? '. ' + t : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1) + (t ? ': ' + t : ''));
+    d.addEventListener('click', function(){ go(i); });
+    dotsBox.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function go(i){
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function(s, n){ s.hidden = (n !== cur); });
+    dots.forEach(function(d, n){ d.setAttribute('aria-current', n === cur ? 'true' : 'false'); });
+    counter.textContent = (cur + 1) + ' / ' + slides.length;
+    prevBtn.disabled = firstBtn.disabled = (cur === 0);
+    nextBtn.disabled = lastBtn.disabled = (cur === slides.length - 1);
+    window.scrollTo(0, 0);
+  }
+  prevBtn.addEventListener('click', function(){ go(cur - 1); });
+  nextBtn.addEventListener('click', function(){ go(cur + 1); });
+  firstBtn.addEventListener('click', function(){ go(0); });
+  lastBtn.addEventListener('click', function(){ go(slides.length - 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (document.getElementById('pane-lecture').hidden) return;
+    var t = e.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp'){   e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home'){ e.preventDefault(); go(0); }
+    if (e.key === 'End'){  e.preventDefault(); go(slides.length - 1); }
+  });
+  go(0);
+
+  /* ── Lab checklist (browser-only storage) ── */
+  var KEY = 'oss2026-ch07-lab-en';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.check input'));
+  var pgCount = document.getElementById('pg-count');
+  var pgBar = document.getElementById('pg-bar');
+
+  function read(){
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function write(state){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch (e) { /* private/incognito mode etc. — skip saving but keep working */ }
+  }
+  function paint(){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    pgCount.textContent = done + ' / ' + boxes.length;
+    pgBar.style.width = (boxes.length ? (done / boxes.length * 100) : 0) + '%';
+  }
+
+  var saved = read();
+  boxes.forEach(function(b){
+    if (saved[b.dataset.k]) b.checked = true;
+    b.addEventListener('change', function(){
+      var s = read();
+      s[b.dataset.k] = b.checked;
+      write(s);
+      paint();
+    });
+  });
+  document.getElementById('pg-reset').addEventListener('click', function(){
+    boxes.forEach(function(b){ b.checked = false; });
+    write({});
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>
