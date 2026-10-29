@@ -191,6 +191,21 @@ td.where{white-space:normal; font-size:.88em; color:var(--ink-2); width:26%;}
 .navbtn:disabled{opacity:.35; cursor:default;}
 .counter{font-family:var(--mono); font-size:.8rem; font-variant-numeric:tabular-nums; color:var(--ink-3); white-space:nowrap;}
 
+/* ─── Chapter 6 diagrams (inline SVG; colours from the tokens above, same as Chapter 5) ─── */
+.dg{--bad:#C0392B; --bad-soft:#FBE9E7;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .dg{--bad:#FF7A6B; --bad-soft:#3A1A16;} }
+:root[data-theme="dark"] .dg{--bad:#FF7A6B; --bad-soft:#3A1A16;}
+.dg svg{display:block; width:100%; height:auto;}
+.dg text{font-family:var(--body); fill:var(--ink-2);}
+.dg .mono{font-family:var(--mono); font-weight:600;}
+.dg .t-ink{fill:var(--ink);} .dg .t-acc{fill:var(--accent-ink);} .dg .t-mut{fill:var(--ink-3);} .dg .t-bad{fill:var(--bad);} .dg .t-on{fill:var(--surface);}
+.dg .s-acc{stroke:var(--accent);} .dg .s-line{stroke:var(--line-strong);} .dg .s-bad{stroke:var(--bad);}
+.dg .f-acc{fill:var(--accent);} .dg .f-soft{fill:var(--accent-soft);} .dg .f-surf{fill:var(--surface);} .dg .f-s2{fill:var(--surface-2);} .dg .f-bad{fill:var(--bad);} .dg .f-badsoft{fill:var(--bad-soft);} .dg .f-line{fill:var(--line-strong);}
+.dg .s-al{stroke:var(--accent-line);} .dg .f-ground{fill:var(--ground);}
+/* slides that carry a diagram: a little less space between blocks, so they still fit one screen */
+.slide.tight{gap:clamp(12px,1.5vw,17px);}
+.slide.tight .rung{padding:7px 0;}
+
 /* ─── 문서형 페인(실습·과제) ───────────────────────── */
 .doc{max-width:840px; margin:0 auto; padding:clamp(28px,5vw,60px) clamp(18px,5vw,40px) 100px; display:flex; flex-direction:column; gap:clamp(26px,3.5vw,38px);}
 .doc-head{display:flex; flex-direction:column; gap:12px;}
@@ -292,11 +307,42 @@ pre code .n::before{content:"← "; font-style:normal;}
       </dl>
     </article>
 
-    <article class="slide" hidden>
+    <article class="slide tight" hidden>
       <p class="eyebrow">The contribution flow</p>
       <h2>Fork, clone, branch,<br>then ask with a PR</h2>
       <div class="rule"></div>
       <p class="lead">In <code>practice-pr</code> you have Write access, so you made a branch inside it. On a stranger's project you have no Write access. So you work in your own copy, and ask the owner to take your change.</p>
+      <div class="dg" role="img" aria-label="Three places. The upstream is your partner's oss-practice on GitHub. Fork copies it to your fork, on GitHub in your account. git clone copies your fork to this PC. git push sends your branch from this PC to your fork. A pull request asks the upstream to take your fork's branch into its main. From this PC there is no push to the upstream, because you have no Write access there.">
+        <svg viewBox="0 0 960 126" aria-hidden="true">
+          <defs><marker id="m6a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker><marker id="m6b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-bad" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-s2 s-line" x="1" y="4" width="248" height="84" rx="12" stroke-width="2"/>
+          <text class="mono t-ink" x="125" y="30" font-size="17" text-anchor="middle">upstream</text>
+          <text class="t-ink" x="125" y="53" font-size="14" text-anchor="middle">your partner's <tspan class="mono">oss-practice</tspan></text>
+          <text class="t-mut" x="125" y="75" font-size="13" font-weight="600" text-anchor="middle">(GitHub)</text>
+          <rect class="f-soft s-acc" x="355" y="4" width="250" height="84" rx="12" stroke-width="2"/>
+          <text class="t-acc" x="480" y="30" font-size="17" font-weight="700" text-anchor="middle">your fork</text>
+          <text class="t-ink" x="480" y="53" font-size="14" text-anchor="middle">in your account</text>
+          <text class="t-mut" x="480" y="75" font-size="13" font-weight="600" text-anchor="middle">(GitHub)</text>
+          <rect class="f-surf s-acc" x="711" y="4" width="248" height="84" rx="12" stroke-width="2"/>
+          <text class="t-ink" x="835" y="30" font-size="17" font-weight="700" text-anchor="middle">this PC</text>
+          <text class="t-ink" x="835" y="53" font-size="14" text-anchor="middle">branch + commit here</text>
+          <text class="t-mut" x="835" y="75" font-size="13" font-weight="600" text-anchor="middle">(git, VS Code)</text>
+          <line class="s-acc" x1="255" y1="32" x2="349" y2="32" stroke-width="2.5" marker-end="url(#m6a)"/>
+          <text class="t-acc" x="302" y="23" font-size="14" font-weight="700" text-anchor="middle">Fork</text>
+          <line class="s-acc" x1="349" y1="60" x2="255" y2="60" stroke-width="2.5" marker-end="url(#m6a)"/>
+          <text class="t-acc" x="302" y="79" font-size="13" font-weight="700" text-anchor="middle">Pull request</text>
+          <text class="t-mut" x="302" y="94" font-size="12" font-weight="600" text-anchor="middle">to its main</text>
+          <line class="s-acc" x1="611" y1="32" x2="705" y2="32" stroke-width="2.5" marker-end="url(#m6a)"/>
+          <text class="mono t-acc" x="658" y="23" font-size="13" text-anchor="middle">git clone</text>
+          <line class="s-acc" x1="705" y1="60" x2="611" y2="60" stroke-width="2.5" marker-end="url(#m6a)"/>
+          <text class="mono t-acc" x="658" y="79" font-size="13" text-anchor="middle">git push</text>
+          <text class="t-mut" x="658" y="94" font-size="12" font-weight="600" text-anchor="middle">your branch</text>
+          <path class="s-bad" d="M835 90 V112 H125 V95" fill="none" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#m6b)"/>
+          <rect class="f-ground" x="384" y="100" width="216" height="24"/>
+          <circle class="f-bad" cx="398" cy="112" r="10"/><text class="t-on" x="398" y="117" font-size="15" font-weight="700" text-anchor="middle">&#215;</text>
+          <text class="t-bad" x="414" y="117" font-size="14" font-weight="700">no push: no Write access</text>
+        </svg>
+      </div>
       <div class="ladder">
         <div class="rung"><div><b>Fork</b><span>On GitHub, copy the project into your account. The original project is now called the <b>upstream</b> (the place your copy came from).</span></div></div>
         <div class="rung"><div><b>Clone</b><span>Copy <b>your fork</b> to this PC. Not the upstream &mdash; you cannot push there.</span></div></div>
@@ -325,14 +371,36 @@ pre code .n::before{content:"← "; font-style:normal;}
       </div>
     </article>
 
-    <article class="slide" hidden>
+    <article class="slide tight" hidden>
       <p class="eyebrow">Merge conflict</p>
       <h2>Why a conflict happens:<br>two answers for the same line</h2>
       <div class="rule"></div>
       <p class="lead"><code>intros/INDEX.md</code> has one part for each row of this room: <code>## Row A</code> to <code>## Row J</code>. In Chapter 5, you added one line under the comment in your row's part. Then my own PR was merged, and it added one line under the comment in <b>every</b> row's part. Now, in your row's part, the same place has two different answers.</p>
+      <div class="dg" role="img" aria-label="Commit line picture. main is a line of commits. Then the instructor's PR is merged into main: it adds one line in every row. The branch intro/20261234 starts from main before that merge and has one commit: your line in Row C. Both point at the same place: Row C, the line under the comment. There Git stops. The other 9 rows Git joins by itself.">
+        <svg viewBox="0 0 960 142" aria-hidden="true">
+          <defs><marker id="m6c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-line" d="M0 0 L10 5 L0 10 Z"/></marker><marker id="m6d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <text class="mono t-ink" x="8" y="45" font-size="16">main</text>
+          <text class="mono t-acc" x="8" y="115" font-size="14">intro/20261234</text>
+          <line class="s-line" x1="62" y1="40" x2="410" y2="40" stroke-width="3"/>
+          <circle class="f-line" cx="100" cy="40" r="9"/><circle class="f-line" cx="180" cy="40" r="9"/><circle class="f-line" cx="260" cy="40" r="9"/>
+          <circle class="f-surf s-line" cx="420" cy="40" r="10" stroke-width="3.5"/>
+          <text class="t-ink" x="420" y="20" font-size="15" font-weight="700" text-anchor="middle">instructor's PR merged: one line in every row</text>
+          <path class="s-acc" d="M260 40 C300 40 300 110 340 110 L461 110" fill="none" stroke-width="3"/>
+          <circle class="f-acc" cx="470" cy="110" r="9"/>
+          <text class="t-mut" x="328" y="88" font-size="13.5" font-weight="600">branch made before the merge</text>
+          <text class="t-acc" x="470" y="137" font-size="15" font-weight="700" text-anchor="middle">your line in Row C</text>
+          <line class="s-line" x1="434" y1="42" x2="630" y2="62" stroke-width="2.5" marker-end="url(#m6c)"/>
+          <line class="s-acc" x1="483" y1="108" x2="630" y2="90" stroke-width="2.5" marker-end="url(#m6d)"/>
+          <rect class="f-badsoft s-bad" x="640" y="40" width="300" height="70" rx="10" stroke-width="2"/>
+          <text class="t-ink" x="790" y="66" font-size="15" font-weight="700" text-anchor="middle">Row C &#183; line under the comment</text>
+          <circle class="f-bad" cx="746" cy="89" r="11"/><text class="t-on" x="746" y="94" font-size="15" font-weight="700" text-anchor="middle">?</text>
+          <text class="t-bad" x="763" y="95" font-size="16" font-weight="700">Git stops</text>
+          <text class="t-mut" x="790" y="135" font-size="14.5" font-weight="600" text-anchor="middle">other 9 rows: Git joins them by itself</text>
+        </svg>
+      </div>
       <div class="grid g2">
-        <div class="card"><span class="tagline">main now says</span><h4>Under the comment: the instructor's line</h4><p>My line was merged first, so it is already in <code>main</code> &mdash; in all ten rows.</p></div>
-        <div class="card"><span class="tagline">Your branch says</span><h4>Under the comment: your line</h4><p>Your branch was made before that merge. It puts your line in the same place, in your row.</p></div>
+        <div class="card"><span class="tagline">main now says</span><h4>Under the comment: the instructor's line</h4></div>
+        <div class="card"><span class="tagline">Your branch says</span><h4>Under the comment: your line</h4></div>
       </div>
       <div class="callout warn">
         <span class="mk">Git cannot choose</span>
@@ -427,6 +495,38 @@ pre code .n::before{content:"← "; font-style:normal;}
       <p>Today your Chapter 5 pull request finally gets merged. First your partner reviews it, then you fix what they ask, then you resolve the conflict in <code>INDEX.md</code>, and then you merge it yourself. Follow the parts in order and tick the box at the end of each part.</p>
     </div>
 
+    <div class="dg" role="img" aria-label="Two lanes, five steps in order. 1, PART A1: the reviewer (your partner) chooses Request changes. 2, PART A2: the author (you, on your PR) makes a commit and pushes to the same PR, then replies. 3, PART A3: the author clicks Resolve conflicts on GitHub. 4, PART A3: the reviewer chooses Approve. 5, PART A3: the author clicks Merge pull request. You are both: author of your PR, reviewer of your partner's PR.">
+      <svg viewBox="0 0 840 262" aria-hidden="true">
+        <defs><marker id="m6e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+        <rect class="f-s2" x="0" y="0" width="840" height="104" rx="12"/>
+        <text class="t-ink" x="14" y="21" font-size="15" font-weight="700">Author <tspan class="t-mut" font-size="14" font-weight="600">(your PR)</tspan></text>
+        <rect class="f-s2" x="0" y="124" width="840" height="104" rx="12"/>
+        <text class="t-ink" x="14" y="220" font-size="15" font-weight="700">Reviewer <tspan class="t-mut" font-size="14" font-weight="600">(your partner)</tspan></text>
+        <path class="s-acc" d="M84 130 V114 H252 V101" fill="none" stroke-width="2" marker-end="url(#m6e)"/>
+        <path class="s-acc" d="M326 64 H345" fill="none" stroke-width="2" marker-end="url(#m6e)"/>
+        <path class="s-acc" d="M420 98 V109 H570 V129" fill="none" stroke-width="2" marker-end="url(#m6e)"/>
+        <path class="s-acc" d="M606 130 V119 H756 V101" fill="none" stroke-width="2" marker-end="url(#m6e)"/>
+        <rect class="f-surf s-acc" x="10" y="130" width="148" height="68" rx="10" stroke-width="2"/>
+        <text class="mono t-acc" x="84" y="149" font-size="12.5" text-anchor="middle">1 &#183; PART A1</text>
+        <text class="t-ink" x="84" y="176" font-size="15" font-weight="700" text-anchor="middle">Request changes</text>
+        <rect class="f-surf s-acc" x="178" y="30" width="148" height="68" rx="10" stroke-width="2"/>
+        <text class="mono t-acc" x="252" y="49" font-size="12.5" text-anchor="middle">2 &#183; PART A2</text>
+        <text class="t-ink" x="252" y="71" font-size="15" font-weight="700" text-anchor="middle">commit + push</text>
+        <text class="t-ink" x="252" y="89" font-size="13.5" text-anchor="middle">same PR, reply</text>
+        <rect class="f-surf s-acc" x="346" y="30" width="148" height="68" rx="10" stroke-width="2"/>
+        <text class="mono t-acc" x="420" y="49" font-size="12.5" text-anchor="middle">3 &#183; PART A3</text>
+        <text class="t-ink" x="420" y="71" font-size="15" font-weight="700" text-anchor="middle">Resolve conflicts</text>
+        <text class="t-ink" x="420" y="89" font-size="13.5" text-anchor="middle">on GitHub</text>
+        <rect class="f-surf s-acc" x="514" y="130" width="148" height="68" rx="10" stroke-width="2"/>
+        <text class="mono t-acc" x="588" y="149" font-size="12.5" text-anchor="middle">4 &#183; PART A3</text>
+        <text class="t-ink" x="588" y="176" font-size="15" font-weight="700" text-anchor="middle">Approve</text>
+        <rect class="f-surf s-acc" x="682" y="30" width="148" height="68" rx="10" stroke-width="2"/>
+        <text class="mono t-acc" x="756" y="49" font-size="12.5" text-anchor="middle">5 &#183; PART A3</text>
+        <text class="t-ink" x="756" y="76" font-size="15" font-weight="700" text-anchor="middle">Merge pull request</text>
+        <text class="t-acc" x="420" y="254" font-size="15.5" font-weight="700" text-anchor="middle">You are both: author of your PR, reviewer of your partner's PR.</text>
+      </svg>
+    </div>
+
     <div class="callout">
       <span class="mk">AI rule, again</span>
       <p>When something fails, ask AI first with the four steps: paste the message exactly, say what you were trying to do, ask why, then explain the fix yourself. <b>If you cannot explain it, it does not count.</b> A review comment written by AI and not understood by you is not your review.</p>
@@ -450,10 +550,31 @@ pre code .n::before{content:"← "; font-style:normal;}
         </li>
         <li>You work only in <code>D:\oss\&lt;your ID&gt;\</code>. Your <code>practice-pr</code> folder from Chapter 5 is in there. Sitting at a different PC? <code>git clone https://github.com/OSS-202602-ISS/practice-pr.git</code> &rarr; <code>cd practice-pr</code> &rarr; the two <code>git config</code> lines &rarr; <code>git switch intro/&lt;your ID&gt;</code>.</li>
         <li><b>Your partner</b> is the person next to you in your row. In a row of four, make two pairs. In a row of three, go in a circle: A reviews B, B reviews C, C reviews A. <b>Do not sign in inside VS Code.</b> If a chat panel opens on the right side, close it &mdash; a sign-in there stays on this shared PC.</li>
+        <li><b>Find where you start.</b> Open <a href="https://github.com/OSS-202602-ISS/practice-pr/pulls?q=is%3Apr+author%3A%40me" target="_blank" rel="noopener">your PRs in practice-pr</a> (the list shows only PRs you made). Look at the badge next to your Chapter 5 PR, then open it and scroll to the bottom.
+          <div class="scroll-x">
+            <table>
+              <thead><tr><th>What you see</th><th>Start here</th></tr></thead>
+              <tbody>
+                <tr><td><b>Open</b> &middot; bottom says <i>This branch has conflicts that must be resolved</i></td><td><b>PART A1</b> &mdash; all parts in order.</td></tr>
+                <tr><td><b>Open</b> &middot; no conflict message</td><td><b>PART A1</b>. In A3, skip steps 1&ndash;3 (the box <i>No conflict on your PR?</i>).</td></tr>
+                <tr><td><b>Merged</b></td><td>Your PR is done. Only <b>review your partner's PR</b> (A1, and Approve in A3).</td></tr>
+                <tr><td><b>Closed</b>, or <b>no PR</b> in the list</td><td><b>Chapter 5 again</b> &mdash; the box below. Then go to <b>PART A3</b>.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </li>
       </ol>
       <div class="callout warn">
-        <span class="mk">If you missed the last chapter</span>
-        <p>No PR in <code>practice-pr</code>? Do Chapter 5 PART 1&ndash;3 now, quickly: issue, branch <code>intro/&lt;your ID&gt;</code>, your intro file, one line in <code>intros/INDEX.md</code>, push, open the PR. Your partner can review it a little later. No <code>oss-practice</code> repository from Chapter 4? Make it on GitHub now (Public, tick <b>Add a README</b>) &mdash; you need it for the assignment and for Chapter 7.</p>
+        <span class="mk">Chapter 5 again &mdash; one change</span>
+        <div style="min-width:0">
+        <p>Do Chapter 5 PART 1&ndash;3: issue, branch, your intro file, one line in <code>intros/INDEX.md</code>, push, PR with <code>Closes #N</code>. <b>Only the branch command is different.</b> Instead of <code>git pull</code> and <code>git switch -c intro/&lt;your ID&gt;</code>, type:</p>
+<pre><code>git fetch origin
+git switch -c intro/20261234 2369315  <span class="n">older point</span>
+git log --oneline -1
+2369315 Create rajiv                  <span class="n">must see this</span></code></pre>
+        <p>Use your own student ID. Starting from this older point gives your PR a real conflict, so you can practise PART A3. Skip A1 and A2 for your own PR. Not enough time today? Open the PR and stop &mdash; you resolve it at the start of the next class. <code>fatal: a branch named ... already exists</code>? Type <code>git switch main</code>, then <code>git branch -D intro/&lt;your ID&gt;</code>, and try again. <code>git push</code> says <i>rejected</i>? Tell the instructor.</p>
+        <p>No <code>oss-practice</code> repository from Chapter 4? Make it on GitHub now (Public, tick <b>Add a README</b>) &mdash; you need it for the assignment and for Chapter 7.</p>
+        </div>
       </div>
       <label class="check"><input type="checkbox" data-k="s0"><span>My avatar · cmdkey prints nothing · I know my partner</span></label>
     </div>
