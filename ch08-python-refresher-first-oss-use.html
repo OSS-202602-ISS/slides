@@ -362,53 +362,111 @@ pre[data-kind="url"]::before{content:"Open in the browser";}
       <h2>One box per project &mdash; you already made one</h2>
       <div class="rule"></div>
       <p class="lead">A virtual environment (<code>.venv</code>) is a box of libraries. You made it in Chapter 3. Today you use it again.</p>
-      <div class="dg" role="img" aria-label="Your folder D:\oss\your ID contains three things side by side. The box .venv holds rich and the 3 libraries it needs: pygments, markdown-it-py and mdurl. Next to the box are two repositories: teacher-demo-oss-project, with the file requirements.txt that says rich==15.0.0, and oss-practice, your repository. An arrow goes from requirements.txt to the box: pip install -r fills the box." style="max-width:560px;">
-        <svg viewBox="0 0 720 246" aria-hidden="true">
+      <div class="dg" role="img" aria-label="Your PC folder D:\oss\your ID holds three things side by side. Left: the box .venv with rich and the 3 libraries it needs. It has no .git folder, so Git does not see it, and it is never uploaded. Right: two repositories, teacher-demo-oss-project and oss-practice, both made by git clone. Each has a .git folder, so Git saves everything inside it. requirements.txt in the demo says rich==15.0.0, and pip install -r fills the box from it. Below: GitHub. Only oss-practice goes up to GitHub, with git push." style="max-width:900px;">
+        <svg viewBox="0 0 720 312" aria-hidden="true">
           <defs><marker id="ah8b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
-          <rect class="f-s2 s-line" x="4" y="4" width="712" height="238" rx="12" stroke-width="1.5"/>
-          <text class="t-ink" x="20" y="28" font-size="15" font-weight="700">Your folder</text><text class="mono t-ink" x="112" y="28" font-size="14">D:\oss\&lt;your ID&gt;\</text>
-          <rect class="f-soft s-acc" x="20" y="42" width="304" height="186" rx="12" stroke-width="2"/>
-          <text class="mono t-acc" x="36" y="68" font-size="18">.venv</text><text class="t-mut" x="96" y="68" font-size="13.5" font-weight="600">your box</text>
-          <rect class="f-surf s-acc" x="36" y="82" width="132" height="36" rx="8" stroke-width="1.5"/><text class="mono t-acc" x="102" y="105" font-size="14" text-anchor="middle">rich</text>
-          <rect class="f-surf s-line" x="178" y="82" width="132" height="36" rx="8" stroke-width="1"/><text class="mono t-ink" x="244" y="105" font-size="12.5" text-anchor="middle">pygments</text>
-          <rect class="f-surf s-line" x="36" y="128" width="132" height="36" rx="8" stroke-width="1"/><text class="mono t-ink" x="102" y="151" font-size="12.5" text-anchor="middle">markdown-it-py</text>
-          <rect class="f-surf s-line" x="178" y="128" width="132" height="36" rx="8" stroke-width="1"/><text class="mono t-ink" x="244" y="151" font-size="12.5" text-anchor="middle">mdurl</text>
-          <text class="t-mut" x="36" y="194" font-size="13">rich + 3 libraries it needs</text>
-          <text class="t-mut" x="36" y="214" font-size="13">(dependencies)</text>
-          <rect class="f-surf s-line" x="470" y="42" width="232" height="112" rx="10" stroke-width="1.5"/>
-          <text class="mono t-ink" x="484" y="66" font-size="12.5">teacher-demo-oss-project\</text>
-          <rect class="f-surf s-acc" x="484" y="80" width="200" height="58" rx="8" stroke-width="1.5"/>
-          <text class="mono t-acc" x="498" y="103" font-size="13.5">requirements.txt</text><text class="mono t-mut" x="498" y="126" font-size="12.5">rich==15.0.0</text>
-          <rect class="f-surf s-line" x="470" y="166" width="232" height="62" rx="10" stroke-width="1.5"/>
-          <text class="mono t-ink" x="484" y="192" font-size="13">oss-practice\</text><text class="t-mut" x="484" y="214" font-size="13">your repository</text>
-          <line class="s-acc" x1="482" y1="110" x2="330" y2="110" stroke-width="2.5" marker-end="url(#ah8b)"/>
-          <text class="mono t-acc" x="400" y="100" font-size="13" text-anchor="middle">pip install -r</text>
-          <text class="t-mut" x="400" y="130" font-size="12.5" text-anchor="middle">fills the box</text>
+          <rect class="f-s2 s-line" x="4" y="4" width="712" height="234" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="20" y="29" font-size="15" font-weight="700">Your PC</text><text class="mono t-ink" x="88" y="29" font-size="14">D:\oss\&lt;your ID&gt;\</text>
+          <rect class="f-acc" x="430" y="14" width="40" height="21" rx="6"/><text class="mono t-on" x="450" y="29" font-size="12.5" text-anchor="middle">.git</text>
+          <text class="t-ink" x="478" y="29" font-size="13.5" font-weight="600">= Git saves this folder</text>
+          <rect class="f-soft s-acc" x="20" y="46" width="272" height="178" rx="12" stroke-width="2"/>
+          <text class="mono t-acc" x="36" y="72" font-size="18">.venv</text><text class="t-mut" x="96" y="72" font-size="13.5" font-weight="600">your box</text>
+          <rect class="f-surf s-acc" x="36" y="84" width="116" height="32" rx="8" stroke-width="1.5"/><text class="mono t-acc" x="94" y="105" font-size="14" text-anchor="middle">rich</text>
+          <rect class="f-surf s-line" x="160" y="84" width="116" height="32" rx="8" stroke-width="1"/><text class="mono t-ink" x="218" y="105" font-size="12.5" text-anchor="middle">pygments</text>
+          <rect class="f-surf s-line" x="36" y="124" width="116" height="32" rx="8" stroke-width="1"/><text class="mono t-ink" x="94" y="145" font-size="12" text-anchor="middle">markdown-it-py</text>
+          <rect class="f-surf s-line" x="160" y="124" width="116" height="32" rx="8" stroke-width="1"/><text class="mono t-ink" x="218" y="145" font-size="12.5" text-anchor="middle">mdurl</text>
+          <text class="t-bad" x="36" y="186" font-size="14" font-weight="700">No .git here.</text>
+          <text class="t-bad" x="36" y="208" font-size="14" font-weight="700">Git does not see it.</text>
+          <rect class="f-surf s-acc" x="430" y="46" width="270" height="100" rx="10" stroke-width="1.5"/>
+          <rect class="f-acc" x="650" y="54" width="40" height="21" rx="6"/><text class="mono t-on" x="670" y="69" font-size="12.5" text-anchor="middle">.git</text>
+          <text class="mono t-ink" x="444" y="70" font-size="12.5">teacher-demo-oss-project\</text>
+          <rect class="f-surf s-line" x="444" y="82" width="196" height="52" rx="8" stroke-width="1.2"/>
+          <text class="mono t-acc" x="456" y="104" font-size="13.5">requirements.txt</text><text class="mono t-mut" x="456" y="125" font-size="12.5">rich==15.0.0</text>
+          <rect class="f-surf s-acc" x="430" y="156" width="270" height="68" rx="10" stroke-width="1.5"/>
+          <rect class="f-acc" x="650" y="164" width="40" height="21" rx="6"/><text class="mono t-on" x="670" y="179" font-size="12.5" text-anchor="middle">.git</text>
+          <text class="mono t-ink" x="444" y="182" font-size="13">oss-practice\</text><text class="t-mut" x="444" y="206" font-size="13">your work</text>
+          <line class="s-acc" x1="442" y1="108" x2="298" y2="108" stroke-width="2.5" marker-end="url(#ah8b)"/>
+          <text class="mono t-acc" x="368" y="98" font-size="13" text-anchor="middle">pip install -r</text>
+          <text class="t-mut" x="368" y="128" font-size="12.5" text-anchor="middle">fills the box</text>
+          <text class="t-ink" x="360" y="180" font-size="13" font-weight="600" text-anchor="middle">both made by</text>
+          <text class="mono t-acc" x="360" y="200" font-size="13.5" text-anchor="middle">git clone</text>
+          <line class="s-acc" x1="402" y1="178" x2="426" y2="146" stroke-width="2" marker-end="url(#ah8b)"/>
+          <line class="s-acc" x1="402" y1="194" x2="426" y2="194" stroke-width="2" marker-end="url(#ah8b)"/>
+          <rect class="f-surf s-line" x="430" y="264" width="270" height="40" rx="10" stroke-width="1.5"/>
+          <text class="t-ink" x="565" y="290" font-size="15" font-weight="700" text-anchor="middle">GitHub</text>
+          <line class="s-acc" x1="565" y1="226" x2="565" y2="260" stroke-width="2.5" marker-end="url(#ah8b)"/>
+          <text class="mono t-acc" x="575" y="250" font-size="13">git push</text>
+          <text class="t-bad" x="36" y="290" font-size="14" font-weight="700">&#x2715; The box is never uploaded.</text>
         </svg>
       </div>
       <ul>
-        <li><b>The box sits next to the repositories, not inside them.</b> So <code>git add</code> never adds it.</li>
+        <li><b><code>.venv</code> is your box of libraries.</b> It has no <code>.git</code>. So Git never uploads it.</li>
+        <li><b>GitHub gets <code>requirements.txt</code>, not the box.</b> Each PC makes its own box.</li>
       </ul>
       <div class="callout warn">
         <span class="mk">Different PC today?</span>
-        <p>Your box stays on the old PC. <b>Make a new one. It takes about 20 seconds.</b> The Lab tab shows how.</p>
+        <p>Your box stays on the old PC. <b>Make a new one. It takes about 20 seconds.</b> Lab PART 1, step 1 shows how.</p>
+      </div>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">Step one of four</p>
+      <h2>git clone gets your own copy</h2>
+      <div class="rule"></div>
+      <p class="lead"><code>git clone</code> downloads a whole repository from GitHub to your PC. You get every file and its history (the <code>.git</code> folder).</p>
+      <div class="dg" role="img" aria-label="Left: GitHub, with the repository teacher-demo-oss-project: its files and its history. An arrow labelled git clone goes to the right. Right: your PC, the folder D:\oss\your ID	eacher-demo-oss-project with the same files and a .git folder. Clone once. After that, git pull brings only the new changes." style="max-width:900px;">
+        <svg viewBox="0 0 720 176" aria-hidden="true">
+          <defs><marker id="ah8c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-s2 s-line" x="4" y="4" width="280" height="168" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="20" y="30" font-size="15" font-weight="700">GitHub</text>
+          <rect class="f-surf s-line" x="20" y="44" width="248" height="112" rx="10" stroke-width="1.5"/>
+          <text class="mono t-ink" x="34" y="68" font-size="12.5">teacher-demo-oss-project</text>
+          <text class="mono t-mut" x="34" y="94" font-size="12.5">hello_tool.py</text>
+          <text class="mono t-mut" x="34" y="114" font-size="12.5">requirements.txt</text>
+          <text class="mono t-mut" x="34" y="134" font-size="12.5">README.md ...</text>
+          <text class="t-mut" x="178" y="114" font-size="12.5">+ history</text>
+          <line class="s-acc" x1="296" y1="100" x2="420" y2="100" stroke-width="2.5" marker-end="url(#ah8c)"/>
+          <text class="mono t-acc" x="358" y="90" font-size="14" text-anchor="middle">git clone</text>
+          <text class="t-mut" x="358" y="122" font-size="12.5" text-anchor="middle">once</text>
+          <rect class="f-s2 s-line" x="432" y="4" width="284" height="168" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="448" y="30" font-size="15" font-weight="700">Your PC</text><text class="mono t-ink" x="522" y="30" font-size="12.5">D:\oss\&lt;your ID&gt;\</text>
+          <rect class="f-surf s-acc" x="448" y="44" width="252" height="112" rx="10" stroke-width="1.5"/>
+          <rect class="f-acc" x="660" y="52" width="36" height="21" rx="6"/><text class="mono t-on" x="678" y="67" font-size="12" text-anchor="middle">.git</text>
+          <text class="mono t-ink" x="462" y="68" font-size="12.5">teacher-demo-oss-project\</text>
+          <text class="mono t-mut" x="462" y="94" font-size="12.5">hello_tool.py</text>
+          <text class="mono t-mut" x="462" y="114" font-size="12.5">requirements.txt</text>
+          <text class="mono t-mut" x="462" y="134" font-size="12.5">README.md ...</text>
+          <text class="t-acc" x="606" y="114" font-size="12.5" font-weight="600">same files</text>
+        </svg>
+      </div>
+      <pre class="term"><code>&gt; git clone https://github.com/OSS-202602-ISS/teacher-demo-oss-project.git
+Cloning into 'teacher-demo-oss-project'...
+&gt; cd teacher-demo-oss-project</code></pre>
+      <ul>
+        <li><b>Clone once.</b> Next time, type <code>git pull</code>. It gets only the new changes (Chapter 4).</li>
+        <li><b>Clone in <code>D:\oss\&lt;your ID&gt;</code>.</b> Then the repository sits next to your box (slide 3).</li>
+        <li><b>A public repository needs no login to clone.</b> You need a login only to push.</li>
+      </ul>
+      <div class="callout">
+        <span class="mk">Today you clone two</span>
+        <p>Your <code>oss-practice</code> (Lab Ready check ③) and the demo (Lab PART 1, step 3).</p>
       </div>
     </article>
 
     <article class="slide" hidden>
-      <p class="eyebrow">Before you install anything</p>
+      <p class="eyebrow">After step one: read the list first</p>
       <h2>Read requirements.txt first</h2>
       <div class="rule"></div>
-      <p class="lead">This file lists what goes into the box. Read it first in any Python project. Then install.</p>
+      <p class="lead">After you clone a project (<code>git clone</code>), open this file first. It lists what goes into the box. Then install.</p>
       <div class="grid g2">
         <div class="card"><span class="tagline">The demo, today</span><pre><code>rich==15.0.0</code></pre><p>One library. <code>==</code> means <b>exactly this version</b>. Not newer, not older.</p></div>
         <div class="card"><span class="tagline">The demo, after the Lab</span><pre><code>rich==15.0.0
-tabulate==0.10.0</code></pre><p>You add the second line yourself in PART 2.</p></div>
+tabulate==0.10.0</code></pre><p><b>Use a new library? Add a line.</b> You do it in PART 2.</p></div>
       </div>
       <ul>
-        <li><b>How many libraries?</b> Each line is one library. Strangers wrote each one.</li>
-        <li><b>Is every line pinned?</b> A line with <code>==</code> is pinned (fixed to one version). A line without <code>==</code> can install a different version tomorrow.</li>
-        <li><b>Is it on our whitelist?</b> See slide 9.</li>
+        <li><b>How many libraries?</b> Each line is one library from other people. <b>More lines, more to check.</b></li>
+        <li><b>Is every line pinned?</b> A line with <code>==</code> is pinned (fixed to one version). A line without <code>==</code> can install a different version tomorrow. <b>Then your code may stop working.</b></li>
+        <li><b>Is it on our whitelist</b> (the course's list of safe libraries)? See slide 10.</li>
       </ul>
     </article>
 
@@ -449,7 +507,7 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
       </div>
       <div class="callout">
         <span class="mk">Today in the lab</span>
-        <p>Most of you skip step 2. New PC? PART 1 step 1 makes the box. <b>Knowing which step to skip is also reading a README.</b> In the assignment, you write one README line: how to run your tool.</p>
+        <p>Most of you skip step 2: <b>you already have a box</b> (slide 3). New PC? PART 1 step 1 makes the box. <b>Knowing which step to skip is also reading a README.</b> In the assignment, you write one README line: how to run your tool.</p>
       </div>
     </article>
 
@@ -459,9 +517,9 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
       <div class="rule"></div>
       <p class="lead"><code>rich</code> makes terminal output look like a real application. You met it in Chapter 3. Today you use three of its parts.</p>
       <div class="grid g3">
-        <div class="card"><span class="tagline">print</span><h4>Colour with tags</h4><p><code>from rich import print</code><br><code>print("[bold green]hello[/]")</code><br>The part in square brackets sets the style.</p></div>
+        <div class="card"><span class="tagline">print</span><h4>Colour with tags</h4><p><code>from rich import print</code><br><code>print("[bold green]hello[/]")</code><br>The part in square brackets sets the style. <code>[/]</code> ends the style.</p></div>
         <div class="card"><span class="tagline">Table</span><h4>Columns, then rows</h4><p><code>table.add_column("Tool")</code><br><code>table.add_row("Git", "...")</code><br>Add the columns first. Then add the rows.</p></div>
-        <div class="card"><span class="tagline">Panel</span><h4>A box around text</h4><p><code>Panel.fit("Hello, Ada!")</code><br><code>.fit</code> makes the box as wide as its text.</p></div>
+        <div class="card"><span class="tagline">Panel</span><h4>A frame around text (a panel)</h4><p><code>Panel.fit("Hello, Ada!")</code><br><code>.fit</code> makes the panel as wide as its text.</p></div>
       </div>
       <pre class="term"><code>&gt; python hello_tool.py --name Ada
 ╭─ hello_tool ─╮
@@ -475,6 +533,7 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
 │ Git    │ remembers every version         │
 │ rich   │ makes terminal output look good │
 └────────┴─────────────────────────────────┘</code></pre>
+      <p>The <b>Panel</b> is on top. The <b>Table</b> is below.</p>
     </article>
 
     <article class="slide dgs" hidden>
@@ -502,13 +561,13 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
       </div>
       <p>You change three places:</p>
       <ul>
-        <li><b>The import line</b> and <b>the one function</b> that used the old library.</li>
+        <li><b>The import line</b> and <b><code>build_table()</code></b>, the one function that used the old library.</li>
         <li><b><code>requirements.txt</code></b>: add the new line, with its version.</li>
-        <li><b><code>THIRD_PARTY.md</code></b>: the new library and its license (Chapter 7).</li>
+        <li><b><code>THIRD_PARTY.md</code></b>: new library + license (Chapter 7). Team project only, not today.</li>
       </ul>
       <div class="callout">
         <span class="mk">Why swap?</span>
-        <p><code>tabulate</code> makes plain text. You can paste it into an issue. <b>You must be able to explain your choice.</b></p>
+        <p><code>tabulate</code> makes plain text. You can paste it into an issue. <b>Explain your choice.</b></p>
       </div>
     </article>
 
@@ -546,7 +605,7 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
     <button class="navbtn" id="next" type="button">Next →</button>
     <button class="navbtn edge" id="last" type="button" title="Last slide (End)" aria-label="Last slide">⇥</button>
     <div class="dots" id="dots"></div>
-    <span class="counter" id="counter">1 / 10</span>
+    <span class="counter" id="counter">1 / 11</span>
   </nav>
 </section>
 
@@ -593,7 +652,7 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
 
       <div class="s4">
         <h4>② Your <code>oss-practice</code> repository is on GitHub</h4>
-        <span class="k">Do</span><div class="v">Open this address. Change <code>&lt;your-username&gt;</code> to your GitHub username.</div>
+        <span class="k">Do</span><div class="v">Open this address. Change <code>&lt;your-username&gt;</code> to your GitHub username. To see your username, click your avatar (top-right). It is at the top of the menu.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com/&lt;your-username&gt;/oss-practice</code></pre></div>
         <span class="k see">You should see</span><div class="v">Your repository page. The title is <code>&lt;your-username&gt;/oss-practice</code>. It shows a file list. It does not say <b>forked from</b> under the title.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
@@ -613,7 +672,7 @@ cd oss-practice
 git config user.name "&lt;your GitHub username&gt;"
 git config user.email "&lt;your noreply e-mail&gt;"
 cd ..</code></pre>
-          <p class="why">Why: your own work goes into this folder in PART 3. The two <code>git config</code> lines put your name on your commits, in this repository only. Your noreply e-mail is in GitHub <b>Settings &rsaquo; Emails</b>.</p></div>
+          <p class="why">Why: your own work goes into this folder in PART 3. The two <code>git config</code> lines put your name on your commits, in this repository only. Your noreply e-mail is in GitHub <b>Settings &rsaquo; Emails</b>. It looks like <code>12345678+name@users.noreply.github.com</code>. It hides your real e-mail.</p></div>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'oss-practice'...</code></pre>The <code>git config</code> lines print nothing. The prompt ends with <code>D:\oss\&lt;your ID&gt;&gt;</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>The prompt starts with <code>PS</code>? This is PowerShell. Type <code>cmd</code> and press Enter. Then type the lines again.</li>
@@ -673,7 +732,7 @@ dir /b</code></pre></div>
     <!-- PART 1 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 1</span><h3>Clone, install, run</h3><span class="budget">15 min</span></div>
-      <p class="goal">Steps 1 to 3 of the four steps, on the demo project. At the end, the tool prints your name in a box.</p>
+      <p class="goal">Steps 1 to 3 of the four steps, on the demo project. At the end, the tool prints your name in a panel.</p>
       <div class="dg" role="img" aria-label="Your PC on the left, GitHub on the right. The demo repository teacher-demo-oss-project belongs to the instructor. You only download it with git clone. You cannot push to it. Your oss-practice repository is yours. You download it with git clone or git pull, and you upload your work with git push.">
         <svg viewBox="0 0 720 232" aria-hidden="true">
           <defs><marker id="ah8d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
@@ -712,7 +771,7 @@ dir /b</code></pre></div>
 
       <div class="s4">
         <h4>2. Activate the box</h4>
-        <span class="k">Do</span><div class="v">Activate your box. Do this in every new terminal.</div>
+        <span class="k">Do</span><div class="v">Activate your box. Do this in every new terminal. A new terminal starts with the box not active.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>.venv\Scripts\activate</code></pre></div>
         <span class="k see">You should see</span><div class="v">The prompt now starts with <code>(.venv)</code>:<pre data-kind="out"><code>(.venv) D:\oss\&lt;your ID&gt;&gt;</code></pre></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
@@ -773,7 +832,7 @@ cd teacher-demo-oss-project</code></pre></div>
 | rich   | makes terminal output look good |
 +------------------------------------------+</code></pre>
           <b>The lines can look a little different. The words must be the same.</b>
-          <p>In the VS Code terminal, the box has round corners and colour. The words are the same.</p></div>
+          <p>In the VS Code terminal, the panel has round corners and colour. The words are the same.</p></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>ModuleNotFoundError: No module named 'rich'</code>? The box is not active. Type <code>..\.venv\Scripts\activate</code>. Then do step 5 and step 6 again.</li>
           <li><code>can't open file '...\hello_tool.py': [Errno 2] No such file or directory</code>? You are in the wrong folder. Type <code>cd teacher-demo-oss-project</code>.</li>
@@ -785,7 +844,7 @@ cd teacher-demo-oss-project</code></pre></div>
         <span class="k">Do</span><div class="v">Run it with no name. Then ask for the help text.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python hello_tool.py
 python hello_tool.py --help</code></pre></div>
-        <span class="k see">You should see</span><div class="v">First, the same table under this box:
+        <span class="k see">You should see</span><div class="v">First, the same table under this panel:
 <pre class="term" data-kind="out"><code>+- hello_tool --+
 | Hello, World! |
 +---------------+</code></pre>
@@ -812,13 +871,13 @@ options:
 
       <div class="s4">
         <h4>Change 1 &mdash; text and colour <span class="budget">5 min</span></h4>
-        <span class="k">Do</span><div class="v">In <code>main()</code>, change one line. Save. Run.</div>
+        <span class="k">Do</span><div class="v">In <code>main()</code>, change one line. To find it, press <kbd>Ctrl + F</kbd> and paste the line. Save. Run.</div>
         <span class="k">Copy</span><div class="v"><p class="lbl">Find this line:</p>
 <pre data-kind="code"><code>    console.print(Panel.fit(f"Hello, {args.name}!", title="hello_tool", style="green"))</code></pre>
 <p class="lbl">Change it to:</p>
 <pre data-kind="code"><code>    console.print(Panel.fit(f"Welcome to open source, {args.name}!", title="hello_tool", style="bold magenta"))</code></pre>
 <pre data-kind="cmd"><code>python hello_tool.py --name Ada</code></pre></div>
-        <span class="k see">You should see</span><div class="v">The box is wider. The table is the same.
+        <span class="k see">You should see</span><div class="v">The panel is wider. The table is the same.
 <pre class="term" data-kind="out"><code>+--------- hello_tool ---------+
 | Welcome to open source, Ada! |
 +------------------------------+</code></pre>
@@ -831,7 +890,7 @@ options:
 
       <div class="s4">
         <h4>Change 2 &mdash; one more column <span class="budget">10 min</span></h4>
-        <span class="k">Do</span><div class="v">Make 2 changes: give each row a third value, then add a column. Save. Run.</div>
+        <span class="k">Do</span><div class="v">Make 2 changes: give each row a third value, then add a column. The rows are in <code>TOOLS</code>, at the top of the file. Save. Run.</div>
         <span class="k">Copy</span><div class="v"><p class="lbl">1) Find these lines:</p>
 <pre data-kind="code"><code>    ("Python", "runs your code"),
     ("Git", "remembers every version"),
@@ -878,7 +937,7 @@ options:
 
       <div class="s4">
         <h4>Change 3b &mdash; swap the table code</h4>
-        <span class="k">Do</span><div class="v">Make 3 changes: the import, <code>build_table()</code>, and one line in <code>main()</code>. Save. Run.</div>
+        <span class="k">Do</span><div class="v">Make 3 changes: the import, <code>build_table()</code>, and one line in <code>main()</code>. Save. Run. Why plain <code>print</code>? tabulate gives plain text. So plain <code>print</code> works.</div>
         <span class="k">Copy</span><div class="v"><p class="lbl">1) Find this line:</p>
 <pre data-kind="code"><code>from rich.table import Table</code></pre>
 <p class="lbl">Change it to:</p>
@@ -903,7 +962,7 @@ options:
     print(build_table())</code></pre>
 <p class="why">Keep the spaces at the start of each line.</p>
 <pre data-kind="cmd"><code>python hello_tool.py --name Ada</code></pre></div>
-        <span class="k see">You should see</span><div class="v">The box is still <code>rich</code>. The table is now <code>tabulate</code>:
+        <span class="k see">You should see</span><div class="v">The panel is still <code>rich</code>. The table is now <code>tabulate</code>:
 <pre class="term" data-kind="out"><code>+--------- hello_tool ---------+
 | Welcome to open source, Ada! |
 +------------------------------+
@@ -917,7 +976,7 @@ Tools in this course
 +--------+---------------------------------+-----------+
 | rich   | makes terminal output look good | MIT       |
 +--------+---------------------------------+-----------+</code></pre>
-          <p>In the VS Code terminal, the box has round corners and colour. The words are the same.</p></div>
+          <p>In the VS Code terminal, the panel has round corners and colour. The words are the same.</p></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>ModuleNotFoundError: No module named 'tabulate'</code>? <code>tabulate</code> is not in this box. Check for <code>(.venv)</code> in the prompt. Then do Change 3a again.</li>
           <li>You still see the old table? Save the file (<kbd>Ctrl + S</kbd>). Run again.</li>
@@ -968,12 +1027,12 @@ git pull</code></pre></div>
         <span class="k">Copy</span><div class="v">
           <div class="scroll-x">
             <table>
-              <thead><tr><th>Library</th><th>Line for requirements.txt</th><th>A line to start from</th></tr></thead>
+              <thead><tr><th>Library</th><th>Line for requirements.txt</th></tr></thead>
               <tbody>
-                <tr><td><code>rich</code></td><td><code>rich==15.0.0</code></td><td><code>console.print(Panel.fit(...))</code> &mdash; like the demo, with your own content</td></tr>
-                <tr><td><code>tabulate</code></td><td><code>tabulate==0.10.0</code></td><td><code>print(tabulate(rows, tablefmt="grid"))</code></td></tr>
-                <tr><td><code>python-dateutil</code></td><td><code>python-dateutil==2.9.0.post0</code></td><td><code>relativedelta(parse("15 March 2000"), parse("1 January 2000"))</code> &rarr; 2 months, 14 days</td></tr>
-                <tr><td><code>requests</code></td><td><code>requests==2.34.2</code></td><td><code>requests.get("https://pypi.org/pypi/rich/json", timeout=10).json()["info"]["version"]</code></td></tr>
+                <tr><td><code>rich</code></td><td><code>rich==15.0.0</code></td></tr>
+                <tr><td><code>tabulate</code></td><td><code>tabulate==0.10.0</code></td></tr>
+                <tr><td><code>python-dateutil</code></td><td><code>python-dateutil==2.9.0.post0</code></td></tr>
+                <tr><td><code>requests</code></td><td><code>requests==2.34.2</code></td></tr>
               </tbody>
             </table>
           </div>
@@ -1023,7 +1082,24 @@ args = parser.parse_args()
 
 rows = [["Name", args.name], ["Library", "tabulate"]]
 print(tabulate(rows, tablefmt="grid"))</code></pre>
-          <p class="why">Use your own rows and words.</p></div>
+          <p class="why">Use your own rows and words.</p>
+<p class="lbl">Another library? Keep the argparse lines. Replace the 3 tabulate lines (the import, <code>rows</code> and <code>print</code>) with these:</p>
+<pre data-kind="code"><code># rich
+from rich.console import Console
+from rich.panel import Panel
+Console().print(Panel.fit(f"Hello, {args.name}!", title="hello_rich"))
+
+# python-dateutil
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
+diff = relativedelta(parse("15 March 2000"), parse("1 January 2000"))
+print(f"Hello, {args.name}! From 1 January to 15 March: {diff.months} months, {diff.days} days")
+
+# requests
+import requests
+version = requests.get("https://pypi.org/pypi/rich/json", timeout=10).json()["info"]["version"]
+print(f"Hello, {args.name}! The latest rich on PyPI is {version}.")</code></pre>
+          <p class="why">Put the <code>from</code> and <code>import</code> lines at the top, under <code>import argparse</code>.</p></div>
         <span class="k see">You should see</span><div class="v">The folder <code>tools</code> and your file in the VS Code file list.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>cmd says <code>tools</code> already exists? That is fine. Use it.</li>
@@ -1156,7 +1232,7 @@ and explain each line in simple English. Do not write the whole tool.
         <li>Open an issue in the course <code>practice-pr</code> repository with the Chapter 8 template. <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch08.md" target="_blank" rel="noopener"><b>Click here to open it with the template ready</b></a> (sign in first).</li>
         <li>Title: <code>[Ch08] StudentID Name</code>.</li>
         <li>Write under each of the four headings:
-          <ul><li><code>## Repository link</code></li><li><code>## Command I ran</code></li><li><code>## Output</code></li><li><code>## AI use (two lines)</code></li></ul></li>
+          <ul><li><code>## Repository link</code> &mdash; the link to your <b>tool file</b></li><li><code>## Command I ran</code></li><li><code>## Output</code></li><li><code>## AI use (two lines)</code></li></ul></li>
         <li>The first AI line starts with <code>What I asked:</code>. The second starts with <code>What I changed or checked myself:</code>. Did you not use AI? Then write <code>No AI used</code> on both lines.</li>
       </ol>
       <pre><code>Title: [Ch08] StudentID Name
@@ -1200,7 +1276,7 @@ What I changed or checked myself:
       </div>
       <div class="callout warn">
         <span class="mk">Deadline</span>
-        <p><b>11:59 PM the night before the next class — the exact date is in the ecampus notice.</b> You can finish at home. Clone your <code>oss-practice</code>. Make a box. Type <code>pip install -r requirements.txt</code>. Run it. Does it work on a second computer? Then your README is good.</p>
+        <p><b>11:59 PM the night before the next class — the exact date is in the ecampus notice.</b> You can finish at home. Clone your <code>oss-practice</code>. Make a box (Lab PART 1, steps 1–2). Type <code>pip install -r requirements.txt</code>. Run it. Does it work on a second computer? Then your README is good.</p>
       </div>
     </div>
 
