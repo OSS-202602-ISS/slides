@@ -320,7 +320,10 @@ code.cmd::before{font-family:var(--body);}
 .r8 > .lb{font-family:var(--mono); font-weight:700; font-size:1rem; color:var(--accent-ink); padding-top:22px;}
 .r8 pre{margin:0;}
 .r8 .cap{font-size:.92rem !important; line-height:1.5; color:var(--ink-3) !important; margin:8px 0 0;}
-.r8-foot{font-size:.95rem !important; color:var(--ink-3) !important;}
+.r8-imp{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; align-items:center;}
+.r8-imp pre{margin:0;}
+.r8-imp .cap{font-size:.92rem !important; line-height:1.5; color:var(--ink-3) !important; margin:0;}
+@media (max-width:720px){ .r8-imp{grid-template-columns:1fr;} }
 @media (max-width:720px){ .r8{grid-template-columns:1fr;} .r8 > .hd{display:none;} .r8 > div{border-bottom:0; padding:6px 0;} .r8 > .lb{padding-top:16px; border-top:1px solid var(--line);} }
 @media print{ .r8 > div{break-inside:avoid;} .r8{grid-template-columns:4.6rem minmax(0,1.35fr) minmax(0,1fr);} .r8 > .lb{font-size:.88rem; white-space:nowrap;} .r8 pre{overflow:visible; padding:10px 12px;} .r8 pre code{font-size:.72rem !important; white-space:pre-wrap; overflow-wrap:anywhere;} }
 pre[data-kind="cmd"]{background:var(--cmd-bg); border-color:var(--cmd-bg);}
@@ -541,6 +544,12 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
       <h2>rich in three seconds:<br>print, Table, Panel</h2>
       <div class="rule"></div>
       <p class="lead"><code>rich</code> makes terminal output look like a real application. You met it in Chapter 3. Today you use three of its parts.</p>
+      <div class="r8-imp">
+        <pre data-kind="file"><code>from rich import print
+from rich.panel import Panel
+from rich.table import Table</code></pre>
+        <p class="cap">Put these three lines at the top of the file. The first line makes <code>print</code> rich's print. Python's own <code>print</code> shows the square brackets as plain text.</p>
+      </div>
       <div class="r8">
         <div class="hd"></div><div class="hd">You write</div><div class="hd">You see</div>
         <div class="lb">print</div>
@@ -564,7 +573,6 @@ print(table)</code></pre><p class="cap">Columns first, then rows. Two columns, s
 │ Python │ runs your code │
 └────────┴────────────────┘</code></pre></div>
       </div>
-      <p class="r8-foot">Here <code>print</code> is rich's print: <code>from rich import print</code>. Python's own <code>print</code> shows the square brackets as plain text.</p>
     </article>
 
     <article class="slide dgs" hidden>
