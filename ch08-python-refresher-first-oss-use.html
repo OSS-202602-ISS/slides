@@ -320,6 +320,7 @@ code.cmd::before{font-family:var(--body);}
 .r8 > .lb{font-family:var(--mono); font-weight:700; font-size:1rem; color:var(--accent-ink); padding-top:22px;}
 .r8 pre{margin:0;}
 .r8 .cap{font-size:.92rem !important; line-height:1.5; color:var(--ink-3) !important; margin:8px 0 0;}
+.card ul.checks4{font-size:1.03rem; line-height:1.5; color:var(--ink-2); gap:.35em; margin-top:2px;}
 .r8-imp{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; align-items:center;}
 .r8-imp pre{margin:0;}
 .r8-imp .cap{font-size:.92rem !important; line-height:1.5; color:var(--ink-3) !important; margin:0;}
@@ -331,6 +332,62 @@ pre[data-kind="cmd"] code{color:var(--cmd-ink);}
 pre[data-kind="cmd"]::before{color:var(--cmd-mark);}
 a{font-weight:600; border-bottom:2px solid var(--accent);}
 a::after{content:" \2197"; font-size:.85em;}
+
+/* ─── B: role zones, high contrast (11-05) ─────────── */
+:root{
+  --ground:#F3F5F4; --line:#C5D0CB; --line-strong:#8FA39B;
+  --ink-2:#3A4944; --ink-3:#5B6B65;
+  --out-soft:#FFF8E6; --err:#B3261E; --err-soft:#FDECEA;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --line:#34463E; --line-strong:#5E776C; --out-soft:#2E2412; --err:#FF7A6B; --err-soft:#3A1A16; } }
+:root[data-theme="dark"]{ --line:#34463E; --line-strong:#5E776C; --out-soft:#2E2412; --err:#FF7A6B; --err-soft:#3A1A16; }
+
+.topbar{border-bottom:1.5px solid var(--line-strong);}
+.eyebrow{color:var(--accent-ink); font-weight:700; font-size:.82rem; letter-spacing:.07em; text-transform:uppercase;}
+.card{border:1.5px solid var(--line-strong); border-top:4px solid var(--accent);}
+.track{border:1.5px solid var(--line-strong); border-left:5px solid var(--accent);}
+.callout{border:1.5px solid var(--accent-line); border-left:5px solid var(--accent); align-items:flex-start;}
+.callout .mk{background:var(--accent); color:var(--surface); padding:3px 11px; border-radius:20px; font-size:.8rem;}
+.callout.warn{border-left-color:var(--warn);}
+.callout.warn .mk{background:var(--warn); color:var(--surface);}
+th{border-bottom:2px solid var(--line-strong); color:var(--ink-2);}
+.dot{border-color:var(--line-strong);}
+
+/* code boxes: border always visible, label = filled tag */
+pre{border:1.5px solid var(--line-strong);}
+pre[data-kind="out"]{background:var(--surface);}
+pre[data-kind]::before{display:table; padding:1px 8px; border-radius:4px; font-size:.72rem; font-weight:700; letter-spacing:.03em; margin-bottom:8px; color:var(--surface); background:var(--ink-2);}
+pre[data-kind="cmd"]::before{background:var(--cmd-mark); color:var(--cmd-bg);}
+pre[data-kind="out"]::before{background:var(--warn); color:var(--surface);}
+pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--accent); color:var(--surface);}
+
+/* Lab steps: Do · Copy · You should see · If not */
+.s4{border:1.5px solid var(--line-strong); border-left:5px solid var(--accent); box-shadow:var(--shadow);}
+.s4 > .k{justify-self:start; white-space:nowrap; font-size:.76rem; font-weight:700; letter-spacing:.02em; padding:3px 10px; border-radius:20px; margin-top:3px; color:var(--surface); background:var(--accent);}
+.s4 > .v + .k:not(.see):not(.ifnot){background:var(--cmd-bg); color:var(--cmd-ink);}
+.s4 > .k.see{background:var(--warn); color:var(--surface);}
+.s4 > .k.ifnot{background:var(--err); color:var(--surface);}
+.s4 > .k.see + .v{background:var(--out-soft); border-left:4px solid var(--warn); padding:8px 12px; border-radius:0 8px 8px 0;}
+.s4 > .k.ifnot + .v{background:var(--err-soft); border-left:4px solid var(--err); padding:8px 12px; border-radius:0 8px 8px 0;}
+.legend b{display:inline-block; padding:1px 9px; border-radius:20px; color:var(--surface); background:var(--accent); margin-right:5px;}
+.legend span:nth-child(2) b{background:var(--cmd-bg); color:var(--cmd-ink);}
+.legend span:nth-child(3) b{background:var(--warn);}
+.legend span:nth-child(4) b{background:var(--err);}
+
+/* slide 8 table: "You see" column = output colour */
+.r8 > div:nth-child(3n) pre{background:var(--out-soft); border-left:4px solid var(--warn);}
+.r8 > .hd:nth-child(3){color:var(--warn);}
+.r8 > .hd:nth-child(2){color:var(--accent-ink);}
+/* checks, progress, step headers */
+.check{background:var(--surface); border:2px solid var(--line-strong);}
+.check span{color:var(--ink); font-weight:600;}
+.check:has(input:checked){background:var(--accent); border-color:var(--accent);}
+.check:has(input:checked) span{color:var(--surface); text-decoration-color:var(--surface);}
+.progress{border:1.5px solid var(--line-strong);}
+.bar{background:var(--line);}
+.step{border-top:2px solid var(--line-strong);}
+.step-no{background:var(--accent); color:var(--surface);}
+@media print{ .s4,.card,.track,.progress{box-shadow:none !important;} pre{overflow:visible;} pre code{white-space:pre-wrap; overflow-wrap:anywhere;} .check:has(input:checked){background:var(--surface); border-color:var(--accent);} .check:has(input:checked) span{color:var(--ink);} }
 </style>
 </head>
 <body>
@@ -616,7 +673,12 @@ print(table)</code></pre><p class="cap">Columns first, then rows. Two columns, s
       <div class="rule"></div>
       <p class="lead">PyPI has hundreds of thousands of libraries. The whitelist is a short list. The instructor checked every library on it. So no class time is lost on a library that does not install.</p>
       <div class="grid g2">
-        <div class="card"><span class="tagline">Every library on it</span><h4>Passed four checks</h4><p>It installs on these lab PCs without compiling. It has a permissive license (MIT, BSD or Apache). It gives a result in one or two function calls. It has a tested, pinned version.</p></div>
+        <div class="card"><span class="tagline">Every library on it</span><h4>Passed four checks</h4><ul class="checks4">
+          <li>It installs on these lab PCs without compiling.</li>
+          <li>It has a permissive license (MIT, BSD or Apache).</li>
+          <li>It gives a result in one or two function calls.</li>
+          <li>It has a tested, pinned version.</li>
+        </ul></div>
         <div class="card"><span class="tagline">Today's assignment</span><h4>Choose one of four</h4><p><code style="white-space:nowrap">rich==15.0.0</code> · <code style="white-space:nowrap">tabulate==0.10.0</code> · <code style="white-space:nowrap">python-dateutil==2.9.0.post0</code> · <code style="white-space:nowrap">requests==2.34.2</code></p></div>
       </div>
       <div class="callout warn">
