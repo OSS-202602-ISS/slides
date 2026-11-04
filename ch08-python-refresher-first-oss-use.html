@@ -313,6 +313,7 @@ code.cmd{background:var(--cmd-bg); color:var(--cmd-ink); border-color:var(--cmd-
 code.cmd::before{content:"\25B8\00A0"; color:var(--cmd-mark); font-weight:700;}
 td code.cmd, li code.cmd{white-space:normal;}
 code.cmd::before{font-family:var(--body);}
+@media print{ .grid.g3 .card p{font-size:.92rem; line-height:1.5;} }
 pre[data-kind="cmd"]{background:var(--cmd-bg); border-color:var(--cmd-bg);}
 pre[data-kind="cmd"] code{color:var(--cmd-ink);}
 pre[data-kind="cmd"]::before{color:var(--cmd-mark);}
@@ -532,9 +533,9 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
       <div class="rule"></div>
       <p class="lead"><code>rich</code> makes terminal output look like a real application. You met it in Chapter 3. Today you use three of its parts.</p>
       <div class="grid g3">
-        <div class="card"><span class="tagline">print</span><h4>Colour with tags</h4><p><code>from rich import print</code><br><code>print("[bold green]hello[/]")</code><br>This <code>print</code> replaces Python's own <code>print</code>. The part in square brackets sets the style. <code>[/]</code> ends the style.</p></div>
-        <div class="card"><span class="tagline">Table</span><h4>Columns, then rows</h4><p><code>table.add_column("Tool")</code><br><code>table.add_row("Git", "...")</code><br>Add the columns first. Then add the rows.</p></div>
-        <div class="card"><span class="tagline">Panel</span><h4>A frame around text (a panel)</h4><p><code>Panel.fit("Hello, Ada!")</code><br><code>.fit</code> makes the panel as wide as its text.</p></div>
+        <div class="card"><span class="tagline">print</span><h4>Colour with tags</h4><p><code>console = Console()</code><br><code>console.print("[bold green]hello[/]")</code><br><code>hello_tool.py</code> uses <code>console.print</code>. Square brackets set the style. <code>[/]</code> ends it.</p></div>
+        <div class="card"><span class="tagline">Table</span><h4>Columns, then rows</h4><p><code>table.add_column("Tool")</code><br><code>table.add_column("What it does")</code><br><code>table.add_row("Python", "runs your code")</code><br>Columns first, then rows. Two columns, so two values in each row.</p></div>
+        <div class="card"><span class="tagline">Panel</span><h4>A frame around text (a panel)</h4><p><code>Panel.fit("Hello, Ada!", title="hello_tool")</code><br><code>title=</code> puts a name on the frame. <code>.fit</code> makes it as wide as its text.</p></div>
       </div>
       <pre class="term"><code>&gt; python hello_tool.py --name Ada
 ╭─ hello_tool ─╮
