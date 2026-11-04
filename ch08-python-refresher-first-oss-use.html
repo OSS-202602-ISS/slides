@@ -313,7 +313,7 @@ code.cmd{background:var(--cmd-bg); color:var(--cmd-ink); border-color:var(--cmd-
 code.cmd::before{content:"\25B8\00A0"; color:var(--cmd-mark); font-weight:700;}
 td code.cmd, li code.cmd{white-space:normal;}
 code.cmd::before{font-family:var(--body);}
-@media print{ .grid.g3 .card p{font-size:.92rem; line-height:1.5;} }
+@media print{ .grid.g3 .card p{font-size:.92rem; line-height:1.5;} .slide:has(.grid.g3 + pre.term){gap:12px;} .grid.g3 + pre.term{padding:10px 14px;} .grid.g3 .card code{font-size:.8em;} }
 pre[data-kind="cmd"]{background:var(--cmd-bg); border-color:var(--cmd-bg);}
 pre[data-kind="cmd"] code{color:var(--cmd-ink);}
 pre[data-kind="cmd"]::before{color:var(--cmd-mark);}
@@ -533,11 +533,13 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
       <div class="rule"></div>
       <p class="lead"><code>rich</code> makes terminal output look like a real application. You met it in Chapter 3. Today you use three of its parts.</p>
       <div class="grid g3">
-        <div class="card"><span class="tagline">print</span><h4>Colour with tags</h4><p><code>console = Console()</code><br><code>console.print("[bold green]hello[/]")</code><br>Output: <b style="color:#1A8F3C">hello</b><br>Square brackets set the style. <code>[/]</code> ends it. Not in <code>hello_tool.py</code>: try it yourself.</p></div>
+        <div class="card"><span class="tagline">print</span><h4>Colour with tags</h4><p><code>console = Console()</code><br><code>console.print("[bold green]hello[/]")</code><br>Square brackets set the style. <code>[/]</code> ends it. The result is the first line below.</p></div>
         <div class="card"><span class="tagline">Table</span><h4>Columns, then rows</h4><p><code>table.add_column("Tool")</code><br><code>table.add_column("What it does")</code><br><code>table.add_row("Python", "runs your code")</code><br>Columns first, then rows. Two columns, so two values in each row.</p></div>
         <div class="card"><span class="tagline">Panel</span><h4>A frame around text (a panel)</h4><p><code>Panel.fit("Hello, Ada!", title="hello_tool")</code><br><code>title=</code> puts a name on the frame. <code>.fit</code> makes it as wide as its text.</p></div>
       </div>
-      <pre class="term"><code>&gt; python hello_tool.py --name Ada
+      <pre class="term"><code>&gt;&gt;&gt; console.print("[bold green]hello[/]")
+<b style="color:#1A8F3C">hello</b>
+&gt; python hello_tool.py --name Ada
 ╭─ hello_tool ─╮
 │ Hello, Ada!  │
 ╰──────────────╯
@@ -549,7 +551,7 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
 │ Git    │ remembers every version         │
 │ rich   │ makes terminal output look good │
 └────────┴─────────────────────────────────┘</code></pre>
-      <p>The <b>Panel</b> is on top. The <b>Table</b> is below.</p>
+      <p><b>print</b> → green hello. <b>Panel</b> → the frame. <b>Table</b> → below it.</p>
     </article>
 
     <article class="slide dgs" hidden>
