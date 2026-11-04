@@ -313,7 +313,11 @@ code.cmd{background:var(--cmd-bg); color:var(--cmd-ink); border-color:var(--cmd-
 code.cmd::before{content:"\25B8\00A0"; color:var(--cmd-mark); font-weight:700;}
 td code.cmd, li code.cmd{white-space:normal;}
 code.cmd::before{font-family:var(--body);}
-@media print{ .grid.g3 .card p{font-size:.92rem; line-height:1.5;} .slide:has(.grid.g3 + pre.term){gap:12px;} .grid.g3 + pre.term{padding:10px 14px;} .grid.g3 .card code{font-size:.8em;} }
+.rich8-row{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:14px; align-items:start;}
+.rich8-h{font-weight:600; color:var(--ink) !important; font-size:1rem !important; margin:0 0 6px;}
+.rich8-note{font-size:1rem !important; margin-top:-6px;}
+@media (max-width:720px){ .rich8-row{grid-template-columns:1fr;} .rich8-row > div:last-child .rich8-h{display:none;} }
+@media print{ .rich8-row{break-inside:avoid;} }
 pre[data-kind="cmd"]{background:var(--cmd-bg); border-color:var(--cmd-bg);}
 pre[data-kind="cmd"] code{color:var(--cmd-ink);}
 pre[data-kind="cmd"]::before{color:var(--cmd-mark);}
@@ -532,26 +536,39 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
       <h2>rich in three seconds:<br>print, Table, Panel</h2>
       <div class="rule"></div>
       <p class="lead"><code>rich</code> makes terminal output look like a real application. You met it in Chapter 3. Today you use three of its parts.</p>
-      <div class="grid g3">
-        <div class="card"><span class="tagline">print</span><h4>Colour with tags</h4><p><code>console = Console()</code><br><code>console.print("[bold green]hello[/]")</code><br>Square brackets set the style. <code>[/]</code> ends it. The result is the first line below.</p></div>
-        <div class="card"><span class="tagline">Table</span><h4>Columns, then rows</h4><p><code>table.add_column("Tool")</code><br><code>table.add_column("What it does")</code><br><code>table.add_row("Python", "runs your code")</code><br>Columns first, then rows. Two columns, so two values in each row.</p></div>
-        <div class="card"><span class="tagline">Panel</span><h4>A frame around text (a panel)</h4><p><code>Panel.fit("Hello, Ada!", title="hello_tool")</code><br><code>title=</code> puts a name on the frame. <code>.fit</code> makes it as wide as its text.</p></div>
+      <pre data-kind="file"><code>from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+
+console = Console()</code></pre>
+      <div class="rich8-row">
+        <div><p class="rich8-h">① print with a style tag</p><pre data-kind="file"><code>console.print("[bold green]hello[/]")</code></pre></div>
+        <div><p class="rich8-h">&nbsp;</p><pre class="term" data-kind="out"><code><b style="color:#1A8F3C">hello</b></code></pre></div>
       </div>
-      <pre class="term"><code>&gt;&gt;&gt; console.print("[bold green]hello[/]")
-<b style="color:#1A8F3C">hello</b>
-&gt; python hello_tool.py --name Ada
-╭─ hello_tool ─╮
+      <p class="rich8-note"><code>[bold green]</code> makes the text bold and green. <code>[/]</code> ends the style.</p>
+      <div class="rich8-row">
+        <div><p class="rich8-h">② Panel: a frame around text</p><pre data-kind="file"><code>p = Panel.fit("Hello, Ada!", title="hello_tool")
+console.print(p)</code></pre></div>
+        <div><p class="rich8-h">&nbsp;</p><pre class="term" data-kind="out"><code>╭─ hello_tool ─╮
 │ Hello, Ada!  │
-╰──────────────╯
-            Tools in this course
-┏━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ Tool   ┃ What it does                    ┃
-┡━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ Python │ runs your code                  │
-│ Git    │ remembers every version         │
-│ rich   │ makes terminal output look good │
-└────────┴─────────────────────────────────┘</code></pre>
-      <p><b>print</b> → green hello. <b>Panel</b> → the frame. <b>Table</b> → below it.</p>
+╰──────────────╯</code></pre></div>
+      </div>
+      <p class="rich8-note"><code>title=</code> puts a name on the frame. <code>.fit</code> makes the frame as wide as its text.</p>
+      <div class="rich8-row">
+        <div><p class="rich8-h">③ Table: columns first, then rows</p><pre data-kind="file"><code>table = Table(title="Tools in this course")
+table.add_column("Tool")
+table.add_column("What it does")
+table.add_row("Python", "runs your code")
+console.print(table)</code></pre></div>
+        <div><p class="rich8-h">&nbsp;</p><pre class="term" data-kind="out"><code>   Tools in this course
+┏━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+┃ Tool   ┃ What it does   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+│ Python │ runs your code │
+└────────┴────────────────┘</code></pre></div>
+      </div>
+      <p class="rich8-note"><code>title=</code> puts a name over the table. Two columns, so two values in each row.</p>
+      <p>Run all the lines in one file, and the output comes in the order of the <code>console.print</code> lines: ①, then ②, then ③. <code>hello_tool.py</code> works the same way: first a Panel, then a Table with three rows. In cmd the borders may look like <code>+--+</code>. The words are the same.</p>
     </article>
 
     <article class="slide dgs" hidden>
