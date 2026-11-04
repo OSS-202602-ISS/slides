@@ -303,6 +303,21 @@ pre[data-kind="url"]::before{content:"Open in the browser";}
 .slide.dgs .callout{padding:10px 16px;}
 .s4 .lbl{font-size:.84rem; font-weight:700; color:var(--ink-2); margin-top:8px;}
 .stage:has(> .slide.dgs:not([hidden])){padding-top:18px; padding-bottom:18px;}
+
+/* role-based code: commands to type = dark chip/block, names and output = quiet */
+:root{--cmd-bg:#17211D; --cmd-ink:#F2F6F4; --cmd-mark:#7FD9BA;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--cmd-bg:#000000; --cmd-ink:#F2F6F4; --cmd-mark:#7FD9BA;} }
+:root[data-theme="dark"]{--cmd-bg:#000000; --cmd-ink:#F2F6F4; --cmd-mark:#7FD9BA;}
+code,kbd{border-color:var(--line-strong);}
+code.cmd{background:var(--cmd-bg); color:var(--cmd-ink); border-color:var(--cmd-bg); font-weight:500; white-space:nowrap;}
+code.cmd::before{content:"\25B8\00A0"; color:var(--cmd-mark); font-weight:700;}
+td code.cmd, li code.cmd{white-space:normal;}
+code.cmd::before{font-family:var(--body);}
+pre[data-kind="cmd"]{background:var(--cmd-bg); border-color:var(--cmd-bg);}
+pre[data-kind="cmd"] code{color:var(--cmd-ink);}
+pre[data-kind="cmd"]::before{color:var(--cmd-mark);}
+a{font-weight:600; border-bottom:2px solid var(--accent);}
+a::after{content:" \2197"; font-size:.85em;}
 </style>
 </head>
 <body>
@@ -413,7 +428,7 @@ pre[data-kind="url"]::before{content:"Open in the browser";}
       <p class="eyebrow">Step one of four</p>
       <h2>git clone gets your own copy</h2>
       <div class="rule"></div>
-      <p class="lead"><code>git clone</code> downloads a whole repository from GitHub to your PC. You get every file and its history (the <code>.git</code> folder).</p>
+      <p class="lead"><code class="cmd">git clone</code> downloads a whole repository from GitHub to your PC. You get every file and its history (the <code>.git</code> folder).</p>
       <div class="dg" role="img" aria-label="Left: GitHub, with the repository teacher-demo-oss-project: its files and its history. An arrow labelled git clone goes to the right. Right: your PC, the folder D:\oss\your ID	eacher-demo-oss-project with the same files and a .git folder. Clone once. After that, git pull brings only the new changes." style="max-width:900px;">
         <svg viewBox="0 0 720 176" aria-hidden="true">
           <defs><marker id="ah8c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
@@ -443,7 +458,7 @@ pre[data-kind="url"]::before{content:"Open in the browser";}
 Cloning into 'teacher-demo-oss-project'...
 &gt; cd teacher-demo-oss-project</code></pre>
       <ul>
-        <li><b>Clone once.</b> Next time, type <code>git pull</code>. It gets only the new changes (Chapter 4).</li>
+        <li><b>Clone once.</b> Next time, type <code class="cmd">git pull</code>. It gets only the new changes (Chapter 4).</li>
         <li><b>Clone in <code>D:\oss\&lt;your ID&gt;</code>.</b> Then the repository sits next to your box (slide 3).</li>
         <li><b>A public repository needs no login to clone.</b> You need a login only to push.</li>
       </ul>
@@ -457,7 +472,7 @@ Cloning into 'teacher-demo-oss-project'...
       <p class="eyebrow">After step one: read the list first</p>
       <h2>Read requirements.txt first</h2>
       <div class="rule"></div>
-      <p class="lead">After you clone a project (<code>git clone</code>), open this file first. It lists what goes into the box. Then install.</p>
+      <p class="lead">After you clone a project (<code class="cmd">git clone</code>), open this file first. It lists what goes into the box. Then install.</p>
       <div class="grid g2">
         <div class="card"><span class="tagline">The demo, today</span><pre><code>rich==15.0.0</code></pre><p>One library. <code>==</code> means <b>exactly this version</b>. Not newer, not older.</p></div>
         <div class="card"><span class="tagline">The demo, after the Lab</span><pre><code>rich==15.0.0
@@ -474,7 +489,7 @@ tabulate==0.10.0</code></pre><p><b>Use a new library? Add a line.</b> You do it 
       <p class="eyebrow">Step two of four</p>
       <h2>One command fills the box</h2>
       <div class="rule"></div>
-      <p class="lead"><code>pip install -r requirements.txt</code> reads the list. It installs every line. This is a real run in a new box:</p>
+      <p class="lead"><code class="cmd">pip install -r requirements.txt</code> reads the list. It installs every line. This is a real run in a new box:</p>
       <pre><code>&gt; pip install -r requirements.txt
 Collecting rich==15.0.0 (from -r requirements.txt (line 1))
 ...
@@ -485,7 +500,7 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
       </ul>
       <div class="callout warn">
         <span class="mk">Course rule</span>
-        <p><b>Never install without a version.</b> Not <code>pip install tabulate</code>, but <code>pip install tabulate==0.10.0</code>. Without a version, 37 people get different versions. Then the code works only on some computers.</p>
+        <p><b>Never install without a version.</b> Not <code class="cmd">pip install tabulate</code>, but <code class="cmd">pip install tabulate==0.10.0</code>. Without a version, 37 people get different versions. Then the code works only on some computers.</p>
       </div>
     </article>
 
@@ -498,10 +513,10 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
         <table>
           <thead><tr><th>Step</th><th>In the demo README</th></tr></thead>
           <tbody>
-            <tr><td>1. Clone</td><td><code>git clone https://github.com/OSS-202602-ISS/teacher-demo-oss-project.git</code> then <code>cd teacher-demo-oss-project</code></td></tr>
-            <tr><td>2. Make a venv</td><td><code>python -m venv .venv</code> then <code>.venv\Scripts\activate</code><br><small>Type these in cmd. PowerShell can block <code>activate</code> with a red error. Then type <code>cmd</code> first.</small></td></tr>
-            <tr><td>3. Install</td><td><code>pip install -r requirements.txt</code></td></tr>
-            <tr><td>4. Run</td><td><code>python hello_tool.py --name Ada</code></td></tr>
+            <tr><td>1. Clone</td><td><code class="cmd">git clone https://github.com/OSS-202602-ISS/teacher-demo-oss-project.git</code><br><code class="cmd">cd teacher-demo-oss-project</code></td></tr>
+            <tr><td>2. Make a venv</td><td><code class="cmd">python -m venv .venv</code><br><code class="cmd">.venv\Scripts\activate</code><br><small>Type these in cmd. PowerShell can block <code>activate</code> with a red error. Then type <code class="cmd">cmd</code> first.</small></td></tr>
+            <tr><td>3. Install</td><td><code class="cmd">pip install -r requirements.txt</code></td></tr>
+            <tr><td>4. Run</td><td><code class="cmd">python hello_tool.py --name Ada</code></td></tr>
           </tbody>
         </table>
       </div>
@@ -517,7 +532,7 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
       <div class="rule"></div>
       <p class="lead"><code>rich</code> makes terminal output look like a real application. You met it in Chapter 3. Today you use three of its parts.</p>
       <div class="grid g3">
-        <div class="card"><span class="tagline">print</span><h4>Colour with tags</h4><p><code>from rich import print</code><br><code>print("[bold green]hello[/]")</code><br>The part in square brackets sets the style. <code>[/]</code> ends the style.</p></div>
+        <div class="card"><span class="tagline">print</span><h4>Colour with tags</h4><p><code>from rich import print</code><br><code>print("[bold green]hello[/]")</code><br>This <code>print</code> replaces Python's own <code>print</code>. The part in square brackets sets the style. <code>[/]</code> ends the style.</p></div>
         <div class="card"><span class="tagline">Table</span><h4>Columns, then rows</h4><p><code>table.add_column("Tool")</code><br><code>table.add_row("Git", "...")</code><br>Add the columns first. Then add the rows.</p></div>
         <div class="card"><span class="tagline">Panel</span><h4>A frame around text (a panel)</h4><p><code>Panel.fit("Hello, Ada!")</code><br><code>.fit</code> makes the panel as wide as its text.</p></div>
       </div>
@@ -672,12 +687,12 @@ cd oss-practice
 git config user.name "&lt;your GitHub username&gt;"
 git config user.email "&lt;your noreply e-mail&gt;"
 cd ..</code></pre>
-          <p class="why">Why: your own work goes into this folder in PART 3. The two <code>git config</code> lines put your name on your commits, in this repository only. Your noreply e-mail is in GitHub <b>Settings &rsaquo; Emails</b>. It looks like <code>12345678+name@users.noreply.github.com</code>. It hides your real e-mail.</p></div>
-        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'oss-practice'...</code></pre>The <code>git config</code> lines print nothing. The prompt ends with <code>D:\oss\&lt;your ID&gt;&gt;</code>.</div>
+          <p class="why">Why: your own work goes into this folder in PART 3. The two <code class="cmd">git config</code> lines put your name on your commits, in this repository only. Your noreply e-mail is in GitHub <b>Settings &rsaquo; Emails</b>. It looks like <code>12345678+name@users.noreply.github.com</code>. It hides your real e-mail.</p></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'oss-practice'...</code></pre>The <code class="cmd">git config</code> lines print nothing. The prompt ends with <code>D:\oss\&lt;your ID&gt;&gt;</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>The prompt starts with <code>PS</code>? This is PowerShell. Type <code>cmd</code> and press Enter. Then type the lines again.</li>
-          <li>Git says the folder already exists? You cloned it before. Type <code>cd oss-practice</code>, then <code>git pull</code>. Then type the two <code>git config</code> lines. Then type <code>cd ..</code>. (<code>git pull</code> gets the <code>LICENSE</code> file from Chapter 7.)</li>
-          <li>There is no folder <code>D:\oss\&lt;your ID&gt;</code>? Make it: <code>mkdir D:\oss\&lt;your ID&gt;</code>. Then open it in VS Code.</li>
+          <li>The prompt starts with <code>PS</code>? This is PowerShell. Type <code class="cmd">cmd</code> and press Enter. Then type the lines again.</li>
+          <li>Git says the folder already exists? You cloned it before. Type <code class="cmd">cd oss-practice</code>, then <code class="cmd">git pull</code>. Then type the two <code class="cmd">git config</code> lines. Then type <code class="cmd">cd ..</code>. (<code class="cmd">git pull</code> gets the <code>LICENSE</code> file from Chapter 7.)</li>
+          <li>There is no folder <code>D:\oss\&lt;your ID&gt;</code>? Make it: <code class="cmd">mkdir D:\oss\&lt;your ID&gt;</code>. Then open it in VS Code.</li>
           <li>Never use <code>--global</code> on this shared PC.</li>
         </ul></div>
       </div>
@@ -765,7 +780,7 @@ dir /b</code></pre></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python -m venv .venv</code></pre></div>
         <span class="k see">You should see</span><div class="v">Nothing for about 20 seconds. Then the prompt appears again.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>You see <code>Error: [Errno 13] Permission denied: '...\.venv\Scripts\python.exe'</code>? Your box is already active. Type <code>deactivate</code> first. Or skip this step: the box is already here.</li>
+          <li>You see <code>Error: [Errno 13] Permission denied: '...\.venv\Scripts\python.exe'</code>? Your box is already active. Type <code class="cmd">deactivate</code> first. Or skip this step: the box is already here.</li>
         </ul></div>
       </div>
 
@@ -775,8 +790,8 @@ dir /b</code></pre></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>.venv\Scripts\activate</code></pre></div>
         <span class="k see">You should see</span><div class="v">The prompt now starts with <code>(.venv)</code>:<pre data-kind="out"><code>(.venv) D:\oss\&lt;your ID&gt;&gt;</code></pre></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>The prompt starts with <code>PS</code>? Type <code>cmd</code> and press Enter. Then type this command again.</li>
-          <li>At home, PowerShell may show a red error about scripts. Do the same: type <code>cmd</code> first.</li>
+          <li>The prompt starts with <code>PS</code>? Type <code class="cmd">cmd</code> and press Enter. Then type this command again.</li>
+          <li>At home, PowerShell may show a red error about scripts. Do the same: type <code class="cmd">cmd</code> first.</li>
         </ul></div>
       </div>
 
@@ -787,7 +802,7 @@ dir /b</code></pre></div>
 cd teacher-demo-oss-project</code></pre></div>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'teacher-demo-oss-project'...</code></pre>The prompt ends with <code>\teacher-demo-oss-project&gt;</code>. The repository is public, so no login is needed.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>Git says the folder already exists? You cloned it before. Only type <code>cd teacher-demo-oss-project</code>.</li>
+          <li>Git says the folder already exists? You cloned it before. Only type <code class="cmd">cd teacher-demo-oss-project</code>.</li>
         </ul></div>
       </div>
 
@@ -797,7 +812,7 @@ cd teacher-demo-oss-project</code></pre></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>type requirements.txt</code></pre></div>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>rich==15.0.0</code></pre>One library, one exact version. Skip README step 2. You already have a box.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>cmd cannot find the file? You are in the wrong folder. Type <code>cd teacher-demo-oss-project</code>.</li>
+          <li>cmd cannot find the file? You are in the wrong folder. Type <code class="cmd">cd teacher-demo-oss-project</code>.</li>
         </ul></div>
       </div>
 
@@ -812,7 +827,8 @@ cd teacher-demo-oss-project</code></pre></div>
           and more lines. Both are correct. You may also see a notice about a new pip. You can ignore it.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirement.txt'</code>? A typo. The name is <code>requirements.txt</code>, with an <b>s</b>.</li>
-          <li>No <code>(.venv)</code> at the start of the prompt? Type <code>..\.venv\Scripts\activate</code>. Then install again.</li>
+          <li>No <code>(.venv)</code> at the start of the prompt? Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
+          <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? The box is not active. pip put the library outside the box. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
         </ul></div>
       </div>
 
@@ -834,8 +850,8 @@ cd teacher-demo-oss-project</code></pre></div>
           <b>The lines can look a little different. The words must be the same.</b>
           <p>In the VS Code terminal, the panel has round corners and colour. The words are the same.</p></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li><code>ModuleNotFoundError: No module named 'rich'</code>? The box is not active. Type <code>..\.venv\Scripts\activate</code>. Then do step 5 and step 6 again.</li>
-          <li><code>can't open file '...\hello_tool.py': [Errno 2] No such file or directory</code>? You are in the wrong folder. Type <code>cd teacher-demo-oss-project</code>.</li>
+          <li><code>ModuleNotFoundError: No module named 'rich'</code>? The box is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then do step 5 and step 6 again.</li>
+          <li><code>can't open file '...\hello_tool.py': [Errno 2] No such file or directory</code>? You are in the wrong folder. Type <code class="cmd">cd teacher-demo-oss-project</code>.</li>
         </ul></div>
       </div>
 
@@ -931,7 +947,7 @@ options:
 <pre data-kind="out"><code>Successfully installed tabulate-0.10.0</code></pre>
           You may also see a notice about a new pip. You can ignore it.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>You typed <code>pip install tabulate</code> with no version? Type it again with <code>==0.10.0</code>. Course rule: every install has a version.</li>
+          <li>You typed <code class="cmd">pip install tabulate</code> with no version? Type it again with <code>==0.10.0</code>. Course rule: every install has a version.</li>
         </ul></div>
       </div>
 
@@ -1056,7 +1072,8 @@ type requirements.txt</code></pre>
 <pre data-kind="out"><code>Successfully installed python-dateutil-2.9.0.post0 six-1.17.0</code></pre>
           <code>rich</code> and <code>tabulate</code> are already in your box from PART 2. Then you see <code>Requirement already satisfied</code>. Both are correct. You may also see a notice about a new pip. You can ignore it.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>No <code>(.venv)</code> in the prompt? Type <code>..\.venv\Scripts\activate</code>. Then install again.</li>
+          <li>No <code>(.venv)</code> in the prompt? Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
+          <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? The box is not active. pip put the library outside the box. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
           <li><code>ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirement.txt'</code>? A typo. Type <code>requirements.txt</code>, with an <b>s</b>.</li>
         </ul></div>
       </div>
@@ -1135,9 +1152,9 @@ git commit -m "Add hello tool with tabulate"
 git push</code></pre></div>
         <span class="k see">You should see</span><div class="v">A small window <b>Connect to GitHub</b> may open. Click <b>Sign in with your browser</b>. Check that the avatar is yours. Click <b>Authorize</b>. Then open <code>github.com/&lt;your-username&gt;/oss-practice</code>. You see <code>tools/</code> and <code>requirements.txt</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>Git says the push was rejected? GitHub has a commit you do not have. Type <code>git pull</code>. Then <code>git push</code> again.</li>
-          <li><code>no upstream branch</code>? Type <code>git push -u origin main</code>.</li>
-          <li>Git asks who you are? Type the two <code>git config</code> lines from Ready check ③. Never use <code>--global</code>.</li>
+          <li>Git says the push was rejected? GitHub has a commit you do not have. Type <code class="cmd">git pull</code>. Then <code class="cmd">git push</code> again.</li>
+          <li><code>no upstream branch</code>? Type <code class="cmd">git push -u origin main</code>.</li>
+          <li>Git asks who you are? Type the two <code class="cmd">git config</code> lines from Ready check ③. Never use <code>--global</code>.</li>
         </ul></div>
       </div>
       <div class="callout warn">
@@ -1180,7 +1197,7 @@ cmdkey /list | findstr github</code></pre></div>
         <span class="k see">You should see</span><div class="v">The second command shows no lines.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>The first command says nothing was found? Nothing was saved. That is fine.</li>
-          <li>The prompt starts with <code>PS</code>? Type <code>cmd</code> first.</li>
+          <li>The prompt starts with <code>PS</code>? Type <code class="cmd">cmd</code> first.</li>
         </ul></div>
       </div>
 
@@ -1266,7 +1283,7 @@ What I changed or checked myself:
       <div class="step-head"><span class="step-no">Grading</span><h3>How it's graded</h3></div>
       <p class="goal">We check two things. <b>Does it run from your README? Can you explain it?</b> How it looks does not matter.</p>
       <div class="rubric">
-        <div class="card"><b>Complete</b><p>The tool is in <code>tools/</code>. It uses one whitelist library and takes <code>--name</code>. It runs with the README command after <code>pip install -r requirements.txt</code>. The version is pinned. The output and the two AI lines are in the issue.</p></div>
+        <div class="card"><b>Complete</b><p>The tool is in <code>tools/</code>. It uses one whitelist library and takes <code>--name</code>. It runs with the README command after <code class="cmd">pip install -r requirements.txt</code>. The version is pinned. The output and the two AI lines are in the issue.</p></div>
         <div class="card"><b>Partial</b><p>It runs, but something is missing. For example: no pinned version, no README line, a screenshot only, or no AI lines. Or the tool needs a library without a version. Two submissions with the same text are both Partial.</p></div>
         <div class="card"><b>Not submitted</b><p>No issue by the deadline. Late work still gets partial credit.</p></div>
       </div>
@@ -1276,7 +1293,7 @@ What I changed or checked myself:
       </div>
       <div class="callout warn">
         <span class="mk">Deadline</span>
-        <p><b>11:59 PM the night before the next class — the exact date is in the ecampus notice.</b> You can finish at home. Clone your <code>oss-practice</code>. Make a box (Lab PART 1, steps 1–2). Type <code>pip install -r requirements.txt</code>. Run it. Does it work on a second computer? Then your README is good.</p>
+        <p><b>11:59 PM the night before the next class — the exact date is in the ecampus notice.</b> You can finish at home. Clone your <code>oss-practice</code>. Make a box (Lab PART 1, steps 1–2). Type <code class="cmd">pip install -r requirements.txt</code>. Run it. Does it work on a second computer? Then your README is good.</p>
       </div>
     </div>
 
