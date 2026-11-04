@@ -1,0 +1,1383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 8 · Python Refresher &amp; First OSS Use</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── 토큰 ─────────────────────────────────────────── */
+:root{
+  --ground:#F6F8F6; --surface:#FFFFFF; --surface-2:#ECF1EE; --sunken:#E3EAE6;
+  --line:#D6DEDA; --line-strong:#B9C5BF;
+  --ink:#141E1A; --ink-2:#4B5B56; --ink-3:#78887F;
+  --accent:#0B6E55; --accent-ink:#095643; --accent-soft:#E1F0EA; --accent-line:#9FCDBD;
+  --warn:#8F5410; --warn-soft:#F8EEDD; --warn-line:#E0C79A;
+  --shadow:0 1px 2px rgba(20,30,26,.05), 0 8px 24px -12px rgba(20,30,26,.18);
+  --display:"Gowun Batang","Batang","Malgun Gothic",serif;
+  --body:"IBM Plex Sans KR","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  --mono:"IBM Plex Mono","Consolas","D2Coding",monospace;
+  --topbar:64px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+    --line:#28382F; --line-strong:#3A4E45;
+    --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+    --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+    --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+  --line:#28382F; --line-strong:#3A4E45;
+  --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+  --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+  --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+
+/* ─── 기본 ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-weight:400; font-size:16px; line-height:1.68;
+  word-break:keep-all; overflow-wrap:break-word;
+}
+h1,h2,h3,h4{font-family:var(--display); font-weight:700; line-height:1.28; text-wrap:balance; margin:0;}
+p{margin:0;}
+a{color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent-line);}
+a:hover{border-bottom-color:var(--accent);}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:3px; border-radius:3px;}
+code,kbd{font-family:var(--mono); font-size:.88em; background:var(--surface-2); padding:.12em .38em; border-radius:4px; border:1px solid var(--line);}
+kbd{font-size:.8em; box-shadow:0 1px 0 var(--line-strong);}
+.eyebrow{font-family:var(--body); font-size:.95rem; font-weight:600; letter-spacing:.01em; color:var(--ink-2);}
+
+/* ─── 상단바 ───────────────────────────────────────── */
+.topbar{
+  position:sticky; top:0; z-index:50; height:var(--topbar);
+  display:flex; align-items:center; gap:20px;
+  padding:0 clamp(14px,3vw,36px);
+  background:var(--ground);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex; flex-direction:column; gap:1px; min-width:0;}
+.brand b{font-family:var(--display); font-size:1.02rem; font-weight:700; white-space:nowrap;}
+.brand span{font-family:var(--body); font-size:.8rem; letter-spacing:.01em; color:var(--ink-3);}
+.tabs{display:flex; gap:4px; margin-left:auto; background:var(--surface-2); padding:4px; border-radius:10px; border:1px solid var(--line);}
+.tab{
+  appearance:none; border:0; background:transparent; cursor:pointer;
+  font-family:var(--body); font-size:.86rem; font-weight:600; color:var(--ink-2);
+  padding:7px 13px; border-radius:7px; display:flex; align-items:baseline; gap:7px; white-space:nowrap;
+}
+.tab .min{font-family:var(--mono); font-size:.68rem; font-weight:500; color:var(--ink-3);}
+.tab:hover{color:var(--ink);}
+.tab[aria-selected="true"]{background:var(--surface); color:var(--accent-ink); box-shadow:var(--shadow);}
+.tab[aria-selected="true"] .min{color:var(--accent);}
+
+/* ─── 강의: 슬라이드 ───────────────────────────────── */
+.stage{
+  min-height:calc(100vh - var(--topbar) - 62px);
+  display:flex; align-items:center; justify-content:center;
+  padding:clamp(24px,4vw,56px) clamp(16px,5vw,60px);
+}
+.slide{width:100%; max-width:960px; display:flex; flex-direction:column; gap:clamp(16px,2.2vw,26px);}
+.slide h2{font-size:clamp(1.75rem,3.9vw,2.85rem);}
+.slide h3{font-size:clamp(1.1rem,1.9vw,1.35rem); color:var(--accent-ink);}
+.slide p{font-size:clamp(1.05rem,1.8vw,1.38rem); color:var(--ink-2); max-width:62ch;}
+.slide .lead{font-size:clamp(1.2rem,2.2vw,1.62rem); color:var(--ink);}
+.slide ul{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.55em; font-size:clamp(1.05rem,1.7vw,1.34rem);}
+.slide ul li::marker{color:var(--accent);}
+.rule{height:3px; width:56px; background:var(--accent); border-radius:2px;}
+
+.cover{gap:clamp(20px,3vw,34px);}
+.cover h1{font-size:clamp(2.3rem,6.2vw,4.4rem); letter-spacing:-.015em;}
+.cover .sub{font-size:clamp(1.15rem,2.1vw,1.58rem); color:var(--ink-2);}
+.cover dl{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:18px; margin:0; padding-top:16px; border-top:1px solid var(--line);}
+.cover dt{font-family:var(--body); font-size:.8rem; font-weight:600; letter-spacing:.01em; color:var(--ink-3); margin-bottom:3px;}
+.cover dd{margin:0; font-size:1.05rem; font-weight:500;}
+
+.grid{display:grid; gap:14px;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.g3{grid-template-columns:repeat(auto-fit,minmax(215px,1fr));}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px; display:flex; flex-direction:column; gap:7px; box-shadow:var(--shadow);
+}
+.card h4{font-family:var(--body); font-weight:600; font-size:1.12rem;}
+.card p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+.card .tagline{font-family:var(--body); font-size:.85rem; font-weight:600; letter-spacing:.01em; color:var(--accent);}
+
+.freedoms{display:flex; flex-direction:column; gap:10px; counter-reset:f -1;}
+.freedom{
+  display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:baseline;
+  padding:13px 18px; background:var(--surface); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:0 10px 10px 0;
+}
+.freedom::before{
+  counter-increment:f; content:"Freedom " counter(f);
+  font-family:var(--mono); font-size:.72rem; font-weight:600; color:var(--accent);
+  letter-spacing:.05em; white-space:nowrap;
+}
+.freedom b{font-weight:600;}
+.freedom span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+/* ─── 트랙 비교(필수 A / 선택 B) ───────────────────── */
+.tracks{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(290px,1fr));}
+.track{
+  background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0; padding:18px 20px;
+  display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow);
+}
+.track.optional{background:var(--surface-2); border-left-style:dashed; border-left-color:var(--line-strong); box-shadow:none;}
+.track .badge{
+  align-self:flex-start; font-family:var(--body); font-size:.8rem; font-weight:700;
+  padding:3px 11px; border-radius:20px; background:var(--accent-soft); color:var(--accent-ink);
+}
+.track.optional .badge{background:var(--sunken); color:var(--ink-3);}
+.track h4{font-family:var(--body); font-weight:700; font-size:1.18rem;}
+.track p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+
+.timeline{display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); border-top:2px solid var(--line-strong);}
+.tl-item{padding:16px 14px 0 0; position:relative;}
+.tl-item::before{content:""; position:absolute; top:-6px; left:0; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid var(--ground);}
+.tl-item .yr{font-family:var(--mono); font-size:1.18rem; font-weight:600; color:var(--accent-ink); display:block; margin-bottom:3px;}
+.tl-item p{font-size:.98rem; line-height:1.55;}
+
+.callout{
+  display:flex; gap:14px; padding:16px 20px; border-radius:10px;
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+}
+.callout .mk{font-family:var(--body); font-size:.9rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink); padding-top:2px; white-space:nowrap;}
+.callout p{color:var(--ink); max-width:none;}
+.callout.warn{background:var(--warn-soft); border-color:var(--warn-line);}
+.callout.warn .mk{color:var(--warn);}
+
+table{width:100%; border-collapse:collapse; font-size:1.02rem;}
+th,td{border-bottom:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top;}
+th{font-family:var(--body); font-size:.88rem; letter-spacing:.01em; color:var(--ink-3); font-weight:600; border-bottom:1.5px solid var(--line-strong);}
+td.num{font-variant-numeric:tabular-nums; font-family:var(--mono); white-space:nowrap; color:var(--accent-ink); font-weight:500;}
+.scroll-x{overflow-x:auto;}
+td.where{white-space:normal; font-size:.88em; color:var(--ink-2); width:26%;}
+.where-in{font-size:.9em; color:var(--ink-2); margin-top:8px; padding-top:8px; border-top:1px solid var(--line);}
+@media print{ a[href^="http"]{ text-decoration:underline; text-underline-offset:2px; } }
+
+.slidenav{
+  position:sticky; bottom:0; z-index:40;
+  display:flex; align-items:center; gap:14px;
+  padding:11px clamp(14px,3vw,36px);
+  background:var(--ground); border-top:1px solid var(--line);
+}
+.dots{display:flex; gap:4px; flex:1; flex-wrap:wrap; align-items:center;}
+.dot{
+  min-width:26px; height:24px; padding:0 5px; border-radius:6px; cursor:pointer; line-height:1;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-3);
+  font-family:var(--mono); font-size:.74rem; font-weight:600; font-variant-numeric:tabular-nums;
+}
+.dot:hover{background:var(--surface); border-color:var(--accent); color:var(--accent-ink);}
+.dot[aria-current="true"]{background:var(--accent); border-color:var(--accent); color:var(--ground);}
+.navbtn.edge{padding:7px 10px; font-family:var(--mono);}
+.navbtn{
+  appearance:none; cursor:pointer; font-family:var(--body); font-weight:600; font-size:.85rem;
+  padding:7px 15px; border-radius:8px; border:1px solid var(--line-strong);
+  background:var(--surface); color:var(--ink);
+}
+.navbtn:hover{border-color:var(--accent); color:var(--accent-ink);}
+.navbtn:disabled{opacity:.35; cursor:default;}
+.counter{font-family:var(--mono); font-size:.8rem; font-variant-numeric:tabular-nums; color:var(--ink-3); white-space:nowrap;}
+
+/* ─── 문서형 페인(실습·과제) ───────────────────────── */
+.doc{max-width:840px; margin:0 auto; padding:clamp(28px,5vw,60px) clamp(18px,5vw,40px) 100px; display:flex; flex-direction:column; gap:clamp(26px,3.5vw,38px);}
+.doc-head{display:flex; flex-direction:column; gap:12px;}
+.doc-head h2{font-size:clamp(1.75rem,3.4vw,2.4rem);}
+.doc-head p{color:var(--ink-2); max-width:62ch;}
+
+.step{display:flex; flex-direction:column; gap:14px; padding-top:26px; border-top:1px solid var(--line);}
+.step-head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;}
+.step-no{font-family:var(--mono); font-size:.72rem; font-weight:600; letter-spacing:.08em; color:var(--accent-ink); padding:3px 9px; background:var(--accent-soft); border-radius:20px; white-space:nowrap;}
+.step-head h3{font-size:1.22rem; flex:1; min-width:200px;}
+.budget{font-family:var(--mono); font-size:.78rem; color:var(--ink-3); font-variant-numeric:tabular-nums; white-space:nowrap;}
+.goal{font-size:.95rem; color:var(--ink-2);}
+.step ol{margin:0; padding-left:1.3em; display:flex; flex-direction:column; gap:.5em; font-size:.96rem;}
+.step ol li::marker{font-family:var(--mono); font-weight:600; color:var(--accent);}
+.step ol ul{margin:.35em 0 0; padding-left:1.1em; font-size:.92rem; color:var(--ink-2); display:flex; flex-direction:column; gap:.25em;}
+
+.check{display:flex; align-items:flex-start; gap:11px; padding:11px 15px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; cursor:pointer;}
+.check input{margin:0; width:17px; height:17px; accent-color:var(--accent); flex-shrink:0; margin-top:2px; cursor:pointer;}
+.check span{font-size:.93rem; font-weight:500;}
+.check:has(input:checked){background:var(--accent-soft); border-color:var(--accent-line);}
+.check:has(input:checked) span{color:var(--ink-2); text-decoration:line-through; text-decoration-color:var(--accent-line);}
+
+.progress{
+  position:sticky; top:calc(var(--topbar) + 10px); z-index:30;
+  display:flex; align-items:center; gap:14px; padding:12px 18px;
+  background:var(--surface); border:1px solid var(--line); border-radius:11px; box-shadow:var(--shadow);
+}
+.progress b{font-family:var(--mono); font-size:.9rem; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.bar{flex:1; height:7px; background:var(--sunken); border-radius:4px; overflow:hidden;}
+.bar i{display:block; height:100%; width:0; background:var(--accent); border-radius:4px; transition:width .3s ease;}
+@media (prefers-reduced-motion: reduce){ .bar i{transition:none;} }
+.reset{appearance:none; border:1px solid var(--line-strong); background:transparent; color:var(--ink-3); font-family:var(--body); font-size:.76rem; padding:4px 10px; border-radius:6px; cursor:pointer;}
+.reset:hover{color:var(--ink); border-color:var(--accent);}
+
+.ladder{display:flex; flex-direction:column; counter-reset:l;}
+.rung{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px dashed var(--line);}
+.rung:last-child{border-bottom:0;}
+.rung::before{counter-increment:l; content:counter(l); font-family:var(--mono); font-size:.75rem; font-weight:600; color:var(--ground); background:var(--accent); width:22px; height:22px; border-radius:50%; display:grid; place-items:center;}
+.rung b{font-weight:600;}
+.rung span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+pre{background:var(--sunken); border:1px solid var(--line); border-radius:9px; padding:14px 16px; overflow-x:auto; margin:0;}
+pre code{background:none; border:0; padding:0; font-size:.85rem; line-height:1.6;}
+
+.rubric{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+.rubric .card b{font-family:var(--body); font-size:.95rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink);}
+
+.foot{border-top:1px solid var(--line); padding:22px clamp(18px,5vw,40px); text-align:center;}
+.foot p{font-size:.8rem; color:var(--ink-3);}
+
+/* ─── 인쇄 ─────────────────────────────────────────── */
+@media print{
+  .topbar,.slidenav,.progress{display:none !important;}
+  .pane[hidden]{display:block !important;}
+  .slide[hidden]{display:flex !important;}
+  .stage{display:block; min-height:0; padding:0;}
+  .slide{max-width:none; break-after:page; page-break-after:always; padding:8mm 0;}
+  .slide:last-child{break-after:auto; page-break-after:auto;}
+  body{background:#fff; color:#000; font-size:11pt;}
+  .card,.callout,.check,.step,.track,.tl-item{break-inside:avoid;}
+}
+
+/* ─── 8장: diff 표시 ───────────────────────────────── */
+pre.diff .add{color:var(--accent-ink); font-weight:600;}
+pre.diff .del{color:var(--warn);}
+.card pre code{font-size:.8rem;}
+pre.term code{font-family:"Cascadia Mono","Consolas",monospace; line-height:1.2;}
+
+/* ─── 그림 (OSS 5장 .dg 양식, 토큰 색) ─────────────── */
+.dg{--bad:#C0392B; --bad-soft:#FBE9E7;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .dg{--bad:#FF7A6B; --bad-soft:#3A1A16;} }
+:root[data-theme="dark"] .dg{--bad:#FF7A6B; --bad-soft:#3A1A16;}
+.dg svg{display:block; width:100%; height:auto;}
+.dg text{font-family:var(--body); fill:var(--ink-2);}
+.dg .mono{font-family:var(--mono); font-weight:600;}
+.dg .t-ink{fill:var(--ink);} .dg .t-acc{fill:var(--accent-ink);} .dg .t-mut{fill:var(--ink-3);} .dg .t-bad{fill:var(--bad);} .dg .t-on{fill:var(--surface);}
+.dg .s-acc{stroke:var(--accent);} .dg .s-line{stroke:var(--line-strong);} .dg .s-bad{stroke:var(--bad);}
+.dg .f-acc{fill:var(--accent);} .dg .f-soft{fill:var(--accent-soft);} .dg .f-surf{fill:var(--surface);} .dg .f-s2{fill:var(--surface-2);} .dg .f-bad{fill:var(--bad);} .dg .f-badsoft{fill:var(--bad-soft);} .dg .f-line{fill:var(--line-strong);}
+.dg .s-al{stroke:var(--accent-line);} .dg .f-ground{fill:var(--ground);}
+.dg{width:100%; margin:0 auto;}
+.places-cap{font-size:clamp(.98rem,1.6vw,1.15rem) !important; color:var(--ink) !important; font-weight:500; margin-top:-6px !important;}
+
+/* ─── 8장: 실습 단계 4줄 (Do · Copy · You should see · If not) ─── */
+.legend{display:flex; flex-wrap:wrap; gap:6px 18px; font-size:.88rem; color:var(--ink-2);}
+.legend b{color:var(--accent-ink); margin-right:3px;}
+.s4{display:grid; grid-template-columns:8.4em minmax(0,1fr); gap:10px 14px; align-items:start; padding:14px 16px; background:var(--surface); border:1px solid var(--line); border-radius:10px;}
+.s4 h4{grid-column:1/-1; font-family:var(--body); font-weight:700; font-size:1.03rem; display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;}
+.s4 > .k{font-size:.8rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink); padding-top:2px;}
+.s4 > .k.see{color:var(--ink);}
+.s4 > .k.ifnot{color:var(--warn);}
+.s4 > .v{font-size:.95rem; min-width:0;}
+.s4 > .v ul{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em;}
+.s4 pre{margin:6px 0;}
+.s4 .why{font-size:.88rem; color:var(--ink-2); margin-top:6px;}
+pre[data-kind]::before{display:block; font-family:var(--body); font-size:.7rem; font-weight:600; letter-spacing:.02em; color:var(--ink-3); margin-bottom:4px;}
+pre[data-kind="cmd"]::before{content:"Type in cmd";}
+pre[data-kind="out"]::before{content:"Output";}
+pre[data-kind="edit"]::before{content:"Change in hello_tool.py";}
+pre[data-kind="file"]::before{content:"In the file";}
+pre[data-kind="url"]::before{content:"Open in the browser";}
+@media (max-width:620px){ .s4{grid-template-columns:1fr; gap:4px;} }
+@media print{ .s4{break-inside:avoid;} }
+
+/* 그림 슬라이드: 1280x720 한 화면 */
+.slide.dgs{gap:12px;}
+.slide.dgs h2{font-size:clamp(1.5rem,3vw,2.15rem);}
+.slide.dgs .lead{font-size:clamp(1.05rem,1.7vw,1.28rem);}
+.slide.dgs p{font-size:clamp(1rem,1.6vw,1.2rem);}
+.slide.dgs ul{font-size:clamp(1rem,1.6vw,1.2rem); gap:.3em;}
+.slide.dgs .callout{padding:10px 16px;}
+.s4 .lbl{font-size:.84rem; font-weight:700; color:var(--ink-2); margin-top:8px;}
+.stage:has(> .slide.dgs:not([hidden])){padding-top:18px; padding-bottom:18px;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <b>Python Refresher &amp; First OSS Use</b>
+    <span>Open Source Software · Chapter 8 · Fall 2026</span>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Class blocks">
+    <button class="tab" role="tab" id="tab-lecture" aria-controls="pane-lecture" aria-selected="true">Lecture <span class="min">60 min</span></button>
+    <button class="tab" role="tab" id="tab-lab" aria-controls="pane-lab" aria-selected="false">Lab <span class="min">90 min</span></button>
+    <button class="tab" role="tab" id="tab-task" aria-controls="pane-task" aria-selected="false">Assignment <span class="min">30 min</span></button>
+  </div>
+</header>
+
+<!-- ══════════ Lecture ══════════ -->
+<section class="pane" id="pane-lecture" role="tabpanel" aria-labelledby="tab-lecture">
+  <div class="stage">
+
+    <article class="slide cover">
+      <p class="eyebrow">Chapter 8 · 2026 Fall</p>
+      <h1>Python Refresher<br>and First OSS Use</h1>
+      <p class="sub">Install someone else's code. Run it. Change one thing.<br>This is the smallest full way to use open source.</p>
+      <dl>
+        <div><dt>Course</dt><dd>Open Source Software</dd></div>
+        <div><dt>Target</dt><dd>Senior (4th-year), Information Systems &amp; Security</dd></div>
+        <div><dt>Today</dt><dd>60 min lecture · 90 min lab · 30 min assignment</dd></div>
+        <div><dt>Your team</dt><dd>Your row is your team from today.</dd></div>
+      </dl>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">Where we are</p>
+      <h2>Using open source takes four steps</h2>
+      <div class="rule"></div>
+      <p class="lead">In Chapters 4 to 7 you learned to share code. Today you use other people's code. Every open source project needs the same four steps.</p>
+      <div class="dg" role="img" aria-label="Four steps in a row. 1 clone: git clone gets a copy. 2 install: pip install -r fills the box. 3 run: python starts it. 4 change: edit one thing and run it again. Steps 1 to 3 are Lab PART 1. Step 4 is Lab PART 2." style="max-width:860px;">
+        <svg viewBox="0 0 720 132" aria-hidden="true">
+          <defs><marker id="ah8a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <line class="s-acc" x1="158" y1="62" x2="190" y2="62" stroke-width="2.5" marker-end="url(#ah8a)"/><line class="s-acc" x1="344" y1="62" x2="376" y2="62" stroke-width="2.5" marker-end="url(#ah8a)"/><line class="s-acc" x1="530" y1="62" x2="562" y2="62" stroke-width="2.5" marker-end="url(#ah8a)"/>
+          <g><rect class="f-surf s-acc" x="6" y="6" width="150" height="120" rx="12" stroke-width="2"/><text class="mono t-acc" x="18" y="32" font-size="18">1 clone</text><text class="mono t-ink" x="18" y="56" font-size="12.5">git clone URL</text><text class="t-ink" x="18" y="77" font-size="13">Get a copy</text><rect class="f-soft s-al" x="18" y="92" width="80" height="22" rx="11" stroke-width="1"/><text class="t-acc" x="58" y="107" font-size="11.5" font-weight="600" text-anchor="middle">Lab PART 1</text></g>
+          <g><rect class="f-surf s-acc" x="192" y="6" width="150" height="120" rx="12" stroke-width="2"/><text class="mono t-acc" x="204" y="32" font-size="18">2 install</text><text class="mono t-ink" x="204" y="56" font-size="12.5">pip install -r</text><text class="t-ink" x="204" y="77" font-size="13">Fill the box</text><rect class="f-soft s-al" x="204" y="92" width="80" height="22" rx="11" stroke-width="1"/><text class="t-acc" x="244" y="107" font-size="11.5" font-weight="600" text-anchor="middle">Lab PART 1</text></g>
+          <g><rect class="f-surf s-acc" x="378" y="6" width="150" height="120" rx="12" stroke-width="2"/><text class="mono t-acc" x="390" y="32" font-size="18">3 run</text><text class="mono t-ink" x="390" y="56" font-size="12.5">python file.py</text><text class="t-ink" x="390" y="77" font-size="13">Start it</text><rect class="f-soft s-al" x="390" y="92" width="80" height="22" rx="11" stroke-width="1"/><text class="t-acc" x="430" y="107" font-size="11.5" font-weight="600" text-anchor="middle">Lab PART 1</text></g>
+          <g><rect class="f-soft s-acc" x="564" y="6" width="150" height="120" rx="12" stroke-width="2.5"/><text class="mono t-acc" x="576" y="32" font-size="18">4 change</text><text class="t-ink" x="576" y="56" font-size="13">Edit one thing</text><text class="t-ink" x="576" y="77" font-size="13">Run it again</text><rect class="f-acc" x="576" y="92" width="80" height="22" rx="11"/><text class="t-on" x="616" y="107" font-size="11.5" font-weight="600" text-anchor="middle">Lab PART 2</text></g>
+        </svg>
+      </div>
+      <p class="places-cap">Step 4 is new today. After a change, the code must still run.</p>
+      <div class="callout">
+        <span class="mk">Today's project</span>
+        <p>The demo repository <code>teacher-demo-oss-project</code>. It is one Python file, about 40 lines. <b>It is small on purpose.</b> The four steps are the lesson.</p>
+      </div>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">Review of Chapter 3</p>
+      <h2>One box per project &mdash; you already made one</h2>
+      <div class="rule"></div>
+      <p class="lead">A virtual environment (<code>.venv</code>) is a box of libraries. You made it in Chapter 3. Today you use it again.</p>
+      <div class="dg" role="img" aria-label="Your folder D:\oss\your ID contains three things side by side. The box .venv holds rich and the 3 libraries it needs: pygments, markdown-it-py and mdurl. Next to the box are two repositories: teacher-demo-oss-project, with the file requirements.txt that says rich==15.0.0, and oss-practice, your repository. An arrow goes from requirements.txt to the box: pip install -r fills the box." style="max-width:560px;">
+        <svg viewBox="0 0 720 246" aria-hidden="true">
+          <defs><marker id="ah8b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-s2 s-line" x="4" y="4" width="712" height="238" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="20" y="28" font-size="15" font-weight="700">Your folder</text><text class="mono t-ink" x="112" y="28" font-size="14">D:\oss\&lt;your ID&gt;\</text>
+          <rect class="f-soft s-acc" x="20" y="42" width="304" height="186" rx="12" stroke-width="2"/>
+          <text class="mono t-acc" x="36" y="68" font-size="18">.venv</text><text class="t-mut" x="96" y="68" font-size="13.5" font-weight="600">your box</text>
+          <rect class="f-surf s-acc" x="36" y="82" width="132" height="36" rx="8" stroke-width="1.5"/><text class="mono t-acc" x="102" y="105" font-size="14" text-anchor="middle">rich</text>
+          <rect class="f-surf s-line" x="178" y="82" width="132" height="36" rx="8" stroke-width="1"/><text class="mono t-ink" x="244" y="105" font-size="12.5" text-anchor="middle">pygments</text>
+          <rect class="f-surf s-line" x="36" y="128" width="132" height="36" rx="8" stroke-width="1"/><text class="mono t-ink" x="102" y="151" font-size="12.5" text-anchor="middle">markdown-it-py</text>
+          <rect class="f-surf s-line" x="178" y="128" width="132" height="36" rx="8" stroke-width="1"/><text class="mono t-ink" x="244" y="151" font-size="12.5" text-anchor="middle">mdurl</text>
+          <text class="t-mut" x="36" y="194" font-size="13">rich + 3 libraries it needs</text>
+          <text class="t-mut" x="36" y="214" font-size="13">(dependencies)</text>
+          <rect class="f-surf s-line" x="470" y="42" width="232" height="112" rx="10" stroke-width="1.5"/>
+          <text class="mono t-ink" x="484" y="66" font-size="12.5">teacher-demo-oss-project\</text>
+          <rect class="f-surf s-acc" x="484" y="80" width="200" height="58" rx="8" stroke-width="1.5"/>
+          <text class="mono t-acc" x="498" y="103" font-size="13.5">requirements.txt</text><text class="mono t-mut" x="498" y="126" font-size="12.5">rich==15.0.0</text>
+          <rect class="f-surf s-line" x="470" y="166" width="232" height="62" rx="10" stroke-width="1.5"/>
+          <text class="mono t-ink" x="484" y="192" font-size="13">oss-practice\</text><text class="t-mut" x="484" y="214" font-size="13">your repository</text>
+          <line class="s-acc" x1="482" y1="110" x2="330" y2="110" stroke-width="2.5" marker-end="url(#ah8b)"/>
+          <text class="mono t-acc" x="400" y="100" font-size="13" text-anchor="middle">pip install -r</text>
+          <text class="t-mut" x="400" y="130" font-size="12.5" text-anchor="middle">fills the box</text>
+        </svg>
+      </div>
+      <ul>
+        <li><b>The box sits next to the repositories, not inside them.</b> So <code>git add</code> never adds it.</li>
+      </ul>
+      <div class="callout warn">
+        <span class="mk">Different PC today?</span>
+        <p>Your box stays on the old PC. <b>Make a new one. It takes about 20 seconds.</b> The Lab tab shows how.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Before you install anything</p>
+      <h2>Read requirements.txt first</h2>
+      <div class="rule"></div>
+      <p class="lead">This file lists what goes into the box. Read it first in any Python project. Then install.</p>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">The demo, today</span><pre><code>rich==15.0.0</code></pre><p>One library. <code>==</code> means <b>exactly this version</b>. Not newer, not older.</p></div>
+        <div class="card"><span class="tagline">The demo, after the Lab</span><pre><code>rich==15.0.0
+tabulate==0.10.0</code></pre><p>You add the second line yourself in PART 2.</p></div>
+      </div>
+      <ul>
+        <li><b>How many libraries?</b> Each line is one library. Strangers wrote each one.</li>
+        <li><b>Is every line pinned?</b> A line with <code>==</code> is pinned (fixed to one version). A line without <code>==</code> can install a different version tomorrow.</li>
+        <li><b>Is it on our whitelist?</b> See slide 9.</li>
+      </ul>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Step two of four</p>
+      <h2>One command fills the box</h2>
+      <div class="rule"></div>
+      <p class="lead"><code>pip install -r requirements.txt</code> reads the list. It installs every line. This is a real run in a new box:</p>
+      <pre><code>&gt; pip install -r requirements.txt
+Collecting rich==15.0.0 (from -r requirements.txt (line 1))
+...
+Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.0.0</code></pre>
+      <ul>
+        <li><b>You asked for one library and got four.</b> <code>rich</code> needs three smaller libraries. pip brings them too. They are called <b>dependencies</b> (libraries that another library needs).</li>
+        <li><b>It is safe to run again.</b> The second time, it says <code>Requirement already satisfied</code>. Nothing changes.</li>
+      </ul>
+      <div class="callout warn">
+        <span class="mk">Course rule</span>
+        <p><b>Never install without a version.</b> Not <code>pip install tabulate</code>, but <code>pip install tabulate==0.10.0</code>. Without a version, 37 people get different versions. Then the code works only on some computers.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Step three of four</p>
+      <h2>The README is<br>the user manual</h2>
+      <div class="rule"></div>
+      <p class="lead">Nobody reads the code first. You read the README. A good README answers three questions: What does it do? How do I run it? What should I see?</p>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th>Step</th><th>In the demo README</th></tr></thead>
+          <tbody>
+            <tr><td>1. Clone</td><td><code>git clone https://github.com/OSS-202602-ISS/teacher-demo-oss-project.git</code> then <code>cd teacher-demo-oss-project</code></td></tr>
+            <tr><td>2. Make a venv</td><td><code>python -m venv .venv</code> then <code>.venv\Scripts\activate</code><br><small>Type these in cmd. PowerShell can block <code>activate</code> with a red error. Then type <code>cmd</code> first.</small></td></tr>
+            <tr><td>3. Install</td><td><code>pip install -r requirements.txt</code></td></tr>
+            <tr><td>4. Run</td><td><code>python hello_tool.py --name Ada</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="mk">Today in the lab</span>
+        <p>Most of you skip step 2. New PC? PART 1 step 1 makes the box. <b>Knowing which step to skip is also reading a README.</b> In the assignment, you write one README line: how to run your tool.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">The library of the day</p>
+      <h2>rich in three seconds:<br>print, Table, Panel</h2>
+      <div class="rule"></div>
+      <p class="lead"><code>rich</code> makes terminal output look like a real application. You met it in Chapter 3. Today you use three of its parts.</p>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">print</span><h4>Colour with tags</h4><p><code>from rich import print</code><br><code>print("[bold green]hello[/]")</code><br>The part in square brackets sets the style.</p></div>
+        <div class="card"><span class="tagline">Table</span><h4>Columns, then rows</h4><p><code>table.add_column("Tool")</code><br><code>table.add_row("Git", "...")</code><br>Add the columns first. Then add the rows.</p></div>
+        <div class="card"><span class="tagline">Panel</span><h4>A box around text</h4><p><code>Panel.fit("Hello, Ada!")</code><br><code>.fit</code> makes the box as wide as its text.</p></div>
+      </div>
+      <pre class="term"><code>&gt; python hello_tool.py --name Ada
+╭─ hello_tool ─╮
+│ Hello, Ada!  │
+╰──────────────╯
+            Tools in this course
+┏━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Tool   ┃ What it does                    ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Python │ runs your code                  │
+│ Git    │ remembers every version         │
+│ rich   │ makes terminal output look good │
+└────────┴─────────────────────────────────┘</code></pre>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">Step four, the big version</p>
+      <h2>Swapping a library: same job, different tool</h2>
+      <div class="rule"></div>
+      <p class="lead">In the lab, you replace the <code>rich</code> table with <code>tabulate</code>. Only the tool changes.</p>
+      <div class="dg" role="img" aria-label="The same data, TOOLS, goes to a tool that prints a table. Before: the rich Table draws a table with heavy lines. After the swap: tabulate draws a plain-text table with plus and minus signs. The job is the same: print the table." style="max-width:600px;">
+        <svg viewBox="0 0 720 176" aria-hidden="true">
+          <defs><marker id="ah8c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker><marker id="ah8m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-line" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-surf s-acc" x="4" y="38" width="160" height="100" rx="10" stroke-width="2"/>
+          <text class="mono t-acc" x="18" y="62" font-size="15">TOOLS</text><text class="t-mut" x="80" y="62" font-size="12.5" font-weight="600">same data</text>
+          <text class="mono t-ink" x="18" y="86" font-size="12.5">Python ...</text><text class="mono t-ink" x="18" y="106" font-size="12.5">Git ...</text><text class="mono t-ink" x="18" y="126" font-size="12.5">rich ...</text>
+          <line class="s-line" x1="166" y1="70" x2="222" y2="40" stroke-width="2" marker-end="url(#ah8m)"/>
+          <line class="s-acc" x1="166" y1="106" x2="222" y2="136" stroke-width="2.5" marker-end="url(#ah8c)"/>
+          <g opacity="0.8"><rect class="f-s2 s-line" x="226" y="6" width="190" height="64" rx="10" stroke-width="1.5" stroke-dasharray="6 4"/><text class="t-mut" x="240" y="30" font-size="12.5" font-weight="700">Before</text><text class="mono t-ink" x="240" y="54" font-size="14">rich Table</text></g>
+          <rect class="f-soft s-acc" x="226" y="106" width="190" height="64" rx="10" stroke-width="2.5"/><text class="t-acc" x="240" y="130" font-size="12.5" font-weight="700">After the swap</text><text class="mono t-acc" x="240" y="154" font-size="14">tabulate</text>
+          <text class="t-acc" x="321" y="93" font-size="13" font-weight="700" text-anchor="middle">swap</text>
+          <line class="s-acc" x1="296" y1="74" x2="296" y2="102" stroke-width="2" marker-end="url(#ah8c)"/>
+          <line class="s-line" x1="418" y1="38" x2="460" y2="38" stroke-width="2" marker-end="url(#ah8m)"/>
+          <line class="s-acc" x1="418" y1="138" x2="460" y2="138" stroke-width="2.5" marker-end="url(#ah8c)"/>
+          <g opacity="0.8"><rect class="f-surf s-line" x="464" y="6" width="252" height="64" rx="8" stroke-width="1"/><text class="mono t-ink" x="476" y="30" font-size="12.5" textLength="228" lengthAdjust="spacingAndGlyphs">┏━━━━━━━━┳━━━━━━━━━━━━</text><text class="mono t-ink" x="476" y="52" font-size="12.5">┃ Tool   ┃ What it does</text></g>
+          <rect class="f-surf s-acc" x="464" y="106" width="252" height="64" rx="8" stroke-width="1.5"/><text class="mono t-ink" x="476" y="130" font-size="12.5">+--------+------------</text><text class="mono t-ink" x="476" y="152" font-size="12.5">| Tool   | What it does</text>
+        </svg>
+      </div>
+      <p>You change three places:</p>
+      <ul>
+        <li><b>The import line</b> and <b>the one function</b> that used the old library.</li>
+        <li><b><code>requirements.txt</code></b>: add the new line, with its version.</li>
+        <li><b><code>THIRD_PARTY.md</code></b>: the new library and its license (Chapter 7).</li>
+      </ul>
+      <div class="callout">
+        <span class="mk">Why swap?</span>
+        <p><code>tabulate</code> makes plain text. You can paste it into an issue. <b>You must be able to explain your choice.</b></p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Which libraries you may use</p>
+      <h2>Why the course has a whitelist</h2>
+      <div class="rule"></div>
+      <p class="lead">PyPI has hundreds of thousands of libraries. The whitelist is a short list. The instructor checked every library on it. So no class time is lost on a library that does not install.</p>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">Every library on it</span><h4>Passed four checks</h4><p>It installs on these lab PCs without compiling. It has a permissive license (MIT, BSD or Apache). It gives a result in one or two function calls. It has a tested, pinned version.</p></div>
+        <div class="card"><span class="tagline">Today's assignment</span><h4>Choose one of four</h4><p><code style="white-space:nowrap">rich==15.0.0</code> · <code style="white-space:nowrap">tabulate==0.10.0</code> · <code style="white-space:nowrap">python-dateutil==2.9.0.post0</code> · <code style="white-space:nowrap">requests==2.34.2</code></p></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Something not on the list?</span>
+        <p>Ask the instructor <b>before</b> you use it. Some libraries need a compiler. Some have a copyleft license (Chapter 7). Some are too big. Asking first takes one minute.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Before you switch tabs</p>
+      <h2>Checklist to close</h2>
+      <div class="rule"></div>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Name the four steps of using open source. Read a <code>requirements.txt</code> line by line. Say why every install has a version. Say what you change when you swap a library.</p></div>
+        <div class="card"><span class="tagline">90 min · Lab</span><h4>What's next</h4><p>First, a 10-minute Ready check. Then clone the demo, install it, run it, and change it 3 times. The last change swaps <code>rich</code> for <code>tabulate</code>. Then start your own Hello tool.</p></div>
+      </div>
+      <p class="lead">Open the <b>Lab</b> tab above. The Ready check is the first box.</p>
+    </article>
+
+  </div>
+
+  <nav class="slidenav" aria-label="Slide navigation">
+    <button class="navbtn edge" id="first" type="button" title="First slide (Home)" aria-label="First slide">⇤</button>
+    <button class="navbtn" id="prev" type="button">← Prev</button>
+    <button class="navbtn" id="next" type="button">Next →</button>
+    <button class="navbtn edge" id="last" type="button" title="Last slide (End)" aria-label="Last slide">⇥</button>
+    <div class="dots" id="dots"></div>
+    <span class="counter" id="counter">1 / 10</span>
+  </nav>
+</section>
+
+<!-- ══════════ Lab ══════════ -->
+<section class="pane" id="pane-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Lab · 90 min · Step by step</p>
+      <h2>Clone, install, run &mdash; then change one thing</h2>
+      <p>Do the parts in order. Tick the box at the end of each part. Every output below comes from a real run in cmd.</p>
+      <div class="legend">
+        <span><b>Do</b> what to do</span>
+        <span><b>Copy</b> type or paste this</span>
+        <span><b>You should see</b> the result</span>
+        <span><b>If not</b> how to fix it</span>
+      </div>
+      <div class="callout">
+        <span class="mk">AI, same as always</span>
+        <p>1. <b>Paste the error exactly.</b> 2. Add one line: what you wanted. 3. <b>Ask why</b> the fix works. 4. Explain the fixed code yourself. Use AI to understand. Do not let it write your work. <b>If you cannot explain it, it does not count.</b></p>
+      </div>
+    </div>
+
+    <div class="progress">
+      <b id="pg-count">0 / 9</b>
+      <span class="bar"><i id="pg-bar"></i></span>
+      <button class="reset" id="pg-reset" type="button">Reset</button>
+    </div>
+
+    <!-- READY CHECK -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">READY</span><h3>Ready check: four things before the Lab</h3><span class="budget">10 min</span></div>
+      <p class="goal">PART 1 to PART 4 need all four. Check them now. Fix a failed check now. Tick each one when it works.</p>
+
+      <div class="s4">
+        <h4>① Sign in to GitHub</h4>
+        <span class="k">Do</span><div class="v">Open GitHub in the browser. Sign in with your own account.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Your own picture (avatar) in the top-right corner.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>It is another person's avatar? Click it. Click <b>Sign out</b>. Then sign in again.</li>
+        </ul></div>
+      </div>
+      <label class="check"><input type="checkbox" data-k="r1"><span>① I am signed in to GitHub. The avatar is mine.</span></label>
+
+      <div class="s4">
+        <h4>② Your <code>oss-practice</code> repository is on GitHub</h4>
+        <span class="k">Do</span><div class="v">Open this address. Change <code>&lt;your-username&gt;</code> to your GitHub username.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com/&lt;your-username&gt;/oss-practice</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Your repository page. The title is <code>&lt;your-username&gt;/oss-practice</code>. It shows a file list. It does not say <b>forked from</b> under the title.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><b>404, but you have a repository with a similar name</b> (for example <code>oss-pratice</code>, <code>oss--practice</code>, <code>oss-practice-&lt;name&gt;</code>)? Rename it. Open it &rarr; <b>Settings</b> &rarr; <b>Repository name</b> &rarr; type <code>oss-practice</code> &rarr; <b>Rename</b>. Your list of repositories is here: <code>https://github.com/&lt;your-username&gt;?tab=repositories</code></li>
+          <li><b>404 and no such repository?</b> Make it now with this link. Turn on <b>Add README</b>. Click <b>Create repository</b>.
+<pre data-kind="url"><code>https://github.com/new?name=oss-practice&amp;visibility=public</code></pre>The new page shows <code>README.md</code> in the file list.</li>
+          <li><b>Do not rename a fork of your partner's repository.</b> A fork shows <b>forked from</b> under its name. Make your own.</li>
+        </ul></div>
+      </div>
+      <label class="check"><input type="checkbox" data-k="r2"><span>② github.com/&lt;my-username&gt;/oss-practice opens</span></label>
+
+      <div class="s4">
+        <h4>③ Clone <code>oss-practice</code> into your folder</h4>
+        <span class="k">Do</span><div class="v">In VS Code: <b>File &rsaquo; Open Folder…</b> &rarr; <code>D:\oss\&lt;your ID&gt;</code> &rarr; <b>Select Folder</b>. Then <b>Terminal &rsaquo; New Terminal</b>. Then type the lines below.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git clone https://github.com/&lt;your-username&gt;/oss-practice.git
+cd oss-practice
+git config user.name "&lt;your GitHub username&gt;"
+git config user.email "&lt;your noreply e-mail&gt;"
+cd ..</code></pre>
+          <p class="why">Why: your own work goes into this folder in PART 3. The two <code>git config</code> lines put your name on your commits, in this repository only. Your noreply e-mail is in GitHub <b>Settings &rsaquo; Emails</b>.</p></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'oss-practice'...</code></pre>The <code>git config</code> lines print nothing. The prompt ends with <code>D:\oss\&lt;your ID&gt;&gt;</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The prompt starts with <code>PS</code>? This is PowerShell. Type <code>cmd</code> and press Enter. Then type the lines again.</li>
+          <li>Git says the folder already exists? You cloned it before. Type <code>cd oss-practice</code>, then <code>git pull</code>. Then type the two <code>git config</code> lines. Then type <code>cd ..</code>. (<code>git pull</code> gets the <code>LICENSE</code> file from Chapter 7.)</li>
+          <li>There is no folder <code>D:\oss\&lt;your ID&gt;</code>? Make it: <code>mkdir D:\oss\&lt;your ID&gt;</code>. Then open it in VS Code.</li>
+          <li>Never use <code>--global</code> on this shared PC.</li>
+        </ul></div>
+      </div>
+      <label class="check"><input type="checkbox" data-k="r3"><span>③ oss-practice is cloned in D:\oss\&lt;my ID&gt;</span></label>
+
+      <div class="s4">
+        <h4>④ Get ready to make the box</h4>
+        <span class="k">Do</span><div class="v">Check that Python works. Then list the folders here.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python --version
+dir /b</code></pre></div>
+        <span class="k see">You should see</span><div class="v"><code>Python 3.11</code> or <code>3.12</code> (for example <code>Python 3.12.10</code>). Then a list of names, one per line. <code>oss-practice</code> must be in the list. <code>.venv</code> is in the list if you made a box here before.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>No <code>.venv</code> in the list? That is fine. You make it in PART 1, step 1.</li>
+          <li>No <code>oss-practice</code> in the list? Do ③ again.</li>
+        </ul></div>
+      </div>
+      <label class="check"><input type="checkbox" data-k="r4"><span>④ Python works · I know if .venv is here</span></label>
+      <div class="callout warn">
+        <span class="mk">A check still fails?</span>
+        <p>Ask your row (your team). Then continue to PART 0. Do not wait.</p>
+      </div>
+    </div>
+
+    <!-- PART 0 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 0</span><h3>Shared PC: start routine</h3><span class="budget">5 min</span></div>
+      <p class="goal">Everybody uses one Windows account on this PC. These checks make sure your work goes out under your name. Work only in <code>D:\oss\&lt;your ID&gt;\</code>.</p>
+
+      <div class="s4">
+        <h4>1. No saved Git login from another person</h4>
+        <span class="k">Do</span><div class="v">In the cmd terminal, find a saved GitHub login.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cmdkey /list | findstr github</code></pre></div>
+        <span class="k see">You should see</span><div class="v">No lines. The prompt appears again.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>You see a line like <code>Target: LegacyGeneric:target=git:https://github.com</code>? Another person's login is saved. Delete it:
+<pre data-kind="cmd"><code>cmdkey /delete:git:https://github.com</code></pre></li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. No sign-in inside VS Code</h4>
+        <span class="k">Do</span><div class="v">Close any chat panel on the right side of VS Code.</div>
+        <span class="k">Copy</span><div class="v">Nothing to type.</div>
+        <span class="k see">You should see</span><div class="v">No chat panel. No sign-in window.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>VS Code asks you to sign in? Close the window. A sign-in in VS Code stays on this shared PC.</li>
+        </ul></div>
+      </div>
+      <label class="check"><input type="checkbox" data-k="s0"><span>cmdkey shows no github line · no sign-in in VS Code</span></label>
+    </div>
+
+    <!-- PART 1 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 1</span><h3>Clone, install, run</h3><span class="budget">15 min</span></div>
+      <p class="goal">Steps 1 to 3 of the four steps, on the demo project. At the end, the tool prints your name in a box.</p>
+      <div class="dg" role="img" aria-label="Your PC on the left, GitHub on the right. The demo repository teacher-demo-oss-project belongs to the instructor. You only download it with git clone. You cannot push to it. Your oss-practice repository is yours. You download it with git clone or git pull, and you upload your work with git push.">
+        <svg viewBox="0 0 720 232" aria-hidden="true">
+          <defs><marker id="ah8d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-s2 s-line" x="4" y="4" width="290" height="224" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="20" y="30" font-size="16" font-weight="700">Your PC</text><text class="mono t-mut" x="94" y="30" font-size="12.5">D:\oss\&lt;your ID&gt;\</text>
+          <rect class="f-s2 s-line" x="426" y="4" width="290" height="224" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="442" y="30" font-size="16" font-weight="700">GitHub</text>
+          <rect class="f-surf s-line" x="18" y="46" width="262" height="66" rx="9" stroke-width="1.5"/>
+          <text class="mono t-ink" x="32" y="72" font-size="13">teacher-demo-oss-project</text><text class="t-mut" x="32" y="96" font-size="12.5">practice only</text>
+          <rect class="f-surf s-line" x="440" y="46" width="262" height="66" rx="9" stroke-width="1.5"/>
+          <text class="mono t-ink" x="454" y="72" font-size="13">teacher-demo-oss-project</text><text class="t-mut" x="454" y="96" font-size="12.5">the instructor's</text>
+          <rect class="f-soft s-acc" x="18" y="140" width="262" height="72" rx="9" stroke-width="2"/>
+          <text class="mono t-acc" x="32" y="168" font-size="13.5">oss-practice</text><text class="t-ink" x="32" y="192" font-size="12.5">your work</text>
+          <rect class="f-soft s-acc" x="440" y="140" width="262" height="72" rx="9" stroke-width="2"/>
+          <text class="mono t-acc" x="454" y="168" font-size="13">&lt;your-username&gt;/oss-practice</text><text class="t-ink" x="454" y="192" font-size="12.5">yours</text>
+          <line class="s-acc" x1="438" y1="70" x2="284" y2="70" stroke-width="2.5" marker-end="url(#ah8d)"/>
+          <text class="mono t-acc" x="360" y="62" font-size="12.5" text-anchor="middle">git clone</text>
+          <text class="t-bad" x="360" y="96" font-size="12" font-weight="700" text-anchor="middle">no push</text>
+          <line class="s-acc" x1="438" y1="158" x2="284" y2="158" stroke-width="2.5" marker-end="url(#ah8d)"/>
+          <text class="mono t-acc" x="360" y="150" font-size="12" text-anchor="middle">git clone / pull</text>
+          <line class="s-acc" x1="282" y1="194" x2="436" y2="194" stroke-width="2.5" marker-end="url(#ah8d)"/>
+          <text class="mono t-acc" x="360" y="216" font-size="12.5" text-anchor="middle">git push</text>
+        </svg>
+      </div>
+      <p class="places-cap">The demo: download only. Your <code>oss-practice</code>: download and upload.</p>
+
+      <div class="s4">
+        <h4>1. Make the box (only if <code>.venv</code> is not here)</h4>
+        <span class="k">Do</span><div class="v">In <code>D:\oss\&lt;your ID&gt;</code>, make a new box. Skip this step if Ready check ④ showed <code>.venv</code>.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python -m venv .venv</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Nothing for about 20 seconds. Then the prompt appears again.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>You see <code>Error: [Errno 13] Permission denied: '...\.venv\Scripts\python.exe'</code>? Your box is already active. Type <code>deactivate</code> first. Or skip this step: the box is already here.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Activate the box</h4>
+        <span class="k">Do</span><div class="v">Activate your box. Do this in every new terminal.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>.venv\Scripts\activate</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The prompt now starts with <code>(.venv)</code>:<pre data-kind="out"><code>(.venv) D:\oss\&lt;your ID&gt;&gt;</code></pre></div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The prompt starts with <code>PS</code>? Type <code>cmd</code> and press Enter. Then type this command again.</li>
+          <li>At home, PowerShell may show a red error about scripts. Do the same: type <code>cmd</code> first.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Clone the demo</h4>
+        <span class="k">Do</span><div class="v">Download the demo repository. Then go into its folder.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git clone https://github.com/OSS-202602-ISS/teacher-demo-oss-project.git
+cd teacher-demo-oss-project</code></pre></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'teacher-demo-oss-project'...</code></pre>The prompt ends with <code>\teacher-demo-oss-project&gt;</code>. The repository is public, so no login is needed.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Git says the folder already exists? You cloned it before. Only type <code>cd teacher-demo-oss-project</code>.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Read the list first</h4>
+        <span class="k">Do</span><div class="v">Open <code>README.md</code> in VS Code and read it. Then show the list of libraries.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>type requirements.txt</code></pre></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>rich==15.0.0</code></pre>One library, one exact version. Skip README step 2. You already have a box.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>cmd cannot find the file? You are in the wrong folder. Type <code>cd teacher-demo-oss-project</code>.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>5. Install</h4>
+        <span class="k">Do</span><div class="v">Put the libraries from the list into your box.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip install -r requirements.txt</code></pre></div>
+        <span class="k see">You should see</span><div class="v">A new box: some <code>Collecting</code> lines, then this line:
+<pre data-kind="out"><code>Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.0.0</code></pre>
+          A box from Chapter 3 already has <code>rich</code>. Then you see:
+<pre data-kind="out"><code>Requirement already satisfied: rich==15.0.0 in ...</code></pre>
+          and more lines. Both are correct. You may also see a notice about a new pip. You can ignore it.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirement.txt'</code>? A typo. The name is <code>requirements.txt</code>, with an <b>s</b>.</li>
+          <li>No <code>(.venv)</code> at the start of the prompt? Type <code>..\.venv\Scripts\activate</code>. Then install again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>6. Run</h4>
+        <span class="k">Do</span><div class="v">Run the tool. Use your own first name.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python hello_tool.py --name Ada</code></pre></div>
+        <span class="k see">You should see</span><div class="v"><pre class="term" data-kind="out"><code>+- hello_tool -+
+| Hello, Ada!  |
++--------------+
+            Tools in this course
++------------------------------------------+
+| Tool   | What it does                    |
+|--------+---------------------------------|
+| Python | runs your code                  |
+| Git    | remembers every version         |
+| rich   | makes terminal output look good |
++------------------------------------------+</code></pre>
+          <b>The lines can look a little different. The words must be the same.</b>
+          <p>In the VS Code terminal, the box has round corners and colour. The words are the same.</p></div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>ModuleNotFoundError: No module named 'rich'</code>? The box is not active. Type <code>..\.venv\Scripts\activate</code>. Then do step 5 and step 6 again.</li>
+          <li><code>can't open file '...\hello_tool.py': [Errno 2] No such file or directory</code>? You are in the wrong folder. Type <code>cd teacher-demo-oss-project</code>.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>7. Try two more</h4>
+        <span class="k">Do</span><div class="v">Run it with no name. Then ask for the help text.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python hello_tool.py
+python hello_tool.py --help</code></pre></div>
+        <span class="k see">You should see</span><div class="v">First, the same table under this box:
+<pre class="term" data-kind="out"><code>+- hello_tool --+
+| Hello, World! |
++---------------+</code></pre>
+          Then the help text:
+<pre class="term" data-kind="out"><code>usage: hello_tool.py [-h] [--name NAME]
+
+Say hello, then show a small table.
+
+options:
+  -h, --help   show this help message and exit
+  --name NAME  who to say hello to</code></pre>
+          <code>argparse</code> writes this help for you. <code>argparse</code> is part of Python. It reads options like <code>--name</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>An error? Look at step 6, <b>If not</b>.</li>
+        </ul></div>
+      </div>
+      <label class="check"><input type="checkbox" data-k="s1"><span>(.venv) in the prompt · demo cloned · pip install -r done · my name printed in the box</span></label>
+    </div>
+
+    <!-- PART 2 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 2</span><h3>Change one thing &mdash; three times</h3><span class="budget">30 min</span></div>
+      <p class="goal">Step 4: change. Each change is a little bigger. <b>Run the tool after every change.</b> Open <code>hello_tool.py</code> in VS Code. Find each line. Replace it with the new line. Keep the spaces at the start. Save with <kbd>Ctrl + S</kbd>.</p>
+
+      <div class="s4">
+        <h4>Change 1 &mdash; text and colour <span class="budget">5 min</span></h4>
+        <span class="k">Do</span><div class="v">In <code>main()</code>, change one line. Save. Run.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">Find this line:</p>
+<pre data-kind="code"><code>    console.print(Panel.fit(f"Hello, {args.name}!", title="hello_tool", style="green"))</code></pre>
+<p class="lbl">Change it to:</p>
+<pre data-kind="code"><code>    console.print(Panel.fit(f"Welcome to open source, {args.name}!", title="hello_tool", style="bold magenta"))</code></pre>
+<pre data-kind="cmd"><code>python hello_tool.py --name Ada</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The box is wider. The table is the same.
+<pre class="term" data-kind="out"><code>+--------- hello_tool ---------+
+| Welcome to open source, Ada! |
++------------------------------+</code></pre>
+          Then try your own words and another colour: <code>red</code>, <code>blue</code>, <code>yellow</code>, <code>cyan</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>You still see <code>Hello, Ada!</code>? You did not save. Press <kbd>Ctrl + S</kbd>. Run again.</li>
+          <li>Python stops with an error? Compare your line with the <b>Change it to</b> line. Check every quote and bracket.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>Change 2 &mdash; one more column <span class="budget">10 min</span></h4>
+        <span class="k">Do</span><div class="v">Make 2 changes: give each row a third value, then add a column. Save. Run.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">1) Find these lines:</p>
+<pre data-kind="code"><code>    ("Python", "runs your code"),
+    ("Git", "remembers every version"),
+    ("rich", "makes terminal output look good"),</code></pre>
+<p class="lbl">Change them to:</p>
+<pre data-kind="code"><code>    ("Python", "runs your code", "PSF-2.0"),
+    ("Git", "remembers every version", "GPL-2.0"),
+    ("rich", "makes terminal output look good", "MIT"),</code></pre>
+<p class="lbl">2) Find these lines:</p>
+<pre data-kind="code"><code>    for tool, job in TOOLS:
+        table.add_row(tool, job)</code></pre>
+<p class="lbl">Change them to:</p>
+<pre data-kind="code"><code>    table.add_column("License")
+    for tool, job, license_name in TOOLS:
+        table.add_row(tool, job, license_name)</code></pre>
+<p class="why">Keep the spaces at the start of each line.</p>
+<pre data-kind="cmd"><code>python hello_tool.py --name Ada</code></pre></div>
+        <span class="k see">You should see</span><div class="v">A <code>License</code> column. These are the licenses from Chapter 7.
+<pre class="term" data-kind="out"><code>                 Tools in this course
++----------------------------------------------------+
+| Tool   | What it does                    | License |
+|--------+---------------------------------+---------|
+| Python | runs your code                  | PSF-2.0 |
+| Git    | remembers every version         | GPL-2.0 |
+| rich   | makes terminal output look good | MIT     |
++----------------------------------------------------+</code></pre></div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>ValueError: too many values to unpack (expected 2)</code>? You changed the rows but not the <code>for</code> line. Now each row has 3 values. The <code>for</code> line must take 3: <code>for tool, job, license_name in TOOLS:</code>. (Review packet, section 3.)</li>
+          <li>No error, but the <code>License</code> column is empty? <code>add_row</code> got only 2 values. Make it <code>table.add_row(tool, job, license_name)</code>. A 4th column with no name means <code>add_row</code> got too many values.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>Change 3a &mdash; install the new library <span class="budget">15 min for 3a&ndash;3c</span></h4>
+        <span class="k">Do</span><div class="v">Install <code>tabulate</code>, with its version.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip install tabulate==0.10.0</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Some <code>Collecting</code> lines, then:
+<pre data-kind="out"><code>Successfully installed tabulate-0.10.0</code></pre>
+          You may also see a notice about a new pip. You can ignore it.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>You typed <code>pip install tabulate</code> with no version? Type it again with <code>==0.10.0</code>. Course rule: every install has a version.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>Change 3b &mdash; swap the table code</h4>
+        <span class="k">Do</span><div class="v">Make 3 changes: the import, <code>build_table()</code>, and one line in <code>main()</code>. Save. Run.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">1) Find this line:</p>
+<pre data-kind="code"><code>from rich.table import Table</code></pre>
+<p class="lbl">Change it to:</p>
+<pre data-kind="code"><code>from tabulate import tabulate</code></pre>
+<p class="lbl">2) Find these lines:</p>
+<pre data-kind="code"><code>    """Make a rich Table from TOOLS."""
+    table = Table(title="Tools in this course")
+    table.add_column("Tool")
+    table.add_column("What it does")
+    table.add_column("License")
+    for tool, job, license_name in TOOLS:
+        table.add_row(tool, job, license_name)
+    return table</code></pre>
+<p class="lbl">Change them to:</p>
+<pre data-kind="code"><code>    """Make a plain-text table from TOOLS with tabulate."""
+    headers = ["Tool", "What it does", "License"]
+    return tabulate(TOOLS, headers=headers, tablefmt="grid")</code></pre>
+<p class="lbl">3) Find these lines:</p>
+<pre data-kind="code"><code>    console.print(build_table())</code></pre>
+<p class="lbl">Change them to:</p>
+<pre data-kind="code"><code>    print("Tools in this course")
+    print(build_table())</code></pre>
+<p class="why">Keep the spaces at the start of each line.</p>
+<pre data-kind="cmd"><code>python hello_tool.py --name Ada</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The box is still <code>rich</code>. The table is now <code>tabulate</code>:
+<pre class="term" data-kind="out"><code>+--------- hello_tool ---------+
+| Welcome to open source, Ada! |
++------------------------------+
+Tools in this course
++--------+---------------------------------+-----------+
+| Tool   | What it does                    | License   |
++========+=================================+===========+
+| Python | runs your code                  | PSF-2.0   |
++--------+---------------------------------+-----------+
+| Git    | remembers every version         | GPL-2.0   |
++--------+---------------------------------+-----------+
+| rich   | makes terminal output look good | MIT       |
++--------+---------------------------------+-----------+</code></pre>
+          <p>In the VS Code terminal, the box has round corners and colour. The words are the same.</p></div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>ModuleNotFoundError: No module named 'tabulate'</code>? <code>tabulate</code> is not in this box. Check for <code>(.venv)</code> in the prompt. Then do Change 3a again.</li>
+          <li>You still see the old table? Save the file (<kbd>Ctrl + S</kbd>). Run again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>Change 3c &mdash; write it in the list</h4>
+        <span class="k">Do</span><div class="v">Open <code>requirements.txt</code>. Make it these two lines. Save. Install from the list again.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>rich==15.0.0
+tabulate==0.10.0</code></pre>
+<pre data-kind="cmd"><code>pip install -r requirements.txt</code></pre>
+          <p class="why">Why: the next person installs from the list. Without this line, their box has no <code>tabulate</code>.</p></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Requirement already satisfied: rich==15.0.0 in ...
+Requirement already satisfied: tabulate==0.10.0 in ...</code></pre>
+          and more lines. Every line says <code>Requirement already satisfied</code>. The list and the box agree. You may also see a notice about a new pip. You can ignore it.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirement.txt'</code>? A typo. Type <code>requirements.txt</code>, with an <b>s</b>.</li>
+        </ul></div>
+      </div>
+      <div class="callout">
+        <span class="mk">Your changes stay here</span>
+        <p>The demo repository belongs to the instructor. You cannot push to it. That is fine. It was practice. Your own work goes into <b>your</b> repository in PART 3. (In the team project, you also update <code>THIRD_PARTY.md</code>. Today you skip it.)</p>
+      </div>
+      <label class="check"><input type="checkbox" data-k="s2"><span>Change 1 run · Change 2 run (License column) · Change 3 run (tabulate table) · requirements.txt has two pinned lines</span></label>
+    </div>
+
+    <!-- PART 3 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 3</span><h3>Start your own Hello tool</h3><span class="budget">25 min</span></div>
+      <p class="goal">Now the same steps in your own repository. One small tool, one whitelist library, pinned. This is the assignment. Do as much as you can here.</p>
+
+      <div class="s4">
+        <h4>1. Go to your repository</h4>
+        <span class="k">Do</span><div class="v">Go up one folder. Go into <code>oss-practice</code>. Get the newest version from GitHub.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cd ..
+cd oss-practice
+git pull</code></pre></div>
+        <span class="k see">You should see</span><div class="v"><code>Already up to date.</code> or a short list of files. The prompt starts with <code>(.venv)</code> and ends with <code>\oss-practice&gt;</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>cmd cannot find the path? There is no <code>oss-practice</code> here. Do Ready check ③.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Choose one library. Write <code>requirements.txt</code></h4>
+        <span class="k">Do</span><div class="v">Choose one library from the table. Write its line in <code>requirements.txt</code>, next to <code>README.md</code>.</div>
+        <span class="k">Copy</span><div class="v">
+          <div class="scroll-x">
+            <table>
+              <thead><tr><th>Library</th><th>Line for requirements.txt</th><th>A line to start from</th></tr></thead>
+              <tbody>
+                <tr><td><code>rich</code></td><td><code>rich==15.0.0</code></td><td><code>console.print(Panel.fit(...))</code> &mdash; like the demo, with your own content</td></tr>
+                <tr><td><code>tabulate</code></td><td><code>tabulate==0.10.0</code></td><td><code>print(tabulate(rows, tablefmt="grid"))</code></td></tr>
+                <tr><td><code>python-dateutil</code></td><td><code>python-dateutil==2.9.0.post0</code></td><td><code>relativedelta(parse("15 March 2000"), parse("1 January 2000"))</code> &rarr; 2 months, 14 days</td></tr>
+                <tr><td><code>requests</code></td><td><code>requests==2.34.2</code></td><td><code>requests.get("https://pypi.org/pypi/rich/json", timeout=10).json()["info"]["version"]</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          Use your own library's line. For example:
+<pre data-kind="cmd"><code>echo tabulate==0.10.0&gt;requirements.txt
+type requirements.txt</code></pre>
+          <p class="why">Why: the list comes first. Then pip installs from the list.</p></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>tabulate==0.10.0</code></pre></div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Two lines? <code>&gt;</code> makes a new file. <code>&gt;&gt;</code> adds a line. Use one <code>&gt;</code> and type it again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Install from the list</h4>
+        <span class="k">Do</span><div class="v">Install the library in your list.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip install -r requirements.txt</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Some <code>Collecting</code> lines, then a line with <code>Successfully installed</code>. For example, with <code>tabulate</code>:
+<pre data-kind="out"><code>Successfully installed tabulate-0.10.0</code></pre>
+          With <code>python-dateutil</code>:
+<pre data-kind="out"><code>Successfully installed python-dateutil-2.9.0.post0 six-1.17.0</code></pre>
+          <code>rich</code> and <code>tabulate</code> are already in your box from PART 2. Then you see <code>Requirement already satisfied</code>. Both are correct. You may also see a notice about a new pip. You can ignore it.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>No <code>(.venv)</code> in the prompt? Type <code>..\.venv\Scripts\activate</code>. Then install again.</li>
+          <li><code>ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirement.txt'</code>? A typo. Type <code>requirements.txt</code>, with an <b>s</b>.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Make your tool file</h4>
+        <span class="k">Do</span><div class="v">Make the folder <code>tools</code>. In VS Code, make the file <code>tools/hello_&lt;library&gt;.py</code>, for example <code>tools/hello_tabulate.py</code>.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>mkdir tools</code></pre>
+          Your tool must:
+          <ul>
+            <li>take <code>--name</code> with <code>argparse</code>,</li>
+            <li>use your library at least once to make the output,</li>
+            <li>print something with the name in it.</li>
+          </ul>
+<p class="lbl">Example with tabulate. Change the library and the rows.</p>
+<pre data-kind="code"><code>import argparse
+
+from tabulate import tabulate
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--name", default="World")
+args = parser.parse_args()
+
+rows = [["Name", args.name], ["Library", "tabulate"]]
+print(tabulate(rows, tablefmt="grid"))</code></pre>
+          <p class="why">Use your own rows and words.</p></div>
+        <span class="k see">You should see</span><div class="v">The folder <code>tools</code> and your file in the VS Code file list.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>cmd says <code>tools</code> already exists? That is fine. Use it.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>5. Write one README line</h4>
+        <span class="k">Do</span><div class="v">Add one line to <code>README.md</code>. It says how to run your tool. Save.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>Run: python tools/hello_tabulate.py --name Ada</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The new line in <code>README.md</code>, with your own file name.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Wrong file name? The README line must run your file.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>6. Run it as your README says</h4>
+        <span class="k">Do</span><div class="v">In <code>oss-practice</code>, type your README line, without <code>Run:</code>.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python tools/hello_tabulate.py --name Ada</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Your own output, with the name in it. Copy the whole output. You paste it into the assignment issue.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>ModuleNotFoundError: No module named '...'</code>? Your library is not in this box. Do step 3 again.</li>
+          <li><code>can't open file ... [Errno 2] No such file or directory</code>? Run it from <code>oss-practice</code>. Check the file name.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>7. Save it to GitHub</h4>
+        <span class="k">Do</span><div class="v">Commit your work. Push it to GitHub.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git add tools requirements.txt README.md
+git commit -m "Add hello tool with tabulate"
+git push</code></pre></div>
+        <span class="k see">You should see</span><div class="v">A small window <b>Connect to GitHub</b> may open. Click <b>Sign in with your browser</b>. Check that the avatar is yours. Click <b>Authorize</b>. Then open <code>github.com/&lt;your-username&gt;/oss-practice</code>. You see <code>tools/</code> and <code>requirements.txt</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Git says the push was rejected? GitHub has a commit you do not have. Type <code>git pull</code>. Then <code>git push</code> again.</li>
+          <li><code>no upstream branch</code>? Type <code>git push -u origin main</code>.</li>
+          <li>Git asks who you are? Type the two <code>git config</code> lines from Ready check ③. Never use <code>--global</code>.</li>
+        </ul></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">requests needs the internet</span>
+        <p>Use the PyPI address in the table. Do not use the GitHub API. The PCs in this room may share one internet address. Without a login, GitHub stops after 60 requests an hour from one address.</p>
+      </div>
+      <label class="check"><input type="checkbox" data-k="s3"><span>tools/hello_&lt;lib&gt;.py runs · requirements.txt pinned · README run line · pushed and visible on GitHub</span></label>
+    </div>
+
+    <!-- PART 4 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 4</span><h3>Shared PC: end routine</h3><span class="budget">5 min</span></div>
+      <p class="goal">Do this <b>after</b> you open your assignment issue. If you sign out first, you cannot open the issue.</p>
+
+      <div class="s4">
+        <h4>1. Your work is on GitHub</h4>
+        <span class="k">Do</span><div class="v">Open your repository page.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com/&lt;your-username&gt;/oss-practice</code></pre></div>
+        <span class="k see">You should see</span><div class="v"><code>tools/</code> and <code>requirements.txt</code> in the file list. Your <code>[Ch08]</code> issue is open in <code>practice-pr</code> (see the <b>Assignment</b> tab).</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The files are not there? Do PART 3, step 7 again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Sign out everywhere</h4>
+        <span class="k">Do</span><div class="v">Sign out of GitHub. Sign out of every site you used today (ChatGPT, Google, Claude).</div>
+        <span class="k">Copy</span><div class="v">Nothing to type. In the browser: avatar &rarr; <b>Sign out</b>.</div>
+        <span class="k see">You should see</span><div class="v">Each site shows a <b>Sign in</b> button.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Still signed in? Open the site again and sign out.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Delete the saved Git login</h4>
+        <span class="k">Do</span><div class="v">In a cmd terminal, delete the saved GitHub login. Then check again.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cmdkey /delete:git:https://github.com
+cmdkey /list | findstr github</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The second command shows no lines.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The first command says nothing was found? Nothing was saved. That is fine.</li>
+          <li>The prompt starts with <code>PS</code>? Type <code>cmd</code> first.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Close VS Code</h4>
+        <span class="k">Do</span><div class="v">Close VS Code.</div>
+        <span class="k">Copy</span><div class="v">Nothing to type.</div>
+        <span class="k see">You should see</span><div class="v">No VS Code window.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>VS Code asks to save a file? Click <b>Save</b>.</li>
+        </ul></div>
+      </div>
+      <label class="check"><input type="checkbox" data-k="s4"><span>Tool on GitHub · issue opened · signed out of every site · Git login deleted · VS Code closed</span></label>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Stuck?</span><h3>Prompts you can copy and paste</h3></div>
+      <p class="goal">Ask AI first. Change the parts in &lt; &gt; to what is on your own screen.</p>
+      <pre><code>I am changing a small Python tool that uses the library &lt;rich / tabulate&gt;.
+Here is my whole file:
+&lt;paste the file&gt;
+Here is the error, exactly as it appeared:
+&lt;paste the whole error&gt;
+I was trying to &lt;what you wanted to do&gt;. What is the smallest change
+that fixes it, and why does it work?
+
+I want to use &lt;library==version&gt; in a beginner Python tool that takes
+--name with argparse. Show me the one or two lines that call the library,
+and explain each line in simple English. Do not write the whole tool.
+</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ Assignment ══════════ -->
+<section class="pane" id="pane-task" role="tabpanel" aria-labelledby="tab-task" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Mini Assignment #8 · 30 min</p>
+      <h2>Your first Hello tool with one open source library</h2>
+      <p>You submit a tool. Another person must be able to clone, install and run it from your README. Submit text, not screenshots: the link, the command and the output.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Assignment</span><h3>What to submit</h3></div>
+      <ol>
+        <li>Your public <code>oss-practice</code> repository has three things (Lab PART 3):
+          <ul><li><code>tools/hello_&lt;library&gt;.py</code></li><li><code>requirements.txt</code> with a pinned version</li><li>one README line that says how to run it</li></ul></li>
+        <li>Open an issue in the course <code>practice-pr</code> repository with the Chapter 8 template. <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch08.md" target="_blank" rel="noopener"><b>Click here to open it with the template ready</b></a> (sign in first).</li>
+        <li>Title: <code>[Ch08] StudentID Name</code>.</li>
+        <li>Write under each of the four headings:
+          <ul><li><code>## Repository link</code></li><li><code>## Command I ran</code></li><li><code>## Output</code></li><li><code>## AI use (two lines)</code></li></ul></li>
+        <li>The first AI line starts with <code>What I asked:</code>. The second starts with <code>What I changed or checked myself:</code>. Did you not use AI? Then write <code>No AI used</code> on both lines.</li>
+      </ol>
+      <pre><code>Title: [Ch08] StudentID Name
+
+## Repository link
+https://github.com/&lt;your-username&gt;/oss-practice/blob/main/tools/hello_tabulate.py
+
+## Command I ran
+python tools/hello_tabulate.py --name Ada
+
+## Output
+```
+(paste the whole output here, between the two ``` lines)
+```
+
+## AI use (two lines)
+What I asked:
+What I changed or checked myself:
+</code></pre>
+      <div class="callout">
+        <span class="mk">Why text, not a screenshot</span>
+        <p>Text can be searched and copied. It opens with one click. Keep the output between the two <code>```</code> lines. Then the table keeps its shape.</p>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Use the template</span>
+        <p>Did you click <b>New issue</b> yourself? Then choose <b>Chapter 8 submission</b>. <b>Write under each heading. Do not delete the headings.</b> Your repository is public. Put <b>no student ID, phone number or e-mail</b> in the code or the README. The ID goes only in the issue title.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Grading</span><h3>How it's graded</h3></div>
+      <p class="goal">We check two things. <b>Does it run from your README? Can you explain it?</b> How it looks does not matter.</p>
+      <div class="rubric">
+        <div class="card"><b>Complete</b><p>The tool is in <code>tools/</code>. It uses one whitelist library and takes <code>--name</code>. It runs with the README command after <code>pip install -r requirements.txt</code>. The version is pinned. The output and the two AI lines are in the issue.</p></div>
+        <div class="card"><b>Partial</b><p>It runs, but something is missing. For example: no pinned version, no README line, a screenshot only, or no AI lines. Or the tool needs a library without a version. Two submissions with the same text are both Partial.</p></div>
+        <div class="card"><b>Not submitted</b><p>No issue by the deadline. Late work still gets partial credit.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">You must explain it</span>
+        <p>You must be able to explain every line of your tool. If you cannot, it is not Complete, even if it runs.</p>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Deadline</span>
+        <p><b>11:59 PM the night before the next class — the exact date is in the ecampus notice.</b> You can finish at home. Clone your <code>oss-practice</code>. Make a box. Type <code>pip install -r requirements.txt</code>. Run it. Does it work on a second computer? Then your README is good.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Next</span><h3>Preview of Chapter 9</h3></div>
+      <p class="goal"><b>Working with data and files.</b> You read a CSV file with <code>pandas</code>. You keep only the rows you need. You show them as a <code>rich</code> table. You save them as an Excel file with <code>openpyxl</code>.</p>
+      <ul style="margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em; font-size:.95rem;">
+        <li>Sit at the same PC. You use your box in <code>D:\oss\&lt;your ID&gt;\.venv</code> again.</li>
+        <li>Your new tool goes into the same <code>oss-practice/tools/</code> folder. <code>requirements.txt</code> gets two more lines.</li>
+        <li>Section 3 of the review packet is about lists and dictionaries. A table is made of them. Review it if the self-check below shows a gap.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">After class</span><h3>After class: self-check with the review packet</h3><span class="budget">Not graded</span></div>
+      <p class="goal">Ten short pieces of code from the Python review packet. <b>Not graded.</b> It shows you what to review. First, write what each one prints, on paper or in a file. Then run the code and compare. A wrong answer shows what to review.</p>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">Q1</span><pre><code>a = "5"
+b = 2
+print(a * b)</code></pre></div>
+        <div class="card"><span class="tagline">Q2</span><pre><code>print(10 // 3, 10 % 3)</code></pre></div>
+        <div class="card"><span class="tagline">Q3</span><pre><code>def double(n):
+    return n * 2
+
+print(double(double(3)))</code></pre></div>
+        <div class="card"><span class="tagline">Q4</span><pre><code>def hello(name="World"):
+    return f"Hello, {name}!"
+
+print(hello())</code></pre></div>
+        <div class="card"><span class="tagline">Q5 · two lines of output</span><pre><code>def show(n):
+    print(n + 1)
+
+r = show(1)
+print(r)</code></pre></div>
+        <div class="card"><span class="tagline">Q6</span><pre><code>items = ["a", "b", "c"]
+items.append("d")
+print(len(items), items[-1])</code></pre></div>
+        <div class="card"><span class="tagline">Q7</span><pre><code>nums = [4, 8, 15]
+total = 0
+for n in nums:
+    total = total + n
+print(total)</code></pre></div>
+        <div class="card"><span class="tagline">Q8</span><pre><code>d = {"rich": 15, "pandas": 3}
+d["rich"] = 16
+print(d["rich"], len(d))</code></pre></div>
+        <div class="card" style="grid-column:1/-1;"><span class="tagline">Q9</span><pre><code>with open("q.txt", "w", encoding="utf-8") as f:
+    f.write("one\n")
+    f.write("two\n")
+with open("q.txt", encoding="utf-8") as f:
+    print(len(f.readlines()))</code></pre></div>
+        <div class="card" style="grid-column:1/-1;"><span class="tagline">Q10</span><pre><code>with open("q.txt", "w", encoding="utf-8") as f:
+    f.write("x")
+with open("q.txt", "a", encoding="utf-8") as f:
+    f.write("y")
+with open("q.txt", encoding="utf-8") as f:
+    print(f.read())</code></pre></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>Open Source Software · Fall 2026 · Chapter 8 course material — based on the official syllabus</p>
+</footer>
+
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── Tabs ── */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var pane = document.getElementById(t.getAttribute('aria-controls'));
+      var on = (t === tab);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      pane.hidden = !on;
+    });
+    window.scrollTo(0, 0);
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ selectTab(t); });
+    t.addEventListener('keydown', function(e){
+      var i = tabs.indexOf(t), n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowLeft')  n = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (n){ e.preventDefault(); n.focus(); selectTab(n); }
+    });
+  });
+
+  /* ── Slides ── */
+  var slides  = Array.prototype.slice.call(document.querySelectorAll('#pane-lecture .slide'));
+  var dotsBox = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var firstBtn = document.getElementById('first');
+  var lastBtn = document.getElementById('last');
+  var cur = 0;
+
+  slides.forEach(function(s, i){
+    var h = s.querySelector('h1, h2');
+    var t = h ? h.textContent.replace(/\s+/g, ' ').trim() : '';
+    var d = document.createElement('button');
+    d.type = 'button';
+    d.className = 'dot';
+    d.textContent = (i + 1);
+    d.title = (i + 1) + (t ? '. ' + t : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1) + (t ? ': ' + t : ''));
+    d.addEventListener('click', function(){ go(i); });
+    dotsBox.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function go(i){
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function(s, n){ s.hidden = (n !== cur); });
+    dots.forEach(function(d, n){ d.setAttribute('aria-current', n === cur ? 'true' : 'false'); });
+    counter.textContent = (cur + 1) + ' / ' + slides.length;
+    prevBtn.disabled = firstBtn.disabled = (cur === 0);
+    nextBtn.disabled = lastBtn.disabled = (cur === slides.length - 1);
+    window.scrollTo(0, 0);
+  }
+  prevBtn.addEventListener('click', function(){ go(cur - 1); });
+  nextBtn.addEventListener('click', function(){ go(cur + 1); });
+  firstBtn.addEventListener('click', function(){ go(0); });
+  lastBtn.addEventListener('click', function(){ go(slides.length - 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (document.getElementById('pane-lecture').hidden) return;
+    var t = e.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp'){   e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home'){ e.preventDefault(); go(0); }
+    if (e.key === 'End'){  e.preventDefault(); go(slides.length - 1); }
+  });
+  go(0);
+
+  /* ── Lab checklist (browser-only storage) ── */
+  var KEY = 'oss2026-ch08-lab-en';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.check input'));
+  var pgCount = document.getElementById('pg-count');
+  var pgBar = document.getElementById('pg-bar');
+
+  function read(){
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function write(state){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch (e) { /* private/incognito mode etc. — skip saving but keep working */ }
+  }
+  function paint(){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    pgCount.textContent = done + ' / ' + boxes.length;
+    pgBar.style.width = (boxes.length ? (done / boxes.length * 100) : 0) + '%';
+  }
+
+  var saved = read();
+  boxes.forEach(function(b){
+    if (saved[b.dataset.k]) b.checked = true;
+    b.addEventListener('change', function(){
+      var s = read();
+      s[b.dataset.k] = b.checked;
+      write(s);
+      paint();
+    });
+  });
+  document.getElementById('pg-reset').addEventListener('click', function(){
+    boxes.forEach(function(b){ b.checked = false; });
+    write({});
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>
