@@ -379,6 +379,9 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
 .r8 > .hd:nth-child(3){color:var(--warn);}
 .r8 > .hd:nth-child(2){color:var(--accent-ink);}
 /* checks, progress, step headers */
+.done{margin:0; padding:10px 14px; border:2px solid var(--accent); border-radius:9px; background:var(--accent-soft); color:var(--ink); font-size:.95rem; font-weight:600;}
+.done b{display:inline-block; background:var(--accent); color:var(--surface); padding:1px 10px; border-radius:20px; margin-right:8px; font-size:.78rem;}
+
 .check{background:var(--surface); border:2px solid var(--line-strong);}
 .check span{color:var(--ink); font-weight:600;}
 .check:has(input:checked){background:var(--accent); border-color:var(--accent);}
@@ -605,7 +608,7 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
         <pre data-kind="file"><code>from rich import print
 from rich.panel import Panel
 from rich.table import Table</code></pre>
-        <p class="cap">Put these three lines at the top of the file. The first line makes <code>print</code> rich's print. Python's own <code>print</code> shows the square brackets as plain text.</p>
+        <p class="cap">Put these three lines at the top of the file. The first line makes <code>print</code> rich's print. Python's own <code>print</code> shows the square brackets as plain text. <code>hello_tool.py</code> writes <code>console = Console()</code> and <code>console.print(...)</code>. It does the same as rich's <code>print</code>.</p>
       </div>
       <div class="r8">
         <div class="hd"></div><div class="hd">You write</div><div class="hd">You see</div>
@@ -639,31 +642,36 @@ print(table)</code></pre><p class="cap">Columns first, then rows. Two columns, s
       <p class="lead">In the lab, you replace the <code>rich</code> table with <code>tabulate</code>. Only the tool changes.</p>
       <div class="dg" role="img" aria-label="The same data, TOOLS, goes to a tool that prints a table. Before: the rich Table draws a table with heavy lines. After the swap: tabulate draws a plain-text table with plus and minus signs. The job is the same: print the table." style="max-width:600px;">
         <svg viewBox="0 0 720 176" aria-hidden="true">
-          <defs><marker id="ah8c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker><marker id="ah8m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-line" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <defs><marker id="ah9c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker><marker id="ah8m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-line" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
           <rect class="f-surf s-acc" x="4" y="38" width="160" height="100" rx="10" stroke-width="2"/>
           <text class="mono t-acc" x="18" y="62" font-size="15">TOOLS</text><text class="t-mut" x="80" y="62" font-size="12.5" font-weight="600">same data</text>
           <text class="mono t-ink" x="18" y="86" font-size="12.5">Python ...</text><text class="mono t-ink" x="18" y="106" font-size="12.5">Git ...</text><text class="mono t-ink" x="18" y="126" font-size="12.5">rich ...</text>
           <line class="s-line" x1="166" y1="70" x2="222" y2="40" stroke-width="2" marker-end="url(#ah8m)"/>
-          <line class="s-acc" x1="166" y1="106" x2="222" y2="136" stroke-width="2.5" marker-end="url(#ah8c)"/>
+          <line class="s-acc" x1="166" y1="106" x2="222" y2="136" stroke-width="2.5" marker-end="url(#ah9c)"/>
           <g opacity="0.8"><rect class="f-s2 s-line" x="226" y="6" width="190" height="64" rx="10" stroke-width="1.5" stroke-dasharray="6 4"/><text class="t-mut" x="240" y="30" font-size="12.5" font-weight="700">Before</text><text class="mono t-ink" x="240" y="54" font-size="14">rich Table</text></g>
           <rect class="f-soft s-acc" x="226" y="106" width="190" height="64" rx="10" stroke-width="2.5"/><text class="t-acc" x="240" y="130" font-size="12.5" font-weight="700">After the swap</text><text class="mono t-acc" x="240" y="154" font-size="14">tabulate</text>
           <text class="t-acc" x="321" y="93" font-size="13" font-weight="700" text-anchor="middle">swap</text>
-          <line class="s-acc" x1="296" y1="74" x2="296" y2="102" stroke-width="2" marker-end="url(#ah8c)"/>
+          <line class="s-acc" x1="296" y1="74" x2="296" y2="102" stroke-width="2" marker-end="url(#ah9c)"/>
           <line class="s-line" x1="418" y1="38" x2="460" y2="38" stroke-width="2" marker-end="url(#ah8m)"/>
-          <line class="s-acc" x1="418" y1="138" x2="460" y2="138" stroke-width="2.5" marker-end="url(#ah8c)"/>
+          <line class="s-acc" x1="418" y1="138" x2="460" y2="138" stroke-width="2.5" marker-end="url(#ah9c)"/>
           <g opacity="0.8"><rect class="f-surf s-line" x="464" y="6" width="252" height="64" rx="8" stroke-width="1"/><text class="mono t-ink" x="476" y="30" font-size="12.5" textLength="228" lengthAdjust="spacingAndGlyphs">┏━━━━━━━━┳━━━━━━━━━━━━</text><text class="mono t-ink" x="476" y="52" font-size="12.5">┃ Tool   ┃ What it does</text></g>
           <rect class="f-surf s-acc" x="464" y="106" width="252" height="64" rx="8" stroke-width="1.5"/><text class="mono t-ink" x="476" y="130" font-size="12.5">+--------+------------</text><text class="mono t-ink" x="476" y="152" font-size="12.5">| Tool   | What it does</text>
         </svg>
       </div>
-      <p>You change three places:</p>
-      <ul>
-        <li><b>The import line</b> and <b><code>build_table()</code></b>, the one function that used the old library.</li>
-        <li><b><code>requirements.txt</code></b>: add the new line, with its version.</li>
-        <li><b><code>THIRD_PARTY.md</code></b>: new library + license (Chapter 7). Team project only, not today.</li>
-      </ul>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th>Step</th><th>What you change</th><th>Where</th></tr></thead>
+          <tbody>
+            <tr><td>Lab Change 3a</td><td>Install it: <code class="cmd">pip install tabulate==0.10.0</code></td><td>cmd</td></tr>
+            <tr><td>Lab Change 3b</td><td>Three places: the import line, <code>build_table()</code>, the print line in <code>main()</code></td><td><code>hello_tool.py</code></td></tr>
+            <tr><td>Lab Change 3c</td><td>Add the line <code>tabulate==0.10.0</code></td><td><code>requirements.txt</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><code>THIRD_PARTY.md</code>: only in the team project.</p>
       <div class="callout">
         <span class="mk">Why swap?</span>
-        <p><code>tabulate</code> makes plain text. You can paste it into an issue. <b>Explain your choice.</b></p>
+        <p><code>tabulate</code> gives plain text. You can paste it into an issue.</p>
       </div>
     </article>
 
@@ -674,7 +682,7 @@ print(table)</code></pre><p class="cap">Columns first, then rows. Two columns, s
       <p class="lead">PyPI has hundreds of thousands of libraries. The whitelist is a short list. The instructor checked every library on it. So no class time is lost on a library that does not install.</p>
       <div class="grid g2">
         <div class="card"><span class="tagline">Every library on it</span><h4>Passed four checks</h4><ul class="checks4">
-          <li>It installs on these lab PCs without compiling.</li>
+          <li>It installs on these lab PCs without compiling (no extra build tools).</li>
           <li>It has a permissive license (MIT, BSD or Apache).</li>
           <li>It gives a result in one or two function calls.</li>
           <li>It has a tested, pinned version.</li>
@@ -716,7 +724,7 @@ print(table)</code></pre><p class="cap">Columns first, then rows. Two columns, s
     <div class="doc-head">
       <p class="eyebrow">Lab · 90 min · Step by step</p>
       <h2>Clone, install, run &mdash; then change one thing</h2>
-      <p>Do the parts in order. Tick the box at the end of each part. Every output below comes from a real run in cmd.</p>
+      <p>Do the parts in order. Each part ends with a <b>Done when</b> line. Check it before you go on. Every output below comes from a real run. In the VS Code terminal, the corners and lines of the panel and the table can look different. The words are the same.</p>
       <div class="legend">
         <span><b>Do</b> what to do</span>
         <span><b>Copy</b> type or paste this</span>
@@ -729,16 +737,11 @@ print(table)</code></pre><p class="cap">Columns first, then rows. Two columns, s
       </div>
     </div>
 
-    <div class="progress">
-      <b id="pg-count">0 / 9</b>
-      <span class="bar"><i id="pg-bar"></i></span>
-      <button class="reset" id="pg-reset" type="button">Reset</button>
-    </div>
 
     <!-- READY CHECK -->
     <div class="step">
       <div class="step-head"><span class="step-no">READY</span><h3>Ready check: four things before the Lab</h3><span class="budget">10 min</span></div>
-      <p class="goal">PART 1 to PART 4 need all four. Check them now. Fix a failed check now. Tick each one when it works.</p>
+      <p class="goal">PART 1 to PART 4 need all four. Check them now. Fix a failed check now.</p>
 
       <div class="s4">
         <h4>① Sign in to GitHub</h4>
@@ -749,7 +752,6 @@ print(table)</code></pre><p class="cap">Columns first, then rows. Two columns, s
           <li>It is another person's avatar? Click it. Click <b>Sign out</b>. Then sign in again.</li>
         </ul></div>
       </div>
-      <label class="check"><input type="checkbox" data-k="r1"><span>① I am signed in to GitHub. The avatar is mine.</span></label>
 
       <div class="s4">
         <h4>② Your <code>oss-practice</code> repository is on GitHub</h4>
@@ -763,7 +765,6 @@ print(table)</code></pre><p class="cap">Columns first, then rows. Two columns, s
           <li><b>Do not rename a fork of your partner's repository.</b> A fork shows <b>forked from</b> under its name. Make your own.</li>
         </ul></div>
       </div>
-      <label class="check"><input type="checkbox" data-k="r2"><span>② github.com/&lt;my-username&gt;/oss-practice opens</span></label>
 
       <div class="s4">
         <h4>③ Clone <code>oss-practice</code> into your folder</h4>
@@ -774,7 +775,7 @@ git config user.name "&lt;your GitHub username&gt;"
 git config user.email "&lt;your noreply e-mail&gt;"
 cd ..</code></pre>
           <p class="why">Why: your own work goes into this folder in PART 3. The two <code class="cmd">git config</code> lines put your name on your commits, in this repository only. Your noreply e-mail is in GitHub <b>Settings &rsaquo; Emails</b>. It looks like <code>12345678+name@users.noreply.github.com</code>. It hides your real e-mail.</p></div>
-        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'oss-practice'...</code></pre>The <code class="cmd">git config</code> lines print nothing. The prompt ends with <code>D:\oss\&lt;your ID&gt;&gt;</code>.</div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'oss-practice'...</code></pre>The <code class="cmd">git config</code> lines print nothing. The prompt ends with <code>D:\oss\&lt;your ID&gt;&gt;</code>. There is no <code>PS</code> at the start of the prompt.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>The prompt starts with <code>PS</code>? This is PowerShell. Type <code class="cmd">cmd</code> and press Enter. Then type the lines again.</li>
           <li>Git says the folder already exists? You cloned it before. Type <code class="cmd">cd oss-practice</code>, then <code class="cmd">git pull</code>. Then type the two <code class="cmd">git config</code> lines. Then type <code class="cmd">cd ..</code>. (<code class="cmd">git pull</code> gets the <code>LICENSE</code> file from Chapter 7.)</li>
@@ -782,7 +783,6 @@ cd ..</code></pre>
           <li>Never use <code>--global</code> on this shared PC.</li>
         </ul></div>
       </div>
-      <label class="check"><input type="checkbox" data-k="r3"><span>③ oss-practice is cloned in D:\oss\&lt;my ID&gt;</span></label>
 
       <div class="s4">
         <h4>④ Get ready to make the box</h4>
@@ -795,7 +795,6 @@ dir /b</code></pre></div>
           <li>No <code>oss-practice</code> in the list? Do ③ again.</li>
         </ul></div>
       </div>
-      <label class="check"><input type="checkbox" data-k="r4"><span>④ Python works · I know if .venv is here</span></label>
       <div class="callout warn">
         <span class="mk">A check still fails?</span>
         <p>Ask your row (your team). Then continue to PART 0. Do not wait.</p>
@@ -827,7 +826,7 @@ dir /b</code></pre></div>
           <li>VS Code asks you to sign in? Close the window. A sign-in in VS Code stays on this shared PC.</li>
         </ul></div>
       </div>
-      <label class="check"><input type="checkbox" data-k="s0"><span>cmdkey shows no github line · no sign-in in VS Code</span></label>
+      <p class="done"><b>Done when</b> cmdkey shows no github line · no sign-in in VS Code</p>
     </div>
 
     <!-- PART 1 -->
@@ -894,7 +893,7 @@ cd teacher-demo-oss-project</code></pre></div>
 
       <div class="s4">
         <h4>4. Read the list first</h4>
-        <span class="k">Do</span><div class="v">Open <code>README.md</code> in VS Code and read it. Then show the list of libraries.</div>
+        <span class="k">Do</span><div class="v">In the VS Code Explorer (the file list on the left), open <code>teacher-demo-oss-project</code> &rsaquo; <code>README.md</code> and read it. Then show the list of libraries.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>type requirements.txt</code></pre></div>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>rich==15.0.0</code></pre>One library, one exact version. Skip README step 2. You already have a box.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
@@ -934,7 +933,7 @@ cd teacher-demo-oss-project</code></pre></div>
 | rich   | makes terminal output look good |
 +------------------------------------------+</code></pre>
           <b>The lines can look a little different. The words must be the same.</b>
-          <p>In the VS Code terminal, the panel has round corners and colour. The words are the same.</p></div>
+          <p>Panel on top. Table below. In the VS Code terminal, the corners and lines of the panel and the table can look different, and there is colour. The words are the same.</p></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>ModuleNotFoundError: No module named 'rich'</code>? The box is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then do step 5 and step 6 again.</li>
           <li><code>can't open file '...\hello_tool.py': [Errno 2] No such file or directory</code>? You are in the wrong folder. Type <code class="cmd">cd teacher-demo-oss-project</code>.</li>
@@ -963,13 +962,13 @@ options:
           <li>An error? Look at step 6, <b>If not</b>.</li>
         </ul></div>
       </div>
-      <label class="check"><input type="checkbox" data-k="s1"><span>(.venv) in the prompt · demo cloned · pip install -r done · my name printed in the box</span></label>
+      <p class="done"><b>Done when</b> (.venv) in the prompt · demo cloned · pip install -r done · my name printed in the panel</p>
     </div>
 
     <!-- PART 2 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 2</span><h3>Change one thing &mdash; three times</h3><span class="budget">30 min</span></div>
-      <p class="goal">Step 4: change. Each change is a little bigger. <b>Run the tool after every change.</b> Open <code>hello_tool.py</code> in VS Code. Find each line. Replace it with the new line. Keep the spaces at the start. Save with <kbd>Ctrl + S</kbd>.</p>
+      <p class="goal">Step 4: change. Each change is a little bigger. <b>Run the tool after every change.</b> In the VS Code Explorer, open <code>teacher-demo-oss-project</code> &rsaquo; <code>hello_tool.py</code>. Find each line. Replace it with the new line. Keep the spaces at the start. Save with <kbd>Ctrl + S</kbd>.</p>
 
       <div class="s4">
         <h4>Change 1 &mdash; text and colour <span class="budget">5 min</span></h4>
@@ -978,6 +977,7 @@ options:
 <pre data-kind="code"><code>    console.print(Panel.fit(f"Hello, {args.name}!", title="hello_tool", style="green"))</code></pre>
 <p class="lbl">Change it to:</p>
 <pre data-kind="code"><code>    console.print(Panel.fit(f"Welcome to open source, {args.name}!", title="hello_tool", style="bold magenta"))</code></pre>
+<p class="why"><code>hello_tool.py</code> writes <code>console = Console()</code> and <code>console.print(...)</code>. It does the same as rich's <code>print</code> (slide 8).</p>
 <pre data-kind="cmd"><code>python hello_tool.py --name Ada</code></pre></div>
         <span class="k see">You should see</span><div class="v">The panel is wider. The table is the same.
 <pre class="term" data-kind="out"><code>+--------- hello_tool ---------+
@@ -1020,7 +1020,7 @@ options:
 | rich   | makes terminal output look good | MIT     |
 +----------------------------------------------------+</code></pre></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li><code>ValueError: too many values to unpack (expected 2)</code>? You changed the rows but not the <code>for</code> line. Now each row has 3 values. The <code>for</code> line must take 3: <code>for tool, job, license_name in TOOLS:</code>. (Review packet, section 3.)</li>
+          <li><code>ValueError: too many values to unpack (expected 2)</code>? You changed the rows but not the <code>for</code> line. Now each row has 3 values. <code>for tool, job in TOOLS:</code> takes two values from each row. The <code>for</code> line must take 3: <code>for tool, job, license_name in TOOLS:</code>.</li>
           <li>No error, but the <code>License</code> column is empty? <code>add_row</code> got only 2 values. Make it <code>table.add_row(tool, job, license_name)</code>. A 4th column with no name means <code>add_row</code> got too many values.</li>
         </ul></div>
       </div>
@@ -1057,11 +1057,13 @@ options:
 <pre data-kind="code"><code>    """Make a plain-text table from TOOLS with tabulate."""
     headers = ["Tool", "What it does", "License"]
     return tabulate(TOOLS, headers=headers, tablefmt="grid")</code></pre>
-<p class="lbl">3) Find these lines:</p>
+<p class="why"><code>tablefmt="grid"</code> draws lines around every cell.</p>
+<p class="lbl">3) Find this line:</p>
 <pre data-kind="code"><code>    console.print(build_table())</code></pre>
-<p class="lbl">Change them to:</p>
+<p class="lbl">Change it to these two lines:</p>
 <pre data-kind="code"><code>    print("Tools in this course")
     print(build_table())</code></pre>
+<p class="why">Why the first line: <code>tabulate</code> has no title. So you print the title yourself.</p>
 <p class="why">Keep the spaces at the start of each line.</p>
 <pre data-kind="cmd"><code>python hello_tool.py --name Ada</code></pre></div>
         <span class="k see">You should see</span><div class="v">The panel is still <code>rich</code>. The table is now <code>tabulate</code>:
@@ -1078,7 +1080,7 @@ Tools in this course
 +--------+---------------------------------+-----------+
 | rich   | makes terminal output look good | MIT       |
 +--------+---------------------------------+-----------+</code></pre>
-          <p>In the VS Code terminal, the panel has round corners and colour. The words are the same.</p></div>
+          <p>In the VS Code terminal, the corners of the panel can look different, and there is colour. The <code>tabulate</code> table looks the same: it is plain text. The words are the same.</p></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>ModuleNotFoundError: No module named 'tabulate'</code>? <code>tabulate</code> is not in this box. Check for <code>(.venv)</code> in the prompt. Then do Change 3a again.</li>
           <li>You still see the old table? Save the file (<kbd>Ctrl + S</kbd>). Run again.</li>
@@ -1087,7 +1089,7 @@ Tools in this course
 
       <div class="s4">
         <h4>Change 3c &mdash; write it in the list</h4>
-        <span class="k">Do</span><div class="v">Open <code>requirements.txt</code>. Make it these two lines. Save. Install from the list again.</div>
+        <span class="k">Do</span><div class="v">In the Explorer, open <code>teacher-demo-oss-project</code> &rsaquo; <code>requirements.txt</code>. Make it these two lines. Save. Install from the list again.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>rich==15.0.0
 tabulate==0.10.0</code></pre>
 <pre data-kind="cmd"><code>pip install -r requirements.txt</code></pre>
@@ -1103,13 +1105,13 @@ Requirement already satisfied: tabulate==0.10.0 in ...</code></pre>
         <span class="mk">Your changes stay here</span>
         <p>The demo repository belongs to the instructor. You cannot push to it. That is fine. It was practice. Your own work goes into <b>your</b> repository in PART 3. (In the team project, you also update <code>THIRD_PARTY.md</code>. Today you skip it.)</p>
       </div>
-      <label class="check"><input type="checkbox" data-k="s2"><span>Change 1 run · Change 2 run (License column) · Change 3 run (tabulate table) · requirements.txt has two pinned lines</span></label>
+      <p class="done"><b>Done when</b> Change 1 run · Change 2 run (License column) · Change 3 run (tabulate table) · requirements.txt has two pinned lines</p>
     </div>
 
     <!-- PART 3 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 3</span><h3>Start your own Hello tool</h3><span class="budget">25 min</span></div>
-      <p class="goal">Now the same steps in your own repository. One small tool, one whitelist library, pinned. This is the assignment. Do as much as you can here.</p>
+      <p class="goal">Now the same steps in your own repository. One small tool, one of the four libraries on slide 10 (<code>rich</code>, <code>tabulate</code>, <code>python-dateutil</code>, <code>requests</code>), pinned. This is the assignment. Do as much as you can here.</p>
 
       <div class="s4">
         <h4>1. Go to your repository</h4>
@@ -1166,16 +1168,52 @@ type requirements.txt</code></pre>
 
       <div class="s4">
         <h4>4. Make your tool file</h4>
-        <span class="k">Do</span><div class="v">Make the folder <code>tools</code>. In VS Code, make the file <code>tools/hello_&lt;library&gt;.py</code>, for example <code>tools/hello_tabulate.py</code>.</div>
-        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>mkdir tools</code></pre>
+        <span class="k">Do</span><div class="v">Make the folder <code>tools</code>. Then make your file in it. The full path of your file is <code>D:\oss\&lt;your ID&gt;\oss-practice\tools\hello_&lt;library&gt;.py</code>, for example <code>tools\hello_tabulate.py</code>.
+          <ul>
+            <li><b>In VS Code:</b> in the Explorer (the file list on the left), right-click <code>oss-practice</code> &rarr; <b>New Folder…</b> &rarr; type <code>tools</code>. Then right-click <code>tools</code> &rarr; <b>New File…</b> &rarr; type <code>hello_&lt;library&gt;.py</code>.</li>
+            <li><b>Or in cmd:</b> make the folder with <code class="cmd">mkdir tools</code> (below). Then make the file in VS Code, as above.</li>
+            <li>Copy one example below into your file. Change it. Save with <kbd>Ctrl + S</kbd>.</li>
+          </ul></div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">First check the prompt. It must end with <code>\oss-practice&gt;</code>.</p>
+<pre data-kind="cmd"><code>mkdir tools</code></pre>
           Your tool must:
           <ul>
             <li>take <code>--name</code> with <code>argparse</code>,</li>
             <li>use your library at least once to make the output,</li>
-            <li>print something with the name in it.</li>
+            <li>print something with the name in it,</li>
+            <li>use your own words and values, not the example as it is.</li>
           </ul>
-<p class="lbl">Example with tabulate. Change the library and the rows.</p>
-<pre data-kind="code"><code>import argparse
+          <p class="lbl">Pick one. Then change the words and values to your own.</p>
+          <p class="why">Each example is a whole file. Each output is from <code class="cmd">python tools/hello_&lt;library&gt;.py --name Ada</code>.</p>
+<p class="lbl">rich &middot; <code>tools\hello_rich.py</code></p>
+<pre data-kind="file"><code>import argparse
+
+from rich import print
+from rich.panel import Panel
+from rich.table import Table
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--name", default="World")
+args = parser.parse_args()
+
+print(Panel.fit(f"Hello, {args.name}!", title="hello_rich"))
+table = Table(title="My library")
+table.add_column("Name")
+table.add_column("Library")
+table.add_row(args.name, "rich")
+print(table)</code></pre>
+<pre class="term" data-kind="out"><code>+- hello_rich -+
+| Hello, Ada!  |
++--------------+
+    My library
++----------------+
+| Name | Library |
+|------+---------|
+| Ada  | rich    |
++----------------+</code></pre>
+          <p class="why">Panel on top. Table below.</p>
+<p class="lbl">tabulate &middot; <code>tools\hello_tabulate.py</code></p>
+<pre data-kind="file"><code>import argparse
 
 from tabulate import tabulate
 
@@ -1185,33 +1223,55 @@ args = parser.parse_args()
 
 rows = [["Name", args.name], ["Library", "tabulate"]]
 print(tabulate(rows, tablefmt="grid"))</code></pre>
-          <p class="why">Use your own rows and words.</p>
-<p class="lbl">Another library? Keep the argparse lines. Replace the 3 tabulate lines (the import, <code>rows</code> and <code>print</code>) with these:</p>
-<pre data-kind="code"><code># rich
-from rich.console import Console
-from rich.panel import Panel
-Console().print(Panel.fit(f"Hello, {args.name}!", title="hello_rich"))
+<pre class="term" data-kind="out"><code>+---------+----------+
+| Name    | Ada      |
++---------+----------+
+| Library | tabulate |
++---------+----------+</code></pre>
+          <p class="why"><code>tablefmt="grid"</code> draws lines around every cell.</p>
+<p class="lbl">python-dateutil &middot; <code>tools\hello_dateutil.py</code></p>
+<pre data-kind="file"><code>import argparse
 
-# python-dateutil
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
-diff = relativedelta(parse("15 March 2000"), parse("1 January 2000"))
-print(f"Hello, {args.name}! From 1 January to 15 March: {diff.months} months, {diff.days} days")
 
-# requests
+parser = argparse.ArgumentParser()
+parser.add_argument("--name", default="World")
+args = parser.parse_args()
+
+diff = relativedelta(parse("15 March 2000"), parse("1 January 2000"))
+print(f"Hello, {args.name}! From 1 January to 15 March: {diff.months} months, {diff.days} days")</code></pre>
+<pre class="term" data-kind="out"><code>Hello, Ada! From 1 January to 15 March: 2 months, 14 days</code></pre>
+          <p class="why"><code>parse</code> reads a date written in words. <code>relativedelta</code> gives the difference in months and days.</p>
+<p class="lbl">requests &middot; <code>tools\hello_requests.py</code></p>
+<pre data-kind="file"><code>import argparse
+
 import requests
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--name", default="World")
+args = parser.parse_args()
+
 version = requests.get("https://pypi.org/pypi/rich/json", timeout=10).json()["info"]["version"]
 print(f"Hello, {args.name}! The latest rich on PyPI is {version}.")</code></pre>
-          <p class="why">Put the <code>from</code> and <code>import</code> lines at the top, under <code>import argparse</code>.</p></div>
-        <span class="k see">You should see</span><div class="v">The folder <code>tools</code> and your file in the VS Code file list.</div>
+<pre class="term" data-kind="out"><code>Hello, Ada! The latest rich on PyPI is 15.0.0.</code></pre>
+          <p class="why"><code>requests.get</code> downloads the PyPI page of <code>rich</code>. <code>.json()</code> reads it. The version number can be newer when you run it.</p>
+          <div class="callout warn">
+            <span class="mk">requests needs the internet</span>
+            <p>Use the PyPI address in the requests example in step 4. Do not use the GitHub API. The PCs in this room may share one internet address. Without a login, GitHub stops after 60 requests an hour from one address.</p>
+          </div>
+          <p class="why">Why: the example as it is counts as Partial. Two submissions with the same text are both Partial.</p></div>
+        <span class="k see">You should see</span><div class="v">In the Explorer: <code>oss-practice</code> &rsaquo; <code>tools</code> &rsaquo; your file, for example <code>hello_tabulate.py</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The prompt does not end with <code>\oss-practice&gt;</code>? Type <code class="cmd">cd D:\oss\&lt;your ID&gt;\oss-practice</code>. Then make the folder.</li>
           <li>cmd says <code>tools</code> already exists? That is fine. Use it.</li>
+          <li>Your file is not inside <code>tools</code>? In the Explorer, drag it onto <code>tools</code>.</li>
         </ul></div>
       </div>
 
       <div class="s4">
         <h4>5. Write one README line</h4>
-        <span class="k">Do</span><div class="v">Add one line to <code>README.md</code>. It says how to run your tool. Save.</div>
+        <span class="k">Do</span><div class="v">In the Explorer, open <code>oss-practice</code> &rsaquo; <code>README.md</code>. Add one line at the end. It says how to run your tool. Save.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>Run: python tools/hello_tabulate.py --name Ada</code></pre></div>
         <span class="k see">You should see</span><div class="v">The new line in <code>README.md</code>, with your own file name.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
@@ -1223,7 +1283,7 @@ print(f"Hello, {args.name}! The latest rich on PyPI is {version}.")</code></pre>
         <h4>6. Run it as your README says</h4>
         <span class="k">Do</span><div class="v">In <code>oss-practice</code>, type your README line, without <code>Run:</code>.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python tools/hello_tabulate.py --name Ada</code></pre></div>
-        <span class="k see">You should see</span><div class="v">Your own output, with the name in it. Copy the whole output. You paste it into the assignment issue.</div>
+        <span class="k see">You should see</span><div class="v">Like the output in step 4, with your own words and values. Check: the name after <code>--name</code> (here <code>Ada</code>) is in the output. Copy the whole output. You paste it into the assignment issue.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>ModuleNotFoundError: No module named '...'</code>? Your library is not in this box. Do step 3 again.</li>
           <li><code>can't open file ... [Errno 2] No such file or directory</code>? Run it from <code>oss-practice</code>. Check the file name.</li>
@@ -1235,7 +1295,8 @@ print(f"Hello, {args.name}! The latest rich on PyPI is {version}.")</code></pre>
         <span class="k">Do</span><div class="v">Commit your work. Push it to GitHub.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git add tools requirements.txt README.md
 git commit -m "Add hello tool with tabulate"
-git push</code></pre></div>
+git push</code></pre>
+          <p class="why">In the commit message, use your library name.</p></div>
         <span class="k see">You should see</span><div class="v">A small window <b>Connect to GitHub</b> may open. Click <b>Sign in with your browser</b>. Check that the avatar is yours. Click <b>Authorize</b>. Then open <code>github.com/&lt;your-username&gt;/oss-practice</code>. You see <code>tools/</code> and <code>requirements.txt</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>Git says the push was rejected? GitHub has a commit you do not have. Type <code class="cmd">git pull</code>. Then <code class="cmd">git push</code> again.</li>
@@ -1243,11 +1304,8 @@ git push</code></pre></div>
           <li>Git asks who you are? Type the two <code class="cmd">git config</code> lines from Ready check ③. Never use <code>--global</code>.</li>
         </ul></div>
       </div>
-      <div class="callout warn">
-        <span class="mk">requests needs the internet</span>
-        <p>Use the PyPI address in the table. Do not use the GitHub API. The PCs in this room may share one internet address. Without a login, GitHub stops after 60 requests an hour from one address.</p>
-      </div>
-      <label class="check"><input type="checkbox" data-k="s3"><span>tools/hello_&lt;lib&gt;.py runs · requirements.txt pinned · README run line · pushed and visible on GitHub</span></label>
+      <p class="goal">Next: open the <b>Assignment</b> tab.</p>
+      <p class="done"><b>Done when</b> tools/hello_&lt;lib&gt;.py runs · requirements.txt pinned · README run line · pushed and visible on GitHub</p>
     </div>
 
     <!-- PART 4 -->
@@ -1296,7 +1354,7 @@ cmdkey /list | findstr github</code></pre></div>
           <li>VS Code asks to save a file? Click <b>Save</b>.</li>
         </ul></div>
       </div>
-      <label class="check"><input type="checkbox" data-k="s4"><span>Tool on GitHub · issue opened · signed out of every site · Git login deleted · VS Code closed</span></label>
+      <p class="done"><b>Done when</b> Tool on GitHub · issue opened · signed out of every site · Git login deleted · VS Code closed</p>
     </div>
 
     <div class="step">
@@ -1331,7 +1389,7 @@ and explain each line in simple English. Do not write the whole tool.
       <div class="step-head"><span class="step-no">Assignment</span><h3>What to submit</h3></div>
       <ol>
         <li>Your public <code>oss-practice</code> repository has three things (Lab PART 3):
-          <ul><li><code>tools/hello_&lt;library&gt;.py</code></li><li><code>requirements.txt</code> with a pinned version</li><li>one README line that says how to run it</li></ul></li>
+          <ul><li><code>tools/hello_&lt;library&gt;.py</code>: one of the four libraries, with your own words and values</li><li><code>requirements.txt</code> with a pinned version</li><li>one README line that says how to run it</li></ul></li>
         <li>Open an issue in the course <code>practice-pr</code> repository with the Chapter 8 template. <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch08.md" target="_blank" rel="noopener"><b>Click here to open it with the template ready</b></a> (sign in first).</li>
         <li>Title: <code>[Ch08] StudentID Name</code>.</li>
         <li>Write under each of the four headings:
@@ -1369,8 +1427,8 @@ What I changed or checked myself:
       <div class="step-head"><span class="step-no">Grading</span><h3>How it's graded</h3></div>
       <p class="goal">We check two things. <b>Does it run from your README? Can you explain it?</b> How it looks does not matter.</p>
       <div class="rubric">
-        <div class="card"><b>Complete</b><p>The tool is in <code>tools/</code>. It uses one whitelist library and takes <code>--name</code>. It runs with the README command after <code class="cmd">pip install -r requirements.txt</code>. The version is pinned. The output and the two AI lines are in the issue.</p></div>
-        <div class="card"><b>Partial</b><p>It runs, but something is missing. For example: no pinned version, no README line, a screenshot only, or no AI lines. Or the tool needs a library without a version. Two submissions with the same text are both Partial.</p></div>
+        <div class="card"><b>Complete</b><p>The tool is in <code>tools/</code>. It uses one of the four libraries with your own words and values, and takes <code>--name</code>. It runs with the README command after <code class="cmd">pip install -r requirements.txt</code>. The version is pinned. The output and the two AI lines are in the issue.</p></div>
+        <div class="card"><b>Partial</b><p>It runs, but something is missing. For example: no pinned version, no README line, a screenshot only, or no AI lines. Or the tool needs a library without a version. Or it is the Lab example with no change. Two submissions with the same text are both Partial.</p></div>
         <div class="card"><b>Not submitted</b><p>No issue by the deadline. Late work still gets partial credit.</p></div>
       </div>
       <div class="callout">
@@ -1389,7 +1447,7 @@ What I changed or checked myself:
       <ul style="margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em; font-size:.95rem;">
         <li>Sit at the same PC. You use your box in <code>D:\oss\&lt;your ID&gt;\.venv</code> again.</li>
         <li>Your new tool goes into the same <code>oss-practice/tools/</code> folder. <code>requirements.txt</code> gets two more lines.</li>
-        <li>Section 3 of the review packet is about lists and dictionaries. A table is made of them. Review it if the self-check below shows a gap.</li>
+        <li>Section 3 of the review packet (<code>python-review-packet.md</code> in the <code>course-notice</code> repository) is about lists and dictionaries. A table is made of them. Review it if the self-check below shows a gap.</li>
       </ul>
     </div>
 
@@ -1520,42 +1578,6 @@ with open("q.txt", encoding="utf-8") as f:
   });
   go(0);
 
-  /* ── Lab checklist (browser-only storage) ── */
-  var KEY = 'oss2026-ch08-lab-en';
-  var boxes = Array.prototype.slice.call(document.querySelectorAll('.check input'));
-  var pgCount = document.getElementById('pg-count');
-  var pgBar = document.getElementById('pg-bar');
-
-  function read(){
-    try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
-    catch (e) { return {}; }
-  }
-  function write(state){
-    try { localStorage.setItem(KEY, JSON.stringify(state)); }
-    catch (e) { /* private/incognito mode etc. — skip saving but keep working */ }
-  }
-  function paint(){
-    var done = boxes.filter(function(b){ return b.checked; }).length;
-    pgCount.textContent = done + ' / ' + boxes.length;
-    pgBar.style.width = (boxes.length ? (done / boxes.length * 100) : 0) + '%';
-  }
-
-  var saved = read();
-  boxes.forEach(function(b){
-    if (saved[b.dataset.k]) b.checked = true;
-    b.addEventListener('change', function(){
-      var s = read();
-      s[b.dataset.k] = b.checked;
-      write(s);
-      paint();
-    });
-  });
-  document.getElementById('pg-reset').addEventListener('click', function(){
-    boxes.forEach(function(b){ b.checked = false; });
-    write({});
-    paint();
-  });
-  paint();
 })();
 </script>
 </body>
