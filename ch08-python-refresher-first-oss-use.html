@@ -1150,17 +1150,20 @@ git pull</code></pre></div>
               </tbody>
             </table>
           </div>
-          Use your own library's line. Make the file one of two ways.
-          <ul>
-            <li><b>In VS Code:</b> in the Explorer, right-click <code>oss-practice</code> &rarr; <b>New File...</b> &rarr; type <code>requirements.txt</code>. Write one line, for example <code>tabulate==0.10.0</code>. Save with <kbd>Ctrl</kbd> + <kbd>S</kbd>.</li>
-            <li><b>Or in cmd:</b> first check the prompt. It must end with <code>\oss-practice&gt;</code> (step 1). Then one command makes the file with the line.</li>
-          </ul>
-<pre data-kind="cmd"><code>echo tabulate==0.10.0&gt;requirements.txt</code></pre>
-          Then check the file in cmd (both ways):
+          Use your own library's line. Make the file in <b>one</b> of two ways: A or B.
+          <p class="lbl">A. In the VS Code editor</p>
+          In the Explorer, right-click <code>oss-practice</code> &rarr; <b>New File...</b> &rarr; type <code>requirements.txt</code>. The file opens. Write only this one line. Save with <kbd>Ctrl</kbd> + <kbd>S</kbd>.
+<pre data-kind="file"><code>tabulate==0.10.0</code></pre>
+          Do not write <code>echo</code>, <code>&gt;</code> or <code>type</code> in the file. Those are commands for the terminal.
+          <p class="lbl">B. In the terminal (cmd, at the bottom of VS Code)</p>
+          First check the prompt. It must end with <code>\oss-practice&gt;</code> (step 1). This one command makes the file with the line.
+<pre data-kind="cmd"><code>echo tabulate==0.10.0 &gt; requirements.txt</code></pre>
+          <p class="lbl">Then check the file in the terminal (after A or B)</p>
 <pre data-kind="cmd"><code>type requirements.txt</code></pre>
           <p class="why">Why: the list comes first. Then pip installs from the list.</p></div>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>tabulate==0.10.0</code></pre></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>You see <code>echo</code> or <code>&gt;</code> in the output? You typed the command into the file. Open <code>requirements.txt</code>. Delete everything. Write only <code>tabulate==0.10.0</code>. Save.</li>
           <li>Two lines? <code>&gt;</code> makes a new file. <code>&gt;&gt;</code> adds a line. Use one <code>&gt;</code> and type it again.</li>
           <li><code>The system cannot find the file specified.</code>? The file is not in <code>oss-practice</code>. In the Explorer, drag <code>requirements.txt</code> onto <code>oss-practice</code>.</li>
         </ul></div>
