@@ -1291,8 +1291,21 @@ print(f"Hello, {args.name}! The latest rich on PyPI is {version}.")</code></pre>
       <div class="s4">
         <h4>5. Write one README line</h4>
         <span class="k">Do</span><div class="v">In the Explorer, open <code>oss-practice</code> &rsaquo; <code>README.md</code>. Add one line at the end. It says how to run your tool. Save.</div>
-        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>Run: python tools/hello_tabulate.py --name Ada</code></pre></div>
-        <span class="k see">You should see</span><div class="v">The new line in <code>README.md</code>, with your own file name.</div>
+        <span class="k">Copy</span><div class="v">
+          Use the line for your library. It names your file from step 4.
+          <div class="scroll-x">
+            <table>
+              <thead><tr><th>Library</th><th>Line for README.md</th></tr></thead>
+              <tbody>
+                <tr><td><code style="white-space:nowrap">rich</code></td><td><code style="white-space:nowrap; font-size:.8em">Run: python tools/hello_rich.py --name Ada</code></td></tr>
+                <tr><td><code style="white-space:nowrap">tabulate</code></td><td><code style="white-space:nowrap; font-size:.8em">Run: python tools/hello_tabulate.py --name Ada</code></td></tr>
+                <tr><td><code style="white-space:nowrap">python-dateutil</code></td><td><code style="white-space:nowrap; font-size:.8em">Run: python tools/hello_dateutil.py --name Ada</code></td></tr>
+                <tr><td><code style="white-space:nowrap">requests</code></td><td><code style="white-space:nowrap; font-size:.8em">Run: python tools/hello_requests.py --name Ada</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          Your file has another name? Use that name.</div>
+        <span class="k see">You should see</span><div class="v">The new line at the end of <code>README.md</code>, with your own file name.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>Wrong file name? The README line must run your file.</li>
         </ul></div>
@@ -1301,7 +1314,19 @@ print(f"Hello, {args.name}! The latest rich on PyPI is {version}.")</code></pre>
       <div class="s4">
         <h4>6. Run it as your README says</h4>
         <span class="k">Do</span><div class="v">In <code>oss-practice</code>, type your README line, without <code>Run:</code>.</div>
-        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python tools/hello_tabulate.py --name Ada</code></pre></div>
+        <span class="k">Copy</span><div class="v">
+          Type the command for your library, in the terminal. Use your own first name.
+          <div class="scroll-x">
+            <table>
+              <thead><tr><th>Library</th><th>Type in cmd</th></tr></thead>
+              <tbody>
+                <tr><td><code>rich</code></td><td><code class="cmd">python tools/hello_rich.py --name Ada</code></td></tr>
+                <tr><td><code>tabulate</code></td><td><code class="cmd">python tools/hello_tabulate.py --name Ada</code></td></tr>
+                <tr><td><code>python-dateutil</code></td><td><code class="cmd">python tools/hello_dateutil.py --name Ada</code></td></tr>
+                <tr><td><code>requests</code></td><td><code class="cmd">python tools/hello_requests.py --name Ada</code></td></tr>
+              </tbody>
+            </table>
+          </div></div>
         <span class="k see">You should see</span><div class="v">Like the output in step 4, with your own words and values. Check: the name after <code>--name</code> (here <code>Ada</code>) is in the output. Copy the whole output. You paste it into the assignment issue.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>ModuleNotFoundError: No module named '...'</code>? Your library is not in this box. Do step 3 again.</li>
