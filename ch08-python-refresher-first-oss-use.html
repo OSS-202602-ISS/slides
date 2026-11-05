@@ -323,6 +323,7 @@ code.cmd::before{font-family:var(--body);}
 .card ul.checks4{font-size:1.03rem; line-height:1.5; color:var(--ink-2); gap:.35em; margin-top:2px;}
 .r8-imp{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; align-items:center;}
 .r8-imp pre{margin:0;}
+.r8-imp ul.r8-notes{margin:0; padding-left:1.1em; gap:.3em; font-size:.92rem; line-height:1.5; color:var(--ink-2);}
 .r8-imp .cap{font-size:.92rem !important; line-height:1.5; color:var(--ink-3) !important; margin:0;}
 @media (max-width:720px){ .r8-imp{grid-template-columns:1fr;} }
 @media (max-width:720px){ .r8{grid-template-columns:1fr;} .r8 > .hd{display:none;} .r8 > div{border-bottom:0; padding:6px 0;} .r8 > .lb{padding-top:16px; border-top:1px solid var(--line);} }
@@ -608,7 +609,12 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
         <pre data-kind="file"><code>from rich import print
 from rich.panel import Panel
 from rich.table import Table</code></pre>
-        <p class="cap">Put these three lines at the top of the file. The first line makes <code>print</code> rich's print. Python's own <code>print</code> shows the square brackets as plain text. <code>hello_tool.py</code> writes <code>console = Console()</code> and <code>console.print(...)</code>. It does the same as rich's <code>print</code>.</p>
+        <ul class="cap r8-notes">
+          <li>Put these three lines at the top of the file.</li>
+          <li>The first line makes <code>print</code> rich's print.</li>
+          <li>Python's own <code>print</code> shows the square brackets as plain text.</li>
+          <li><code>hello_tool.py</code> writes <code>console = Console()</code> and <code>console.print(...)</code>. It does the same as rich's <code>print</code>.</li>
+        </ul>
       </div>
       <div class="r8">
         <div class="hd"></div><div class="hd">You write</div><div class="hd">You see</div>
@@ -1336,13 +1342,34 @@ print(f"Hello, {args.name}! The latest rich on PyPI is {version}.")</code></pre>
 
       <div class="s4">
         <h4>7. Save it to GitHub</h4>
-        <span class="k">Do</span><div class="v">Commit your work. Push it to GitHub.</div>
-        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git add tools requirements.txt README.md
-git commit -m "Add hello tool with tabulate"
-git push</code></pre>
-          <p class="why">In the commit message, use your library name.</p></div>
-        <span class="k see">You should see</span><div class="v">A small window <b>Connect to GitHub</b> may open. Click <b>Sign in with your browser</b>. Check that the avatar is yours. Click <b>Authorize</b>. Then open <code>github.com/&lt;your-username&gt;/oss-practice</code>. You see <code>tools/</code> and <code>requirements.txt</code>.</div>
+        <span class="k">Do</span><div class="v">Save all files first (<kbd>Ctrl</kbd> + <kbd>S</kbd>). Check the prompt: it ends with <code>\oss-practice&gt;</code>. Then send your work to GitHub with three commands.</div>
+        <span class="k">Copy</span><div class="v">
+          <p class="lbl">1) Add the three things</p>
+<pre data-kind="cmd"><code>git add tools requirements.txt README.md</code></pre>
+          <p class="lbl">2) Commit. Use the line for your library.</p>
+          <div class="scroll-x">
+            <table>
+              <thead><tr><th>Library</th><th>Type in cmd</th></tr></thead>
+              <tbody>
+                <tr><td><code>rich</code></td><td><code class="cmd" style="white-space:nowrap; font-size:.8em">git commit -m "Add hello tool with rich"</code></td></tr>
+                <tr><td><code>tabulate</code></td><td><code class="cmd" style="white-space:nowrap; font-size:.8em">git commit -m "Add hello tool with tabulate"</code></td></tr>
+                <tr><td><code style="white-space:nowrap">python-dateutil</code></td><td><code class="cmd" style="white-space:nowrap; font-size:.8em">git commit -m "Add hello tool with dateutil"</code></td></tr>
+                <tr><td><code>requests</code></td><td><code class="cmd" style="white-space:nowrap; font-size:.8em">git commit -m "Add hello tool with requests"</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="lbl">3) Push</p>
+<pre data-kind="cmd"><code>git push</code></pre>
+          <p class="why">Why: <code>add</code> picks the files. <code>commit</code> saves them on this PC. <code>push</code> sends them to GitHub.</p></div>
+        <span class="k see">You should see</span><div class="v">After <code>commit</code>, for example:<pre data-kind="out"><code>[main 513af6e] Add hello tool with tabulate
+ 3 files changed, 3 insertions(+)
+ create mode 100644 requirements.txt
+ create mode 100644 tools/hello_tabulate.py</code></pre>Your numbers and file name are different. After <code>push</code>, a small window <b>Connect to GitHub</b> may open. Click <b>Sign in with your browser</b>. Check that the avatar is yours. Click <b>Authorize</b>. The last line of the push ends with <code>main -&gt; main</code>.
+          <br>Then open <code>https://github.com/&lt;your-username&gt;/oss-practice</code>. You see <code>tools/</code>, <code>requirements.txt</code>, and your README line under the file list.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>fatal: not a git repository</code>? You are not in <code>oss-practice</code>. Type <code class="cmd">cd D:\oss\&lt;your ID&gt;\oss-practice</code>. Then do 1) to 3) again.</li>
+          <li><code>fatal: pathspec 'tools' did not match any files</code>? You are in the wrong folder (maybe the demo). Type <code class="cmd">cd D:\oss\&lt;your ID&gt;\oss-practice</code>. Then do 1) to 3) again.</li>
+          <li><code>nothing to commit, working tree clean</code>? Your files are not saved, or you already committed. Press <kbd>Ctrl</kbd> + <kbd>S</kbd> in each file. Then do 1) to 3) again.</li>
           <li>Git says the push was rejected? GitHub has a commit you do not have. Type <code class="cmd">git pull</code>. Then <code class="cmd">git push</code> again.</li>
           <li><code>no upstream branch</code>? Type <code class="cmd">git push -u origin main</code>.</li>
           <li>Git asks who you are? Type the two <code class="cmd">git config</code> lines from Ready check ③. Never use <code>--global</code>.</li>
