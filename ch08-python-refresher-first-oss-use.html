@@ -640,7 +640,7 @@ print(table)</code></pre><p class="cap">Columns first, then rows. Two columns, s
       <h2>Swapping a library: same job, different tool</h2>
       <div class="rule"></div>
       <p class="lead">In the lab, you replace the <code>rich</code> table with <code>tabulate</code>. Only the tool changes.</p>
-      <div class="dg" role="img" aria-label="The same data, TOOLS, goes to a tool that prints a table. Before: the rich Table draws a table with heavy lines. After the swap: tabulate draws a plain-text table with plus and minus signs. The job is the same: print the table." style="max-width:600px;">
+      <div class="dg" role="img" aria-label="The same data, TOOLS, goes to a tool that prints a table. Before: the rich Table draws a table with heavy lines. After the swap: tabulate draws a plain-text table with plus and minus signs. The job is the same: print the table." style="max-width:960px;">
         <svg viewBox="0 0 720 176" aria-hidden="true">
           <defs><marker id="ah9c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker><marker id="ah8m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-line" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
           <rect class="f-surf s-acc" x="4" y="38" width="160" height="100" rx="10" stroke-width="2"/>
@@ -774,7 +774,7 @@ cd oss-practice
 git config user.name "&lt;your GitHub username&gt;"
 git config user.email "&lt;your noreply e-mail&gt;"
 cd ..</code></pre>
-          <p class="why">Why: your own work goes into this folder in PART 3. The two <code class="cmd">git config</code> lines put your name on your commits, in this repository only. Your noreply e-mail is in GitHub <b>Settings &rsaquo; Emails</b>. It looks like <code>12345678+name@users.noreply.github.com</code>. It hides your real e-mail.</p></div>
+          <p class="why">Why: your own work goes into this folder in PART 3. The two <code class="cmd">git config</code> lines put your name on your commits, in this repository only. To make your noreply e-mail: open <code>https://api.github.com/users/&lt;your-username&gt;</code> in the browser. Find the number after <code>"id":</code>. Your noreply e-mail is <code>&lt;that number&gt;+&lt;your-username&gt;@users.noreply.github.com</code>. It looks like <code>12345678+name@users.noreply.github.com</code>. It hides your real e-mail.</p></div>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'oss-practice'...</code></pre>The <code class="cmd">git config</code> lines print nothing. The prompt ends with <code>D:\oss\&lt;your ID&gt;&gt;</code>. There is no <code>PS</code> at the start of the prompt.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>The prompt starts with <code>PS</code>? This is PowerShell. Type <code class="cmd">cmd</code> and press Enter. Then type the lines again.</li>
