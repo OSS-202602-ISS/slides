@@ -788,8 +788,18 @@ cd ..</code></pre>
         <h4>④ Get ready to make the box</h4>
         <span class="k">Do</span><div class="v">Check that Python works. Then list the folders here.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python --version
-dir /b</code></pre></div>
-        <span class="k see">You should see</span><div class="v"><code>Python 3.11</code> or <code>3.12</code> (for example <code>Python 3.12.10</code>). Then a list of names, one per line. <code>oss-practice</code> must be in the list. <code>.venv</code> is in the list if you made a box here before.</div>
+dir</code></pre></div>
+        <span class="k see">You should see</span><div class="v"><code>Python 3.11</code> or <code>3.12</code> (for example <code>Python 3.12.10</code>). Then the folder list. For example:<pre data-kind="out"><code> Volume in drive D is Local Disk
+ Volume Serial Number is D2EC-8056
+
+ Directory of D:\oss\20261234
+
+11/05/2026  10:06 AM    &lt;DIR&gt;          .
+11/05/2026  10:06 AM    &lt;DIR&gt;          ..
+11/05/2026  10:06 AM    &lt;DIR&gt;          .venv
+11/05/2026  10:06 AM    &lt;DIR&gt;          oss-practice
+               0 File(s)              0 bytes
+               4 Dir(s)  87,975,211,008 bytes free</code></pre>Look at the names at the end of the lines. <code>oss-practice</code> must be there. <code>.venv</code> is there if you made a box here before. Ignore <code>.</code> and <code>..</code> (this folder and the folder above). Your dates and numbers are different.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>No <code>.venv</code> in the list? That is fine. You make it in PART 1, step 1.</li>
           <li>No <code>oss-practice</code> in the list? Do ③ again.</li>
@@ -1027,7 +1037,7 @@ options:
 
       <div class="s4">
         <h4>Change 3a &mdash; install the new library <span class="budget">15 min for 3a&ndash;3c</span></h4>
-        <span class="k">Do</span><div class="v">Install <code>tabulate</code>, with its version.</div>
+        <span class="k">Do</span><div class="v">Install <code>tabulate</code>, with its version. First check the prompt: it starts with <code>(.venv)</code>. The folder does not matter for this command.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip install tabulate==0.10.0</code></pre></div>
         <span class="k see">You should see</span><div class="v">Some <code>Collecting</code> lines, then:
 <pre data-kind="out"><code>Successfully installed tabulate-0.10.0</code></pre>
@@ -1039,7 +1049,7 @@ options:
 
       <div class="s4">
         <h4>Change 3b &mdash; swap the table code</h4>
-        <span class="k">Do</span><div class="v">Make 3 changes: the import, <code>build_table()</code>, and one line in <code>main()</code>. Save. Run. Why plain <code>print</code>? tabulate gives plain text. So plain <code>print</code> works.</div>
+        <span class="k">Do</span><div class="v">In <code>hello_tool.py</code> (<b>teacher-demo-oss-project &rsaquo; hello_tool.py</b>), make 3 changes: the import, <code>build_table()</code>, and one line in <code>main()</code>. Save. Run. Why plain <code>print</code>? tabulate gives plain text. So plain <code>print</code> works.</div>
         <span class="k">Copy</span><div class="v"><p class="lbl">1) Find this line:</p>
 <pre data-kind="code"><code>from rich.table import Table</code></pre>
 <p class="lbl">Change it to:</p>
