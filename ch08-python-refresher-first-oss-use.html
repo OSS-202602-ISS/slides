@@ -1150,13 +1150,19 @@ git pull</code></pre></div>
               </tbody>
             </table>
           </div>
-          Use your own library's line. For example:
-<pre data-kind="cmd"><code>echo tabulate==0.10.0&gt;requirements.txt
-type requirements.txt</code></pre>
+          Use your own library's line. Make the file one of two ways.
+          <ul>
+            <li><b>In VS Code:</b> in the Explorer, right-click <code>oss-practice</code> &rarr; <b>New File...</b> &rarr; type <code>requirements.txt</code>. Write one line, for example <code>tabulate==0.10.0</code>. Save with <kbd>Ctrl</kbd> + <kbd>S</kbd>.</li>
+            <li><b>Or in cmd:</b> one command makes the file with the line.</li>
+          </ul>
+<pre data-kind="cmd"><code>echo tabulate==0.10.0&gt;requirements.txt</code></pre>
+          Then check the file in cmd (both ways):
+<pre data-kind="cmd"><code>type requirements.txt</code></pre>
           <p class="why">Why: the list comes first. Then pip installs from the list.</p></div>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>tabulate==0.10.0</code></pre></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>Two lines? <code>&gt;</code> makes a new file. <code>&gt;&gt;</code> adds a line. Use one <code>&gt;</code> and type it again.</li>
+          <li><code>The system cannot find the file specified.</code>? The file is not in <code>oss-practice</code>. In the Explorer, drag <code>requirements.txt</code> onto <code>oss-practice</code>.</li>
         </ul></div>
       </div>
 
