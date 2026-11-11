@@ -13,6 +13,7 @@
   --ground:#F6F8F6; --surface:#FFFFFF; --surface-2:#ECF1EE; --sunken:#E3EAE6;
   --line:#D6DEDA; --line-strong:#B9C5BF;
   --ink:#141E1A; --ink-2:#4B5B56; --ink-3:#78887F;
+  --code-bg:#EAF3FC; --code-line:#9DBCE0; --code-edge:#2F6DB5;
   --accent:#0B6E55; --accent-ink:#095643; --accent-soft:#E1F0EA; --accent-line:#9FCDBD;
   --warn:#8F5410; --warn-soft:#F8EEDD; --warn-line:#E0C79A;
   --shadow:0 1px 2px rgba(20,30,26,.05), 0 8px 24px -12px rgba(20,30,26,.18);
@@ -26,6 +27,7 @@
     --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
     --line:#28382F; --line-strong:#3A4E45;
     --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+    --code-bg:#132131; --code-line:#2C4864; --code-edge:#6AA6E8;
     --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
     --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
@@ -35,6 +37,7 @@
   --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
   --line:#28382F; --line-strong:#3A4E45;
   --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+  --code-bg:#132131; --code-line:#2C4864; --code-edge:#6AA6E8;
   --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
   --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
@@ -159,10 +162,20 @@ kbd{font-size:.8em; box-shadow:0 1px 0 var(--line-strong);}
 .callout.warn .mk{color:var(--warn);}
 
 /* ─── 코드 + 오른쪽 줄별 설명(강의 탭) ───────────────── */
-.codex{display:grid; grid-template-columns:minmax(0,3fr) minmax(0,2fr); gap:14px; align-items:stretch;}
-@media (max-width:760px){ .codex{grid-template-columns:minmax(0,1fr);} }
-.slide ul.cx-notes, .slide.dgs ul.cx-notes{list-style:none; margin:0; padding:12px 16px; gap:.75em; font-size:1.02rem; line-height:1.45; color:var(--ink-2); background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:0 9px 9px 0;}
-.cx-notes li code{display:block; width:fit-content; margin-bottom:2px; font-size:.82rem;}
+.codex{display:grid; grid-template-columns:minmax(0,3fr) minmax(0,2fr); gap:12px 14px; align-items:start;}
+.codex>pre{grid-column:1;}
+.codex>.cx-notes{grid-column:2; grid-row:1 / span 2;}
+.codex:not(:has(>pre[data-kind="out"]))>.cx-notes{grid-row:1;}
+@media (max-width:760px){ .codex{grid-template-columns:minmax(0,1fr);} .codex>.cx-notes{grid-column:1; grid-row:auto;} }
+.slide ul.cx-notes, .slide.dgs ul.cx-notes{list-style:none; margin:0; padding:12px 16px; gap:.75em; font-size:1.02rem; line-height:1.45; color:var(--ink); background:var(--surface); border:1.5px solid var(--line-strong); border-left:4px solid var(--accent); border-radius:0 9px 9px 0;}
+.cx-notes li code{display:block; width:fit-content; background:none; border:0; padding:0; margin-bottom:2px; font-size:.95rem; font-weight:600; color:var(--accent-ink);}
+.cx-notes li code[style]{display:inline !important;}
+/* 강의 탭: 투영용 코드 칸(연파랑)·큰 글자 */
+#pane-lecture pre code{font-size:1.02rem; line-height:1.5;}
+#pane-lecture pre[data-kind="file"]{background:var(--code-bg); border:1.5px solid var(--code-line); border-left:5px solid var(--code-edge);}
+#pane-lecture pre[data-kind="out"]{border:1.5px solid var(--line-strong);}
+#pane-lecture .slide:has(.codex) h2{font-size:clamp(1.6rem,3vw,2.2rem);}
+#pane-lecture .slide:has(.codex){gap:14px;}
 @media print{ .codex{break-inside:avoid;} }
 
 table{width:100%; border-collapse:collapse; font-size:1.02rem;}
@@ -497,7 +510,6 @@ print(df)</code></pre>
         <li><code>df =</code>Keep the table under the name <code style="display:inline">df</code>.</li>
         <li><code>print(df)</code>Show the whole table.</li>
       </ul>
-      </div>
       <pre data-kind="out"><code>          name  cpu  memory  disk status
 0       web-01   35      52    41     ok
 1       web-02   42      61    85     ok
@@ -511,6 +523,7 @@ print(df)</code></pre>
 9       log-01   30      58    72     ok
 10      app-01   87      93    55   warn
 11  monitor-01   25      48    34     ok</code></pre>
+      </div>
       <div class="callout">
         <span class="mk">Read it</span>
         <p>The numbers on the left (0 to 11) are the <b>index</b> &mdash; a label for each row that pandas adds. They are not in the file. <code>pd</code> is the short name everyone uses for pandas.</p>
@@ -534,7 +547,6 @@ print(df.dtypes)</code></pre>
         <li><code>df.columns</code>The exact column names. Copy them from here.</li>
         <li><code>df.dtypes</code>The type of each column. <code style="display:inline">int64</code> = whole numbers. <code style="display:inline">str</code> = text.</li>
       </ul>
-      </div>
       <pre data-kind="out"><code>      name  cpu  memory  disk status
 0   web-01   35      52    41     ok
 1   web-02   42      61    85     ok
@@ -549,6 +561,7 @@ memory    int64
 disk      int64
 status      str
 dtype: object</code></pre>
+      </div>
       <div class="callout warn">
         <span class="mk">pandas 3</span>
         <p>We use <code>pandas==3.0.5</code>. Text columns show the type <code>str</code>. Older web pages and many AI answers were written for pandas 2 and show <code>object</code> here. It is the same text column &mdash; do not try to &ldquo;fix&rdquo; it.</p>
@@ -597,8 +610,8 @@ print(len(df_disk), len(df_warn), len(df_both))</code></pre>
         <li><code>( ) &amp; ( )</code>Both conditions must be True. 2 rows.</li>
         <li><code>len(df_disk)</code>The number of rows.</li>
       </ul>
-      </div>
       <pre data-kind="out"><code>4 4 2</code></pre>
+      </div>
       <div class="grid g2">
         <div class="card"><span class="tagline">Two conditions</span><h4>Use &amp; and round brackets</h4><p>Write <code>&amp;</code>, not <code>and</code>. Put each condition in its own <code>( )</code>. Without the brackets you get a <code>TypeError</code>; with <code>and</code> you get a <code>ValueError</code>.</p></div>
         <div class="card"><span class="tagline">Short form</span><h4>df.disk is df["disk"]</h4><p>You will see <code>df[df.disk &gt; 80]</code> online. It does the same thing. We write <code>df["disk"]</code> today because it works for every column name, even one with a space in it.</p></div>
@@ -617,11 +630,11 @@ print(len(df_disk), len(df_warn), len(df_both))</code></pre>
         <li><code>.head(3)</code>Only the top 3 rows.</li>
         <li>You get a new table. <code style="display:inline">df</code> itself does not change.</li>
       </ul>
-      </div>
       <pre data-kind="out"><code>        name  cpu  memory  disk status
 5    file-01   18      40    97   warn
 2      db-01   78      88    92   warn
 6  backup-01   12      30    88     ok</code></pre>
+      </div>
       <div class="codex">
       <pre data-kind="file"><code>df["disk_free"] = 100 - df["disk"]
 print(df[["name", "disk", "disk_free"]].head(3))</code></pre>
@@ -630,11 +643,11 @@ print(df[["name", "disk", "disk_free"]].head(3))</code></pre>
         <li><code>100 - df["disk"]</code>Done for all 12 rows at once.</li>
         <li><code>df[["name", "disk", "disk_free"]]</code>The inner <code style="display:inline">[ ]</code> is a list of column names. The outer <code style="display:inline">[ ]</code> picks those columns.</li>
       </ul>
-      </div>
       <pre data-kind="out"><code>     name  disk  disk_free
 0  web-01    41         59
 1  web-02    85         15
 2   db-01    92          8</code></pre>
+      </div>
       <div class="callout">
         <span class="mk">Notice</span>
         <p>Sorting keeps the old index (5, 2, 6). A new column is computed <b>for every row at the same time</b> &mdash; no <code>for</code> loop. None of this changes the CSV file on disk. Only the DataFrame in memory changes.</p>
@@ -655,12 +668,12 @@ print(back)</code></pre>
         <li><code>pd.read_excel("warn.xlsx")</code>Open the file again to check it.</li>
         <li><code>print(back)</code>4 rows. The index starts at 0 again.</li>
       </ul>
-      </div>
       <pre data-kind="out"><code>      name  cpu  memory  disk status
 0    db-01   78      88    92   warn
 1  file-01   18      40    97   warn
 2   vpn-01   91      64    47   warn
 3   app-01   87      93    55   warn</code></pre>
+      </div>
       <div class="grid g2">
         <div class="card"><span class="tagline">Engine</span><h4>pandas asks openpyxl to do it</h4><p>pandas does not write Excel files itself. It hands the work to <code>openpyxl</code> (the engine). That is why you install both libraries.</p></div>
         <div class="card"><span class="tagline">index=False</span><h4>Leave the index out</h4><p>Without it, the row labels become an extra first column. Read the file back and that column is called <code>Unnamed: 0</code>.</p></div>
