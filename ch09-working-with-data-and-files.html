@@ -1,0 +1,1408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 9 · Working with Data and Files</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── 토큰 ─────────────────────────────────────────── */
+:root{
+  --ground:#F6F8F6; --surface:#FFFFFF; --surface-2:#ECF1EE; --sunken:#E3EAE6;
+  --line:#D6DEDA; --line-strong:#B9C5BF;
+  --ink:#141E1A; --ink-2:#4B5B56; --ink-3:#78887F;
+  --accent:#0B6E55; --accent-ink:#095643; --accent-soft:#E1F0EA; --accent-line:#9FCDBD;
+  --warn:#8F5410; --warn-soft:#F8EEDD; --warn-line:#E0C79A;
+  --shadow:0 1px 2px rgba(20,30,26,.05), 0 8px 24px -12px rgba(20,30,26,.18);
+  --display:"Gowun Batang","Batang","Malgun Gothic",serif;
+  --body:"IBM Plex Sans KR","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  --mono:"IBM Plex Mono","Consolas","D2Coding",monospace;
+  --topbar:64px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+    --line:#28382F; --line-strong:#3A4E45;
+    --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+    --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+    --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+  --line:#28382F; --line-strong:#3A4E45;
+  --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+  --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+  --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+
+/* ─── 기본 ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-weight:400; font-size:16px; line-height:1.68;
+  word-break:keep-all; overflow-wrap:break-word;
+}
+h1,h2,h3,h4{font-family:var(--display); font-weight:700; line-height:1.28; text-wrap:balance; margin:0;}
+p{margin:0;}
+a{color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent-line);}
+a:hover{border-bottom-color:var(--accent);}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:3px; border-radius:3px;}
+code,kbd{font-family:var(--mono); font-size:.88em; background:var(--surface-2); padding:.12em .38em; border-radius:4px; border:1px solid var(--line);}
+kbd{font-size:.8em; box-shadow:0 1px 0 var(--line-strong);}
+.eyebrow{font-family:var(--body); font-size:.95rem; font-weight:600; letter-spacing:.01em; color:var(--ink-2);}
+
+/* ─── 상단바 ───────────────────────────────────────── */
+.topbar{
+  position:sticky; top:0; z-index:50; height:var(--topbar);
+  display:flex; align-items:center; gap:20px;
+  padding:0 clamp(14px,3vw,36px);
+  background:var(--ground);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex; flex-direction:column; gap:1px; min-width:0;}
+.brand b{font-family:var(--display); font-size:1.02rem; font-weight:700; white-space:nowrap;}
+.brand span{font-family:var(--body); font-size:.8rem; letter-spacing:.01em; color:var(--ink-3);}
+.tabs{display:flex; gap:4px; margin-left:auto; background:var(--surface-2); padding:4px; border-radius:10px; border:1px solid var(--line);}
+.tab{
+  appearance:none; border:0; background:transparent; cursor:pointer;
+  font-family:var(--body); font-size:.86rem; font-weight:600; color:var(--ink-2);
+  padding:7px 13px; border-radius:7px; display:flex; align-items:baseline; gap:7px; white-space:nowrap;
+}
+.tab .min{font-family:var(--mono); font-size:.68rem; font-weight:500; color:var(--ink-3);}
+.tab:hover{color:var(--ink);}
+.tab[aria-selected="true"]{background:var(--surface); color:var(--accent-ink); box-shadow:var(--shadow);}
+.tab[aria-selected="true"] .min{color:var(--accent);}
+
+/* ─── 강의: 슬라이드 ───────────────────────────────── */
+.stage{
+  min-height:calc(100vh - var(--topbar) - 62px);
+  display:flex; align-items:center; justify-content:center;
+  padding:clamp(24px,4vw,56px) clamp(16px,5vw,60px);
+}
+.slide{width:100%; max-width:960px; display:flex; flex-direction:column; gap:clamp(16px,2.2vw,26px);}
+.slide h2{font-size:clamp(1.75rem,3.9vw,2.85rem);}
+.slide h3{font-size:clamp(1.1rem,1.9vw,1.35rem); color:var(--accent-ink);}
+.slide p{font-size:clamp(1.05rem,1.8vw,1.38rem); color:var(--ink-2); max-width:62ch;}
+.slide .lead{font-size:clamp(1.2rem,2.2vw,1.62rem); color:var(--ink);}
+.slide ul{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.55em; font-size:clamp(1.05rem,1.7vw,1.34rem);}
+.slide ul li::marker{color:var(--accent);}
+.rule{height:3px; width:56px; background:var(--accent); border-radius:2px;}
+
+.cover{gap:clamp(20px,3vw,34px);}
+.cover h1{font-size:clamp(2.3rem,6.2vw,4.4rem); letter-spacing:-.015em;}
+.cover .sub{font-size:clamp(1.15rem,2.1vw,1.58rem); color:var(--ink-2);}
+.cover dl{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:18px; margin:0; padding-top:16px; border-top:1px solid var(--line);}
+.cover dt{font-family:var(--body); font-size:.8rem; font-weight:600; letter-spacing:.01em; color:var(--ink-3); margin-bottom:3px;}
+.cover dd{margin:0; font-size:1.05rem; font-weight:500;}
+
+.grid{display:grid; gap:14px;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.g3{grid-template-columns:repeat(auto-fit,minmax(215px,1fr));}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px; display:flex; flex-direction:column; gap:7px; box-shadow:var(--shadow);
+}
+.card h4{font-family:var(--body); font-weight:600; font-size:1.12rem;}
+.card p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+.card .tagline{font-family:var(--body); font-size:.85rem; font-weight:600; letter-spacing:.01em; color:var(--accent);}
+
+.freedoms{display:flex; flex-direction:column; gap:10px; counter-reset:f -1;}
+.freedom{
+  display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:baseline;
+  padding:13px 18px; background:var(--surface); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:0 10px 10px 0;
+}
+.freedom::before{
+  counter-increment:f; content:"Freedom " counter(f);
+  font-family:var(--mono); font-size:.72rem; font-weight:600; color:var(--accent);
+  letter-spacing:.05em; white-space:nowrap;
+}
+.freedom b{font-weight:600;}
+.freedom span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+/* ─── 트랙 비교(필수 A / 선택 B) ───────────────────── */
+.tracks{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(290px,1fr));}
+.track{
+  background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0; padding:18px 20px;
+  display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow);
+}
+.track.optional{background:var(--surface-2); border-left-style:dashed; border-left-color:var(--line-strong); box-shadow:none;}
+.track .badge{
+  align-self:flex-start; font-family:var(--body); font-size:.8rem; font-weight:700;
+  padding:3px 11px; border-radius:20px; background:var(--accent-soft); color:var(--accent-ink);
+}
+.track.optional .badge{background:var(--sunken); color:var(--ink-3);}
+.track h4{font-family:var(--body); font-weight:700; font-size:1.18rem;}
+.track p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+
+.timeline{display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); border-top:2px solid var(--line-strong);}
+.tl-item{padding:16px 14px 0 0; position:relative;}
+.tl-item::before{content:""; position:absolute; top:-6px; left:0; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid var(--ground);}
+.tl-item .yr{font-family:var(--mono); font-size:1.18rem; font-weight:600; color:var(--accent-ink); display:block; margin-bottom:3px;}
+.tl-item p{font-size:.98rem; line-height:1.55;}
+
+.callout{
+  display:flex; gap:14px; padding:16px 20px; border-radius:10px;
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+}
+.callout .mk{font-family:var(--body); font-size:.9rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink); padding-top:2px; white-space:nowrap;}
+.callout p{color:var(--ink); max-width:none;}
+.callout.warn{background:var(--warn-soft); border-color:var(--warn-line);}
+.callout.warn .mk{color:var(--warn);}
+
+table{width:100%; border-collapse:collapse; font-size:1.02rem;}
+th,td{border-bottom:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top;}
+th{font-family:var(--body); font-size:.88rem; letter-spacing:.01em; color:var(--ink-3); font-weight:600; border-bottom:1.5px solid var(--line-strong);}
+td.num{font-variant-numeric:tabular-nums; font-family:var(--mono); white-space:nowrap; color:var(--accent-ink); font-weight:500;}
+.scroll-x{overflow-x:auto;}
+td.where{white-space:normal; font-size:.88em; color:var(--ink-2); width:26%;}
+.where-in{font-size:.9em; color:var(--ink-2); margin-top:8px; padding-top:8px; border-top:1px solid var(--line);}
+@media print{ a[href^="http"]{ text-decoration:underline; text-underline-offset:2px; } }
+
+.slidenav{
+  position:sticky; bottom:0; z-index:40;
+  display:flex; align-items:center; gap:14px;
+  padding:11px clamp(14px,3vw,36px);
+  background:var(--ground); border-top:1px solid var(--line);
+}
+.dots{display:flex; gap:4px; flex:1; flex-wrap:wrap; align-items:center;}
+.dot{
+  min-width:26px; height:24px; padding:0 5px; border-radius:6px; cursor:pointer; line-height:1;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-3);
+  font-family:var(--mono); font-size:.74rem; font-weight:600; font-variant-numeric:tabular-nums;
+}
+.dot:hover{background:var(--surface); border-color:var(--accent); color:var(--accent-ink);}
+.dot[aria-current="true"]{background:var(--accent); border-color:var(--accent); color:var(--ground);}
+.navbtn.edge{padding:7px 10px; font-family:var(--mono);}
+.navbtn{
+  appearance:none; cursor:pointer; font-family:var(--body); font-weight:600; font-size:.85rem;
+  padding:7px 15px; border-radius:8px; border:1px solid var(--line-strong);
+  background:var(--surface); color:var(--ink);
+}
+.navbtn:hover{border-color:var(--accent); color:var(--accent-ink);}
+.navbtn:disabled{opacity:.35; cursor:default;}
+.counter{font-family:var(--mono); font-size:.8rem; font-variant-numeric:tabular-nums; color:var(--ink-3); white-space:nowrap;}
+
+/* ─── 문서형 페인(실습·과제) ───────────────────────── */
+.doc{max-width:840px; margin:0 auto; padding:clamp(28px,5vw,60px) clamp(18px,5vw,40px) 100px; display:flex; flex-direction:column; gap:clamp(26px,3.5vw,38px);}
+.doc-head{display:flex; flex-direction:column; gap:12px;}
+.doc-head h2{font-size:clamp(1.75rem,3.4vw,2.4rem);}
+.doc-head p{color:var(--ink-2); max-width:62ch;}
+
+.step{display:flex; flex-direction:column; gap:14px; padding-top:26px; border-top:1px solid var(--line);}
+.step-head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;}
+.step-no{font-family:var(--mono); font-size:.72rem; font-weight:600; letter-spacing:.08em; color:var(--accent-ink); padding:3px 9px; background:var(--accent-soft); border-radius:20px; white-space:nowrap;}
+.step-head h3{font-size:1.22rem; flex:1; min-width:200px;}
+.budget{font-family:var(--mono); font-size:.78rem; color:var(--ink-3); font-variant-numeric:tabular-nums; white-space:nowrap;}
+.goal{font-size:.95rem; color:var(--ink-2);}
+.step ol{margin:0; padding-left:1.3em; display:flex; flex-direction:column; gap:.5em; font-size:.96rem;}
+.step ol li::marker{font-family:var(--mono); font-weight:600; color:var(--accent);}
+.step ol ul{margin:.35em 0 0; padding-left:1.1em; font-size:.92rem; color:var(--ink-2); display:flex; flex-direction:column; gap:.25em;}
+
+.check{display:flex; align-items:flex-start; gap:11px; padding:11px 15px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; cursor:pointer;}
+.check input{margin:0; width:17px; height:17px; accent-color:var(--accent); flex-shrink:0; margin-top:2px; cursor:pointer;}
+.check span{font-size:.93rem; font-weight:500;}
+.check:has(input:checked){background:var(--accent-soft); border-color:var(--accent-line);}
+.check:has(input:checked) span{color:var(--ink-2); text-decoration:line-through; text-decoration-color:var(--accent-line);}
+
+.progress{
+  position:sticky; top:calc(var(--topbar) + 10px); z-index:30;
+  display:flex; align-items:center; gap:14px; padding:12px 18px;
+  background:var(--surface); border:1px solid var(--line); border-radius:11px; box-shadow:var(--shadow);
+}
+.progress b{font-family:var(--mono); font-size:.9rem; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.bar{flex:1; height:7px; background:var(--sunken); border-radius:4px; overflow:hidden;}
+.bar i{display:block; height:100%; width:0; background:var(--accent); border-radius:4px; transition:width .3s ease;}
+@media (prefers-reduced-motion: reduce){ .bar i{transition:none;} }
+.reset{appearance:none; border:1px solid var(--line-strong); background:transparent; color:var(--ink-3); font-family:var(--body); font-size:.76rem; padding:4px 10px; border-radius:6px; cursor:pointer;}
+.reset:hover{color:var(--ink); border-color:var(--accent);}
+
+.ladder{display:flex; flex-direction:column; counter-reset:l;}
+.rung{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px dashed var(--line);}
+.rung:last-child{border-bottom:0;}
+.rung::before{counter-increment:l; content:counter(l); font-family:var(--mono); font-size:.75rem; font-weight:600; color:var(--ground); background:var(--accent); width:22px; height:22px; border-radius:50%; display:grid; place-items:center;}
+.rung b{font-weight:600;}
+.rung span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+pre{background:var(--sunken); border:1px solid var(--line); border-radius:9px; padding:14px 16px; overflow-x:auto; margin:0;}
+pre code{background:none; border:0; padding:0; font-size:.85rem; line-height:1.6;}
+
+.rubric{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+.rubric .card b{font-family:var(--body); font-size:.95rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink);}
+
+.foot{border-top:1px solid var(--line); padding:22px clamp(18px,5vw,40px); text-align:center;}
+.foot p{font-size:.8rem; color:var(--ink-3);}
+
+/* ─── 인쇄 ─────────────────────────────────────────── */
+@media print{
+  .topbar,.slidenav,.progress{display:none !important;}
+  .pane[hidden]{display:block !important;}
+  .slide[hidden]{display:flex !important;}
+  .stage{display:block; min-height:0; padding:0;}
+  .slide{max-width:none; break-after:page; page-break-after:always; padding:8mm 0;}
+  .slide:last-child{break-after:auto; page-break-after:auto;}
+  body{background:#fff; color:#000; font-size:11pt;}
+  .card,.callout,.check,.step,.track,.tl-item{break-inside:avoid;}
+}
+
+/* ─── 8장: diff 표시 ───────────────────────────────── */
+pre.diff .add{color:var(--accent-ink); font-weight:600;}
+pre.diff .del{color:var(--warn);}
+.card pre code{font-size:.8rem;}
+pre.term code{font-family:"Cascadia Mono","Consolas",monospace; line-height:1.2;}
+
+/* ─── 그림 (OSS 5장 .dg 양식, 토큰 색) ─────────────── */
+.dg{--bad:#C0392B; --bad-soft:#FBE9E7;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .dg{--bad:#FF7A6B; --bad-soft:#3A1A16;} }
+:root[data-theme="dark"] .dg{--bad:#FF7A6B; --bad-soft:#3A1A16;}
+.dg svg{display:block; width:100%; height:auto;}
+.dg text{font-family:var(--body); fill:var(--ink-2);}
+.dg .mono{font-family:var(--mono); font-weight:600;}
+.dg .t-ink{fill:var(--ink);} .dg .t-acc{fill:var(--accent-ink);} .dg .t-mut{fill:var(--ink-3);} .dg .t-bad{fill:var(--bad);} .dg .t-on{fill:var(--surface);}
+.dg .s-acc{stroke:var(--accent);} .dg .s-line{stroke:var(--line-strong);} .dg .s-bad{stroke:var(--bad);}
+.dg .f-acc{fill:var(--accent);} .dg .f-soft{fill:var(--accent-soft);} .dg .f-surf{fill:var(--surface);} .dg .f-s2{fill:var(--surface-2);} .dg .f-bad{fill:var(--bad);} .dg .f-badsoft{fill:var(--bad-soft);} .dg .f-line{fill:var(--line-strong);}
+.dg .s-al{stroke:var(--accent-line);} .dg .f-ground{fill:var(--ground);}
+.dg{width:100%; margin:0 auto;}
+.places-cap{font-size:clamp(.98rem,1.6vw,1.15rem) !important; color:var(--ink) !important; font-weight:500; margin-top:-6px !important;}
+
+/* ─── 8장: 실습 단계 4줄 (Do · Copy · You should see · If not) ─── */
+.legend{display:flex; flex-wrap:wrap; gap:6px 18px; font-size:.88rem; color:var(--ink-2);}
+.legend b{color:var(--accent-ink); margin-right:3px;}
+.s4{display:grid; grid-template-columns:8.4em minmax(0,1fr); gap:10px 14px; align-items:start; padding:14px 16px; background:var(--surface); border:1px solid var(--line); border-radius:10px;}
+.s4 h4{grid-column:1/-1; font-family:var(--body); font-weight:700; font-size:1.03rem; display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;}
+.s4 > .k{font-size:.8rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink); padding-top:2px;}
+.s4 > .k.see{color:var(--ink);}
+.s4 > .k.ifnot{color:var(--warn);}
+.s4 > .v{font-size:.95rem; min-width:0;}
+.s4 > .v ul{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em;}
+.s4 pre{margin:6px 0;}
+.s4 .why{font-size:.88rem; color:var(--ink-2); margin-top:6px;}
+pre[data-kind]::before{display:block; font-family:var(--body); font-size:.7rem; font-weight:600; letter-spacing:.02em; color:var(--ink-3); margin-bottom:4px;}
+pre[data-kind="cmd"]::before{content:"Type in cmd";}
+pre[data-kind="out"]::before{content:"Output";}
+pre[data-kind="edit"]::before{content:"Change in hello_tool.py";}
+pre[data-kind="file"]::before{content:"In the file";}
+pre[data-kind="url"]::before{content:"Open in the browser";}
+@media (max-width:620px){ .s4{grid-template-columns:1fr; gap:4px;} }
+@media print{ .s4{break-inside:avoid;} }
+
+/* 그림 슬라이드: 1280x720 한 화면 */
+.slide.dgs{gap:12px;}
+.slide.dgs h2{font-size:clamp(1.5rem,3vw,2.15rem);}
+.slide.dgs .lead{font-size:clamp(1.05rem,1.7vw,1.28rem);}
+.slide.dgs p{font-size:clamp(1rem,1.6vw,1.2rem);}
+.slide.dgs ul{font-size:clamp(1rem,1.6vw,1.2rem); gap:.3em;}
+.slide.dgs .callout{padding:10px 16px;}
+.s4 .lbl{font-size:.84rem; font-weight:700; color:var(--ink-2); margin-top:8px;}
+.stage:has(> .slide.dgs:not([hidden])){padding-top:18px; padding-bottom:18px;}
+
+/* role-based code: commands to type = dark chip/block, names and output = quiet */
+:root{--cmd-bg:#17211D; --cmd-ink:#F2F6F4; --cmd-mark:#7FD9BA;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--cmd-bg:#000000; --cmd-ink:#F2F6F4; --cmd-mark:#7FD9BA;} }
+:root[data-theme="dark"]{--cmd-bg:#000000; --cmd-ink:#F2F6F4; --cmd-mark:#7FD9BA;}
+code,kbd{border-color:var(--line-strong);}
+code.cmd{background:var(--cmd-bg); color:var(--cmd-ink); border-color:var(--cmd-bg); font-weight:500; white-space:nowrap;}
+code.cmd::before{content:"\25B8\00A0"; color:var(--cmd-mark); font-weight:700;}
+td code.cmd, li code.cmd{white-space:normal;}
+code.cmd::before{font-family:var(--body);}
+.r8{display:grid; grid-template-columns:4.8rem minmax(0,1.15fr) minmax(0,1fr); column-gap:0; border-top:2px solid var(--line-strong);}
+.r8 > div{padding:12px 16px 12px 0; border-bottom:1px solid var(--line); min-width:0;}
+.r8 > div:nth-child(3n){padding-right:0;}
+.r8 > .hd{padding:8px 0; font-size:.78rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3);}
+.r8 > .lb{font-family:var(--mono); font-weight:700; font-size:1rem; color:var(--accent-ink); padding-top:22px;}
+.r8 pre{margin:0;}
+.r8 .cap{font-size:.92rem !important; line-height:1.5; color:var(--ink-3) !important; margin:8px 0 0;}
+.card ul.checks4{font-size:1.03rem; line-height:1.5; color:var(--ink-2); gap:.35em; margin-top:2px;}
+.r8-imp{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; align-items:center;}
+.r8-imp pre{margin:0;}
+.r8-imp ul.r8-notes{margin:0; padding-left:1.1em; gap:.3em; font-size:.92rem; line-height:1.5; color:var(--ink-2);}
+.r8-imp .cap{font-size:.92rem !important; line-height:1.5; color:var(--ink-3) !important; margin:0;}
+@media (max-width:720px){ .r8-imp{grid-template-columns:1fr;} }
+@media (max-width:720px){ .r8{grid-template-columns:1fr;} .r8 > .hd{display:none;} .r8 > div{border-bottom:0; padding:6px 0;} .r8 > .lb{padding-top:16px; border-top:1px solid var(--line);} }
+@media print{ .r8 > div{break-inside:avoid;} .r8{grid-template-columns:4.6rem minmax(0,1.35fr) minmax(0,1fr);} .r8 > .lb{font-size:.88rem; white-space:nowrap;} .r8 pre{overflow:visible; padding:10px 12px;} .r8 pre code{font-size:.72rem !important; white-space:pre-wrap; overflow-wrap:anywhere;} }
+pre[data-kind="cmd"]{background:var(--cmd-bg); border-color:var(--cmd-bg);}
+pre[data-kind="cmd"] code{color:var(--cmd-ink);}
+pre[data-kind="cmd"]::before{color:var(--cmd-mark);}
+a{font-weight:600; border-bottom:2px solid var(--accent);}
+a::after{content:" \2197"; font-size:.85em;}
+
+/* ─── B: role zones, high contrast (11-05) ─────────── */
+:root{
+  --ground:#F3F5F4; --line:#C5D0CB; --line-strong:#8FA39B;
+  --ink-2:#3A4944; --ink-3:#5B6B65;
+  --out-soft:#FFF8E6; --err:#B3261E; --err-soft:#FDECEA;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --line:#34463E; --line-strong:#5E776C; --out-soft:#2E2412; --err:#FF7A6B; --err-soft:#3A1A16; } }
+:root[data-theme="dark"]{ --line:#34463E; --line-strong:#5E776C; --out-soft:#2E2412; --err:#FF7A6B; --err-soft:#3A1A16; }
+
+.topbar{border-bottom:1.5px solid var(--line-strong);}
+.eyebrow{color:var(--accent-ink); font-weight:700; font-size:.82rem; letter-spacing:.07em; text-transform:uppercase;}
+.card{border:1.5px solid var(--line-strong); border-top:4px solid var(--accent);}
+.track{border:1.5px solid var(--line-strong); border-left:5px solid var(--accent);}
+.callout{border:1.5px solid var(--accent-line); border-left:5px solid var(--accent); align-items:flex-start;}
+.callout .mk{background:var(--accent); color:var(--surface); padding:3px 11px; border-radius:20px; font-size:.8rem;}
+.callout.warn{border-left-color:var(--warn);}
+.callout.warn .mk{background:var(--warn); color:var(--surface);}
+th{border-bottom:2px solid var(--line-strong); color:var(--ink-2);}
+.dot{border-color:var(--line-strong);}
+
+/* code boxes: border always visible, label = filled tag */
+pre{border:1.5px solid var(--line-strong);}
+pre[data-kind="out"]{background:var(--surface);}
+pre[data-kind]::before{display:table; padding:1px 8px; border-radius:4px; font-size:.72rem; font-weight:700; letter-spacing:.03em; margin-bottom:8px; color:var(--surface); background:var(--ink-2);}
+pre[data-kind="cmd"]::before{background:var(--cmd-mark); color:var(--cmd-bg);}
+pre[data-kind="out"]::before{background:var(--warn); color:var(--surface);}
+pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--accent); color:var(--surface);}
+
+/* Lab steps: Do · Copy · You should see · If not */
+.s4{border:1.5px solid var(--line-strong); border-left:5px solid var(--accent); box-shadow:var(--shadow);}
+.s4 > .k{justify-self:start; white-space:nowrap; font-size:.76rem; font-weight:700; letter-spacing:.02em; padding:3px 10px; border-radius:20px; margin-top:3px; color:var(--surface); background:var(--accent);}
+.s4 > .v + .k:not(.see):not(.ifnot){background:var(--cmd-bg); color:var(--cmd-ink);}
+.s4 > .k.see{background:var(--warn); color:var(--surface);}
+.s4 > .k.ifnot{background:var(--err); color:var(--surface);}
+.s4 > .k.see + .v{background:var(--out-soft); border-left:4px solid var(--warn); padding:8px 12px; border-radius:0 8px 8px 0;}
+.s4 > .k.ifnot + .v{background:var(--err-soft); border-left:4px solid var(--err); padding:8px 12px; border-radius:0 8px 8px 0;}
+.legend b{display:inline-block; padding:1px 9px; border-radius:20px; color:var(--surface); background:var(--accent); margin-right:5px;}
+.legend span:nth-child(2) b{background:var(--cmd-bg); color:var(--cmd-ink);}
+.legend span:nth-child(3) b{background:var(--warn);}
+.legend span:nth-child(4) b{background:var(--err);}
+
+/* slide 8 table: "You see" column = output colour */
+.r8 > div:nth-child(3n) pre{background:var(--out-soft); border-left:4px solid var(--warn);}
+.r8 > .hd:nth-child(3){color:var(--warn);}
+.r8 > .hd:nth-child(2){color:var(--accent-ink);}
+/* checks, progress, step headers */
+.done{margin:0; padding:10px 14px; border:2px solid var(--accent); border-radius:9px; background:var(--accent-soft); color:var(--ink); font-size:.95rem; font-weight:600;}
+.done b{display:inline-block; background:var(--accent); color:var(--surface); padding:1px 10px; border-radius:20px; margin-right:8px; font-size:.78rem;}
+
+.check{background:var(--surface); border:2px solid var(--line-strong);}
+.check span{color:var(--ink); font-weight:600;}
+.check:has(input:checked){background:var(--accent); border-color:var(--accent);}
+.check:has(input:checked) span{color:var(--surface); text-decoration-color:var(--surface);}
+.progress{border:1.5px solid var(--line-strong);}
+.bar{background:var(--line);}
+.step{border-top:2px solid var(--line-strong);}
+.step-no{background:var(--accent); color:var(--surface);}
+@media print{ .s4,.card,.track,.progress{box-shadow:none !important;} pre{overflow:visible;} pre code{white-space:pre-wrap; overflow-wrap:anywhere;} .check:has(input:checked){background:var(--surface); border-color:var(--accent);} .check:has(input:checked) span{color:var(--ink);} }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <b>Working with Data and Files</b>
+    <span>Open Source Software · Chapter 9 · Fall 2026</span>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Class blocks">
+    <button class="tab" role="tab" id="tab-lecture" aria-controls="pane-lecture" aria-selected="true">Lecture <span class="min">60 min</span></button>
+    <button class="tab" role="tab" id="tab-lab" aria-controls="pane-lab" aria-selected="false">Lab <span class="min">90 min</span></button>
+    <button class="tab" role="tab" id="tab-task" aria-controls="pane-task" aria-selected="false">Assignment <span class="min">30 min</span></button>
+  </div>
+</header>
+
+<!-- ══════════ Lecture ══════════ -->
+<section class="pane" id="pane-lecture" role="tabpanel" aria-labelledby="tab-lecture">
+  <div class="stage">
+
+    <article class="slide cover">
+      <p class="eyebrow">Chapter 9 · 2026 Fall</p>
+      <h1>Working with<br>Data and Files</h1>
+      <p class="sub">Read a CSV file, keep only the rows you need, show them as a table, and save them as an Excel file.<br>That is the skeleton of most information-systems tools.</p>
+      <dl>
+        <div><dt>Course</dt><dd>Open Source Software</dd></div>
+        <div><dt>New libraries</dt><dd><code>pandas</code> · <code>openpyxl</code> (only these two)</dd></div>
+        <div><dt>Today</dt><dd>60 min lecture · 90 min lab · 30 min assignment</dd></div>
+      </dl>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">Where we stopped</p>
+      <h2>Last time: one library. Today: data in, file out.</h2>
+      <div class="rule"></div>
+      <p class="lead">In Chapter 8 the rows of the table were written inside the code. Real tools read their data from a file. They leave a file behind.</p>
+      <div class="dg" role="img" aria-label="Four steps in a row. 1 Read: pd.read_csv turns the file data/servers.csv into a DataFrame, with pandas. 2 Filter: df[condition] keeps some rows, with pandas. 3 Show: a rich Table prints the rows on the screen. 4 Save: to_excel writes the file warn.xlsx, with openpyxl. pandas and openpyxl are new today. rich is from Chapter 8." style="max-width:860px;">
+        <svg viewBox="0 0 720 196" aria-hidden="true">
+          <defs><marker id="ah9a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <line class="s-acc" x1="158" y1="62" x2="190" y2="62" stroke-width="2.5" marker-end="url(#ah9a)"/><line class="s-acc" x1="344" y1="62" x2="376" y2="62" stroke-width="2.5" marker-end="url(#ah9a)"/><line class="s-acc" x1="530" y1="62" x2="562" y2="62" stroke-width="2.5" marker-end="url(#ah9a)"/>
+          <g><rect class="f-surf s-acc" x="6" y="6" width="150" height="112" rx="12" stroke-width="2"/><text class="mono t-acc" x="18" y="32" font-size="18">1 Read</text><text class="mono t-ink" x="18" y="56" font-size="12.5">pd.read_csv()</text><text class="t-ink" x="18" y="77" font-size="13">File &#x2192; DataFrame</text><rect class="f-acc" x="18" y="88" width="80" height="22" rx="11"/><text class="t-on" x="58" y="103" font-size="11.5" font-weight="600" text-anchor="middle">pandas</text></g>
+          <g><rect class="f-surf s-acc" x="192" y="6" width="150" height="112" rx="12" stroke-width="2"/><text class="mono t-acc" x="204" y="32" font-size="18">2 Filter</text><text class="mono t-ink" x="204" y="56" font-size="12.5">df[condition]</text><text class="t-ink" x="204" y="77" font-size="13">Keep some rows</text><rect class="f-acc" x="204" y="88" width="80" height="22" rx="11"/><text class="t-on" x="244" y="103" font-size="11.5" font-weight="600" text-anchor="middle">pandas</text></g>
+          <g><rect class="f-surf s-acc" x="378" y="6" width="150" height="112" rx="12" stroke-width="2"/><text class="mono t-acc" x="390" y="32" font-size="18">3 Show</text><text class="mono t-ink" x="390" y="56" font-size="12.5">Table(...)</text><text class="t-ink" x="390" y="77" font-size="13">Print on screen</text><rect class="f-s2 s-line" x="390" y="88" width="80" height="22" rx="11" stroke-width="1"/><text class="t-ink" x="430" y="103" font-size="11.5" font-weight="600" text-anchor="middle">rich · Ch 8</text></g>
+          <g><rect class="f-surf s-acc" x="564" y="6" width="150" height="112" rx="12" stroke-width="2"/><text class="mono t-acc" x="576" y="32" font-size="18">4 Save</text><text class="mono t-ink" x="576" y="56" font-size="12.5">to_excel()</text><text class="t-ink" x="576" y="77" font-size="13">Write a file</text><rect class="f-acc" x="576" y="88" width="80" height="22" rx="11"/><text class="t-on" x="616" y="103" font-size="11.5" font-weight="600" text-anchor="middle">openpyxl</text></g>
+          <rect class="f-surf s-line" x="6" y="148" width="150" height="40" rx="9" stroke-width="1.5"/><text class="mono t-ink" x="18" y="173" font-size="12.5">data/servers.csv</text>
+          <line class="s-acc" x1="81" y1="146" x2="81" y2="124" stroke-width="2.5" marker-end="url(#ah9a)"/>
+          <rect class="f-surf s-line" x="378" y="148" width="150" height="40" rx="9" stroke-width="1.5"/><text class="t-ink" x="390" y="173" font-size="13">table on the screen</text>
+          <line class="s-acc" x1="453" y1="120" x2="453" y2="142" stroke-width="2.5" marker-end="url(#ah9a)"/>
+          <rect class="f-soft s-acc" x="564" y="148" width="150" height="40" rx="9" stroke-width="2"/><text class="mono t-acc" x="576" y="173" font-size="13">warn.xlsx</text>
+          <line class="s-acc" x1="639" y1="120" x2="639" y2="142" stroke-width="2.5" marker-end="url(#ah9a)"/>
+          <text class="t-mut" x="168" y="173" font-size="12.5" font-weight="600">in: a CSV file</text>
+        </svg>
+      </div>
+      <p class="places-cap">Read, filter, show, save. <code>pandas</code> and <code>openpyxl</code> are new today. <code>rich</code> is from Chapter 8.</p>
+      <ul>
+        <li><b>Read three errors</b> you will meet today, and know what each one means (slide 10).</li>
+      </ul>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">The shape of the data</p>
+      <h2>Table data is rows and columns</h2>
+      <div class="rule"></div>
+      <p class="lead">A CSV file (comma-separated values) is plain text. The first line holds the column names. Every other line is one row. Our file describes twelve servers.</p>
+      <pre data-kind="file"><code>name,cpu,memory,disk,status
+web-01,35,52,41,ok
+web-02,42,61,85,ok
+db-01,78,88,92,warn
+...                       (12 rows in total)</code></pre>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">Column</span><h4>One kind of value</h4><p><code>disk</code> is always a number (percent used). <code>status</code> is always <code>ok</code> or <code>warn</code>.</p></div>
+        <div class="card"><span class="tagline">Row</span><h4>One thing</h4><p>One server, with all five of its values on one line.</p></div>
+        <div class="card"><span class="tagline">DataFrame</span><h4>The table in Python</h4><p><code>pandas</code> reads the file into a DataFrame (a table object with named columns and numbered rows).</p></div>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Step 1 · Read</p>
+      <h2>pd.read_csv turns a file<br>into a DataFrame</h2>
+      <div class="rule"></div>
+      <pre data-kind="file"><code>import pandas as pd
+
+df = pd.read_csv("data/servers.csv")
+print(df)</code></pre>
+      <pre data-kind="out"><code>          name  cpu  memory  disk status
+0       web-01   35      52    41     ok
+1       web-02   42      61    85     ok
+2        db-01   78      88    92   warn
+3        db-02   55      70    63     ok
+4      mail-01   22      45    38     ok
+5      file-01   18      40    97   warn
+6    backup-01   12      30    88     ok
+7       dns-01    8      20    25     ok
+8       vpn-01   91      64    47   warn
+9       log-01   30      58    72     ok
+10      app-01   87      93    55   warn
+11  monitor-01   25      48    34     ok</code></pre>
+      <div class="callout">
+        <span class="mk">Read it</span>
+        <p>The numbers on the left (0 to 11) are the <b>index</b> &mdash; a label for each row that pandas adds. They are not in the file. <code>pd</code> is the short name everyone uses for pandas.</p>
+      </div>
+      <p>The path <code>data/servers.csv</code> starts from the folder your terminal is in. Slide 11 shows the folders.</p>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Step 2 · Look before you touch</p>
+      <h2>head(), shape, columns, dtypes</h2>
+      <div class="rule"></div>
+      <p class="lead">A real file can have ten thousand rows. Before you filter, check four things: the first rows, the size, the exact column names, and the type of each column.</p>
+      <pre data-kind="file"><code>print(df.head())      # first 5 rows
+print(df.shape)       # (rows, columns)
+print(df.columns)     # exact column names
+print(df.dtypes)      # type of each column</code></pre>
+      <pre data-kind="out"><code>      name  cpu  memory  disk status
+0   web-01   35      52    41     ok
+1   web-02   42      61    85     ok
+2    db-01   78      88    92   warn
+3    db-02   55      70    63     ok
+4  mail-01   22      45    38     ok
+(12, 5)
+Index(['name', 'cpu', 'memory', 'disk', 'status'], dtype='str')
+name        str
+cpu       int64
+memory    int64
+disk      int64
+status      str
+dtype: object</code></pre>
+      <div class="callout warn">
+        <span class="mk">pandas 3</span>
+        <p>We use <code>pandas==3.0.5</code>. Text columns show the type <code>str</code>. Older web pages and many AI answers were written for pandas 2 and show <code>object</code> here. It is the same text column &mdash; do not try to &ldquo;fix&rdquo; it.</p>
+      </div>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">Step 3 · Filter</p>
+      <h2>Keep only the rows you need</h2>
+      <div class="rule"></div>
+      <p class="lead"><code>df["disk"] &gt; 80</code> makes one True/False value for each row. Put it inside <code>df[ ]</code> and only the <code>True</code> rows stay.</p>
+      <div class="dg" role="img" aria-label="Three columns. Left: the DataFrame df with 12 rows, name and disk. Middle, step 1: df[&quot;disk&quot;] &gt; 80 asks every row a question and gives True or False. Rows 1, 2, 5 and 6 are True. Right, step 2: df[ ] keeps only the True rows: web-02 85, db-01 92, file-01 97, backup-01 88. Their index stays 1, 2, 5, 6." style="max-width:820px;">
+        <svg viewBox="0 0 720 286" aria-hidden="true">
+          <defs><marker id="ah9b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <text class="t-ink" x="8" y="16" font-size="13" font-weight="700">The DataFrame</text><text class="mono t-acc" x="8" y="35" font-size="13">df</text><text class="t-mut" x="32" y="35" font-size="12.5">12 rows</text>
+          <text class="t-ink" x="268" y="16" font-size="13" font-weight="700">Step 1 · ask every row</text><text class="mono t-acc" x="268" y="35" font-size="13">df["disk"] &gt; 80</text>
+          <text class="t-ink" x="494" y="16" font-size="13" font-weight="700">Step 2 · keep the True rows</text><text class="mono t-acc" x="494" y="35" font-size="13">df[df["disk"] &gt; 80]</text>
+          <rect class="f-surf s-line" x="4" y="44" width="240" height="238" rx="8" stroke-width="1.5"/>
+          <rect class="f-surf s-acc" x="264" y="44" width="176" height="238" rx="8" stroke-width="1.5"/>
+          <rect class="f-surf s-acc" x="490" y="44" width="226" height="162" rx="8" stroke-width="2"/>
+          <rect class="f-soft" x="6" y="80" width="236" height="18"/><rect class="f-soft" x="6" y="98" width="236" height="18"/><rect class="f-soft" x="6" y="152" width="236" height="18"/><rect class="f-soft" x="6" y="170" width="236" height="18"/>
+          <rect class="f-soft" x="266" y="80" width="172" height="18"/><rect class="f-soft" x="266" y="98" width="172" height="18"/><rect class="f-soft" x="266" y="152" width="172" height="18"/><rect class="f-soft" x="266" y="170" width="172" height="18"/>
+          <rect class="f-soft" x="492" y="62" width="222" height="72"/>
+          <g font-size="12" class="mono t-mut"><text x="44" y="57">name</text><text x="224" y="57" text-anchor="end">disk</text><text x="352" y="57" text-anchor="middle">answer</text><text x="524" y="57">name</text><text x="690" y="57" text-anchor="end">disk</text></g>
+          <g font-size="12" class="mono t-mut"><text x="16" y="76">0</text><text x="16" y="94">1</text><text x="16" y="112">2</text><text x="16" y="130">3</text><text x="16" y="148">4</text><text x="16" y="166">5</text><text x="16" y="184">6</text><text x="16" y="202">7</text><text x="16" y="220">8</text><text x="16" y="238">9</text><text x="16" y="256">10</text><text x="16" y="274">11</text></g>
+          <g font-size="12.5" class="mono t-ink"><text x="44" y="76">web-01</text><text x="44" y="94">web-02</text><text x="44" y="112">db-01</text><text x="44" y="130">db-02</text><text x="44" y="148">mail-01</text><text x="44" y="166">file-01</text><text x="44" y="184">backup-01</text><text x="44" y="202">dns-01</text><text x="44" y="220">vpn-01</text><text x="44" y="238">log-01</text><text x="44" y="256">app-01</text><text x="44" y="274">monitor-01</text></g>
+          <g font-size="12.5" class="mono t-ink" text-anchor="end"><text x="224" y="76">41</text><text x="224" y="94">85</text><text x="224" y="112">92</text><text x="224" y="130">63</text><text x="224" y="148">38</text><text x="224" y="166">97</text><text x="224" y="184">88</text><text x="224" y="202">25</text><text x="224" y="220">47</text><text x="224" y="238">72</text><text x="224" y="256">55</text><text x="224" y="274">34</text></g>
+          <g font-size="12.5" class="mono" text-anchor="middle"><text class="t-mut" x="352" y="76">False</text><text class="t-acc" x="352" y="94" font-weight="700">True</text><text class="t-acc" x="352" y="112" font-weight="700">True</text><text class="t-mut" x="352" y="130">False</text><text class="t-mut" x="352" y="148">False</text><text class="t-acc" x="352" y="166" font-weight="700">True</text><text class="t-acc" x="352" y="184" font-weight="700">True</text><text class="t-mut" x="352" y="202">False</text><text class="t-mut" x="352" y="220">False</text><text class="t-mut" x="352" y="238">False</text><text class="t-mut" x="352" y="256">False</text><text class="t-mut" x="352" y="274">False</text></g>
+          <line class="s-acc" x1="444" y1="130" x2="484" y2="130" stroke-width="2.5" marker-end="url(#ah9b)"/>
+          <g font-size="12" class="mono t-mut"><text x="500" y="76">1</text><text x="500" y="94">2</text><text x="500" y="112">5</text><text x="500" y="130">6</text></g>
+          <g font-size="12.5" class="mono t-ink"><text x="524" y="76">web-02</text><text x="524" y="94">db-01</text><text x="524" y="112">file-01</text><text x="524" y="130">backup-01</text></g>
+          <g font-size="12.5" class="mono t-ink" text-anchor="end"><text x="690" y="76">85</text><text x="690" y="94">92</text><text x="690" y="112">97</text><text x="690" y="130">88</text></g>
+          <text class="t-ink" x="500" y="164" font-size="13" font-weight="700">4 rows stay.</text>
+          <text class="t-mut" x="500" y="186" font-size="12.5">The index stays: 1, 2, 5, 6.</text>
+        </svg>
+      </div>
+      <p class="places-cap">Step 1 gives one True/False for each row. Step 2 keeps the True rows.</p>
+      <pre data-kind="file"><code>df_disk = df[df["disk"] &gt; 80]
+df_warn = df[df["status"] == "warn"]
+df_both = df[(df["disk"] &gt; 80) &amp; (df["status"] == "warn")]
+print(len(df_disk), len(df_warn), len(df_both))</code></pre>
+      <pre data-kind="out"><code>4 4 2</code></pre>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">Two conditions</span><h4>Use &amp; and round brackets</h4><p>Write <code>&amp;</code>, not <code>and</code>. Put each condition in its own <code>( )</code>. Without the brackets you get a <code>TypeError</code>; with <code>and</code> you get a <code>ValueError</code>.</p></div>
+        <div class="card"><span class="tagline">Short form</span><h4>df.disk is df["disk"]</h4><p>You will see <code>df[df.disk &gt; 80]</code> online. It does the same thing. We write <code>df["disk"]</code> today because it works for every column name, even one with a space in it.</p></div>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Two more tools</p>
+      <h2>Sort the rows,<br>add a column</h2>
+      <div class="rule"></div>
+      <pre data-kind="file"><code>print(df.sort_values("disk", ascending=False).head(3))</code></pre>
+      <pre data-kind="out"><code>        name  cpu  memory  disk status
+5    file-01   18      40    97   warn
+2      db-01   78      88    92   warn
+6  backup-01   12      30    88     ok</code></pre>
+      <pre data-kind="file"><code>df["disk_free"] = 100 - df["disk"]
+print(df[["name", "disk", "disk_free"]].head(3))</code></pre>
+      <pre data-kind="out"><code>     name  disk  disk_free
+0  web-01    41         59
+1  web-02    85         15
+2   db-01    92          8</code></pre>
+      <div class="callout">
+        <span class="mk">Notice</span>
+        <p>Sorting keeps the old index (5, 2, 6). A new column is computed <b>for every row at the same time</b> &mdash; no <code>for</code> loop. None of this changes the CSV file on disk. Only the DataFrame in memory changes.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Step 4 · Save</p>
+      <h2>to_excel writes an .xlsx file<br>with openpyxl</h2>
+      <div class="rule"></div>
+      <pre data-kind="file"><code>df_warn.to_excel("warn.xlsx", index=False)
+back = pd.read_excel("warn.xlsx")
+print(back)</code></pre>
+      <pre data-kind="out"><code>      name  cpu  memory  disk status
+0    db-01   78      88    92   warn
+1  file-01   18      40    97   warn
+2   vpn-01   91      64    47   warn
+3   app-01   87      93    55   warn</code></pre>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">Engine</span><h4>pandas asks openpyxl to do it</h4><p>pandas does not write Excel files itself. It hands the work to <code>openpyxl</code> (the engine). That is why you install both libraries.</p></div>
+        <div class="card"><span class="tagline">index=False</span><h4>Leave the index out</h4><p>Without it, the row labels become an extra first column. Read the file back and that column is called <code>Unnamed: 0</code>.</p></div>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Why Excel</p>
+      <h2>The Excel file is the product</h2>
+      <div class="rule"></div>
+      <p class="lead">The person who asked for the report is usually not a programmer. They will not run your script. They open the file you leave behind.</p>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">Your team lead</span><h4>Opens it in Excel</h4><p>Sorts it, adds a comment, and sends it to someone else. A terminal window cannot do that.</p></div>
+        <div class="card"><span class="tagline">Next month</span><h4>Compares two files</h4><p>This month's <code>warn.xlsx</code> next to last month's. A printed table is gone when you close the terminal.</p></div>
+        <div class="card"><span class="tagline">Your project</span><h4>Same shape</h4><p>Input file &rarr; filter &rarr; table on screen &rarr; file saved. Many team project ideas on the library list follow this shape.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">The whole chapter</span>
+        <p><b>Read, filter, show, save.</b> Four steps, two new libraries, and <code>rich</code> from Chapter 8.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">You will see these today</p>
+      <h2>Three errors, and the last line of each</h2>
+      <div class="rule"></div>
+      <p class="lead">A pandas error can be twenty lines long. Most of it is inside the library. <b>Read the last line first</b>, then find the line that names <i>your</i> file.</p>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th>You did this</th><th>The last line says</th><th>What it means</th></tr></thead>
+          <tbody>
+            <tr><td><code style="white-space:nowrap">pd.read_csv("data/server.csv")</code></td><td><code style="display:inline-block">FileNotFoundError: [Errno 2] No such file or directory: 'data/server.csv'</code></td><td>Wrong file name, or the terminal is in a different folder. Check with <code class="cmd" style="white-space:nowrap">dir data</code>.</td></tr>
+            <tr><td><code>df["Disk"]</code></td><td><code>KeyError: 'Disk'</code></td><td>No column with that exact name. Capital letters matter. Print <code>df.columns</code>.</td></tr>
+            <tr><td><code>to_excel(...)</code> without openpyxl</td><td><code>ModuleNotFoundError: No module named 'openpyxl'</code></td><td>The engine is not in this virtual environment. <code class="cmd">pip install openpyxl==3.1.5</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn">
+        <span class="mk">The third one</span>
+        <p>Excel files need <b>two</b> libraries. If <code>read_excel</code> is the first one to fail, the last line looks different: <code>ImportError: `Import openpyxl` failed.  Use pip or conda to install the openpyxl package.</code> Same cause, same fix.</p>
+      </div>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">Today's assignment</p>
+      <h2>Two libraries, one small tool</h2>
+      <div class="rule"></div>
+      <p class="lead">You put the four steps into one file in your own <code>oss-practice</code> repository: <code>tools/table_tool.py</code>.</p>
+      <div class="dg" role="img" aria-label="Top: the cmd terminal. The prompt is (.venv) D:\oss\your ID\oss-practice. The command is python tools/table_tool.py data/servers.csv. An arrow goes from tools/table_tool.py to the file tools\table_tool.py, and an arrow goes from data/servers.csv to the file data\servers.csv. Below: your PC, the folder D:\oss\your ID. On the left, the box .venv with pandas, openpyxl and rich. On the right, the repository oss-practice with a .git folder. It holds tools\table_tool.py (your tool), data\servers.csv (the CSV it reads), requirements.txt (three pinned lines added), lab09.py (practice, not added), result.xlsx (made by the tool, not uploaded) and .gitignore with the line *.xlsx." style="max-width:900px;">
+        <svg viewBox="0 0 720 250" aria-hidden="true">
+          <defs><marker id="ah9c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-s2 s-line" x="4" y="4" width="712" height="62" rx="10" stroke-width="1.5"/>
+          <text class="t-ink" x="600" y="24" font-size="12.5" font-weight="700">Terminal (cmd)</text>
+          <text class="mono t-mut" x="18" y="25" font-size="12">(.venv) D:\oss\&lt;your ID&gt;\oss-practice&gt;</text>
+          <text class="mono t-ink" x="18" y="51" font-size="14">python</text><text class="mono t-acc" x="84" y="51" font-size="14" font-weight="700">tools/table_tool.py</text><text class="mono t-acc" x="262" y="51" font-size="14" font-weight="700">data/servers.csv</text>
+          <rect class="f-s2 s-line" x="4" y="84" width="712" height="162" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="18" y="106" font-size="14" font-weight="700">Your PC</text><text class="mono t-ink" x="84" y="106" font-size="12.5">D:\oss\&lt;your ID&gt;\</text>
+          <rect class="f-soft s-acc" x="18" y="118" width="150" height="116" rx="10" stroke-width="1.5"/>
+          <text class="mono t-acc" x="30" y="140" font-size="15">.venv</text><text class="t-mut" x="84" y="140" font-size="12" font-weight="600">your box</text>
+          <text class="mono t-ink" x="30" y="166" font-size="12.5">pandas</text><text class="mono t-ink" x="30" y="188" font-size="12.5">openpyxl</text><text class="mono t-ink" x="30" y="210" font-size="12.5">rich</text>
+          <rect class="f-surf s-acc" x="186" y="118" width="516" height="116" rx="10" stroke-width="1.5"/>
+          <text class="mono t-ink" x="200" y="138" font-size="13">oss-practice\</text>
+          <rect class="f-acc" x="652" y="124" width="40" height="21" rx="6"/><text class="mono t-on" x="672" y="139" font-size="12.5" text-anchor="middle">.git</text>
+          <text class="mono t-acc" x="200" y="164" font-size="12.5" font-weight="700">tools\table_tool.py</text><text class="t-mut" x="200" y="181" font-size="12">your tool</text>
+          <text class="mono t-ink" x="200" y="208" font-size="12.5">requirements.txt</text><text class="t-mut" x="200" y="225" font-size="12">+ three pinned lines</text>
+          <text class="mono t-acc" x="370" y="164" font-size="12.5" font-weight="700">data\servers.csv</text><text class="t-mut" x="370" y="181" font-size="12">the CSV it reads</text>
+          <text class="mono t-mut" x="370" y="208" font-size="12.5">lab09.py</text><text class="t-mut" x="370" y="225" font-size="12">practice, not added</text>
+          <text class="mono t-mut" x="530" y="164" font-size="12.5">result.xlsx</text><text class="t-bad" x="530" y="181" font-size="12" font-weight="700">made by the tool,</text><text class="t-bad" x="530" y="196" font-size="12" font-weight="700">not uploaded</text>
+          <text class="mono t-ink" x="530" y="220" font-size="12.5">.gitignore</text><text class="mono t-mut" x="616" y="220" font-size="12.5">*.xlsx</text>
+          <line class="s-acc" x1="236" y1="60" x2="330" y2="148" stroke-width="2.5" marker-end="url(#ah9c)"/>
+          <line class="s-acc" x1="330" y1="60" x2="414" y2="148" stroke-width="2.5" marker-end="url(#ah9c)"/>
+        </svg>
+      </div>
+      <p class="places-cap">Run the tool from <code>oss-practice</code>. Both paths start from the folder the terminal is in.</p>
+      <ul>
+        <li><b>The CSV path comes from the command line</b>, not from inside the code &mdash; the same <code>argparse</code> idea as the Chapter 8 demo.</li>
+        <li><b>You choose the filter.</b> It must be different from the three we do in the lab.</li>
+        <li><b>You add the libraries to <code>requirements.txt</code></b>, so the next person can run your tool.</li>
+      </ul>
+      <div class="callout">
+        <span class="mk">Watch only</span>
+        <p>At the start of Lab PART 3, the instructor shows <code>streamlit</code> for five minutes: the same DataFrame as a web page. You do not install it today. It is an optional library for the team project.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Before you switch tabs</p>
+      <h2>Checklist to close</h2>
+      <div class="rule"></div>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Say what a DataFrame is. Read a CSV with <code>pd.read_csv</code> and check it with <code>head()</code> and <code>columns</code>. Write a filter with one and with two conditions. Save with <code>to_excel(..., index=False)</code>. Name the three errors and their fix.</p></div>
+        <div class="card"><span class="tagline">90 min · Lab</span><h4>What's next</h4><p>Activate your box in cmd. Install <code>pandas</code> and <code>openpyxl</code>. Make <code>data\servers.csv</code>. Run three filters. Print one as a <code>rich</code> table. Save it to Excel and read it back. Then build your own <code>table_tool.py</code> and push it.</p></div>
+      </div>
+      <p class="lead">Open the <b>Lab</b> tab above. PART 0 is the first box.</p>
+    </article>
+
+  </div>
+
+  <nav class="slidenav" aria-label="Slide navigation">
+    <button class="navbtn edge" id="first" type="button" title="First slide (Home)" aria-label="First slide">⇤</button>
+    <button class="navbtn" id="prev" type="button">← Prev</button>
+    <button class="navbtn" id="next" type="button">Next →</button>
+    <button class="navbtn edge" id="last" type="button" title="Last slide (End)" aria-label="Last slide">⇥</button>
+    <div class="dots" id="dots"></div>
+    <span class="counter" id="counter">1 / 12</span>
+  </nav>
+</section>
+
+<!-- ══════════ Lab ══════════ -->
+<section class="pane" id="pane-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Lab · 90 min · Step by step</p>
+      <h2>Read, filter, show, save</h2>
+      <p>Do the parts in order. Each part ends with a <b>Done when</b> line. Check it before you go on. Every output below comes from a real run with the same library versions. The rows must be the same. In the VS Code terminal, the lines of a table can look a little different, and there is colour. The words are the same.</p>
+      <div class="legend">
+        <span><b>Do</b> what to do</span>
+        <span><b>Copy</b> type or paste this</span>
+        <span><b>You should see</b> the result</span>
+        <span><b>If not</b> how to fix it</span>
+      </div>
+      <div class="callout">
+        <span class="mk">AI, same as always</span>
+        <p>1. <b>Paste the error exactly.</b> 2. Add one line: what you wanted. 3. <b>Ask why</b> the fix works. 4. Explain the fixed code yourself. Use AI to understand. Do not let it write your work. <b>If you cannot explain it, it does not count.</b></p>
+      </div>
+    </div>
+
+    <!-- PART 0 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 0</span><h3>Shared PC: start routine</h3><span class="budget">5 min</span></div>
+      <p class="goal">Everybody uses one Windows account on this PC. These checks make sure your work goes out under your name. Work only in <code>D:\oss\&lt;your ID&gt;\</code>.</p>
+
+      <div class="s4">
+        <h4>1. Sign in to GitHub</h4>
+        <span class="k">Do</span><div class="v">Open GitHub in the browser. Sign in with your own account.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Your own picture (avatar) in the top-right corner.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>It is another person's avatar? Click it. Click <b>Sign out</b>. Then sign in again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Open your folder and a cmd terminal</h4>
+        <span class="k">Do</span><div class="v">In VS Code: <b>File &rsaquo; Open Folder…</b> &rarr; <code>D:\oss\&lt;your ID&gt;</code> &rarr; <b>Select Folder</b>. Then <b>Terminal &rsaquo; New Terminal</b>.</div>
+        <span class="k">Copy</span><div class="v">Nothing to type.</div>
+        <span class="k see">You should see</span><div class="v">A terminal at the bottom of VS Code. The prompt ends with <code style="white-space:nowrap">D:\oss\&lt;your ID&gt;&gt;</code>. There is no <code>PS</code> at the start of the prompt.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The prompt starts with <code>PS</code>? This is PowerShell. Type <code class="cmd">cmd</code> and press Enter.</li>
+          <li>There is no folder <code>D:\oss\&lt;your ID&gt;</code>? Read <b>Missed Chapter 8?</b> below.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. No saved Git login from another person</h4>
+        <span class="k">Do</span><div class="v">In the cmd terminal, find a saved GitHub login.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cmdkey /list | findstr github</code></pre></div>
+        <span class="k see">You should see</span><div class="v">No lines. The prompt appears again.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>You see a line like <code>Target: LegacyGeneric:target=git:https://github.com</code>? Another person's login is saved. Delete it:
+<pre data-kind="cmd"><code>cmdkey /delete:git:https://github.com</code></pre></li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. No sign-in inside VS Code</h4>
+        <span class="k">Do</span><div class="v">Close any chat panel on the right side of VS Code.</div>
+        <span class="k">Copy</span><div class="v">Nothing to type.</div>
+        <span class="k see">You should see</span><div class="v">No chat panel. No sign-in window.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>VS Code asks you to sign in? Close the window. A sign-in in VS Code stays on this shared PC.</li>
+        </ul></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Missed Chapter 8?</span>
+        <p>No <code>D:\oss\&lt;your ID&gt;</code> folder, no <code>.venv</code>, or no <code>oss-practice</code> clone? Open the Chapter 8 slides, <b>Lab</b> tab. Do <b>Ready check ③ and ④</b> (③ = the clone of your own <code>oss-practice</code> and the two <code class="cmd">git config</code> lines &mdash; never <code>--global</code>; ④ = <code class="cmd">python --version</code> and <code class="cmd">dir</code>). Then do <b>PART 1, steps 1&ndash;2</b> (make the box and activate it). Then come back here.</p>
+      </div>
+      <p class="done"><b>Done when</b> my own avatar · cmd terminal in D:\oss\&lt;my ID&gt; · cmdkey shows no github line · no sign-in in VS Code</p>
+    </div>
+
+    <!-- PART 1 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 1</span><h3>Install two libraries, read the file</h3><span class="budget">20 min</span></div>
+      <p class="goal">Put <code>pandas</code> and <code>openpyxl</code> into your box. Make the data file. Read it with pandas. Slide 11 shows where each file goes.</p>
+
+      <div class="s4">
+        <h4>1. Activate the box</h4>
+        <span class="k">Do</span><div class="v">In the terminal from PART 0, activate your box. Do this in every new terminal. A new terminal starts with the box not active.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>.venv\Scripts\activate</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The prompt now starts with <code>(.venv)</code>:<pre data-kind="out"><code style="white-space:nowrap">(.venv) D:\oss\&lt;your ID&gt;&gt;</code></pre>Was <code>(.venv)</code> already there? Then nothing changes. That is fine.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The prompt starts with <code>PS</code>? Type <code class="cmd">cmd</code> and press Enter. Then type this command again.</li>
+          <li><code>The system cannot find the path specified.</code>? There is no box in this folder. Read <b>Missed Chapter 8?</b> in PART 0.</li>
+          <li>VS Code runs your file with another Python (not the one in <code>.venv</code>)? Press <kbd>Ctrl + Shift + P</kbd> &rarr; <b>Python: Select Interpreter</b> &rarr; the one inside <code>.venv</code>. Then open a new terminal and type this command again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Install the two libraries</h4>
+        <span class="k">Do</span><div class="v">Install <code>pandas</code> and <code>openpyxl</code>, with their versions. First check the prompt: it starts with <code>(.venv)</code>. The folder does not matter for this command. It can take about a minute.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip install pandas==3.0.5 openpyxl==3.1.5 rich==15.0.0</code></pre>
+          <p class="why">Why <code>rich</code> too: you use it in PART 2. Is it already in your box? Then pip skips it.</p></div>
+        <span class="k see">You should see</span><div class="v">Some <code>Collecting</code> lines. Your box from Chapter 8 already has <code>rich</code>. Then you see:
+<pre data-kind="out"><code>Requirement already satisfied: rich==15.0.0 in ...</code></pre>
+          and at the end:
+<pre data-kind="out"><code>Successfully installed et-xmlfile-2.0.0 numpy-2.5.4 openpyxl-3.1.5 pandas-3.0.5 python-dateutil-4.0.0 tzdata-2026.6</code></pre>
+          Your line can be a little different. A new box also lists <code>rich</code> and its three libraries. <code>pandas-3.0.5</code> and <code>openpyxl-3.1.5</code> must be in it. You may also see a notice about a new pip. You can ignore it.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>No <code>(.venv)</code> at the start of the prompt? Do step 1. Then install again.</li>
+          <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? The box is not active. pip put the library outside the box. Do step 1. Then install again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Go to your repository</h4>
+        <span class="k">Do</span><div class="v">Go into <code>oss-practice</code>. Get the newest version from GitHub. Then make a folder for the data.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cd oss-practice
+git pull
+mkdir data</code></pre>
+          <p class="why">Why <code class="cmd">git pull</code> first: your PC gets every commit from GitHub (for example <code>LICENSE</code> from Chapter 7). Then your push in PART 3 is not rejected.</p></div>
+        <span class="k see">You should see</span><div class="v"><code>Already up to date.</code> or a short list of files. <code class="cmd">mkdir data</code> prints nothing. The prompt starts with <code>(.venv)</code> and ends with <code>\oss-practice&gt;</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>The system cannot find the path specified.</code>? There is no <code>oss-practice</code> here. Read <b>Missed Chapter 8?</b> in PART 0.</li>
+          <li><code>A subdirectory or file data already exists.</code>? That is fine. Use it.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Make the data file</h4>
+        <span class="k">Do</span><div class="v">In the VS Code Explorer (the file list on the left), open <code>oss-practice</code>. Right-click <code>data</code> &rarr; <b>New File…</b> &rarr; type <code>servers.csv</code>. The file opens. Paste the 13 lines below. Save with <kbd>Ctrl + S</kbd>. Then check the file in the terminal.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>name,cpu,memory,disk,status
+web-01,35,52,41,ok
+web-02,42,61,85,ok
+db-01,78,88,92,warn
+db-02,55,70,63,ok
+mail-01,22,45,38,ok
+file-01,18,40,97,warn
+backup-01,12,30,88,ok
+dns-01,8,20,25,ok
+vpn-01,91,64,47,warn
+log-01,30,58,72,ok
+app-01,87,93,55,warn
+monitor-01,25,48,34,ok</code></pre>
+          <p class="why">Copy all 13 lines exactly. Put no spaces after the commas. A space changes the column name (for example <code>' disk'</code>). Then you get a <code>KeyError</code> later.</p>
+<pre data-kind="cmd"><code>type data\servers.csv</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The 13 lines you pasted. The first line is:<pre data-kind="out"><code>name,cpu,memory,disk,status</code></pre></div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>The system cannot find the file specified.</code>? The file is not in <code>data</code>, or its name is different. In the Explorer, drag it onto <code>data</code>. The name is <code>servers.csv</code>, with an <b>s</b>.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>5. Make <code>lab09.py</code> and run it</h4>
+        <span class="k">Do</span><div class="v">In the Explorer, right-click <code>oss-practice</code> &rarr; <b>New File…</b> &rarr; type <code>lab09.py</code>. Not inside <code>data</code>. Copy the lines below into it. Save. Run it from the <code>oss-practice</code> folder.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>import pandas as pd
+
+df = pd.read_csv("data/servers.csv")
+print(df)
+print(df.shape)
+print(df.columns)</code></pre>
+<pre data-kind="cmd"><code>python lab09.py</code></pre></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>          name  cpu  memory  disk status
+0       web-01   35      52    41     ok
+1       web-02   42      61    85     ok
+2        db-01   78      88    92   warn
+3        db-02   55      70    63     ok
+4      mail-01   22      45    38     ok
+5      file-01   18      40    97   warn
+6    backup-01   12      30    88     ok
+7       dns-01    8      20    25     ok
+8       vpn-01   91      64    47   warn
+9       log-01   30      58    72     ok
+10      app-01   87      93    55   warn
+11  monitor-01   25      48    34     ok
+(12, 5)
+Index(['name', 'cpu', 'memory', 'disk', 'status'], dtype='str')</code></pre>
+          The 12 rows, then the size <code>(12, 5)</code>, then the five column names. The numbers 0 to 11 on the left are the index (slide 4).</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>FileNotFoundError: [Errno 2] No such file or directory: 'data/servers.csv'</code>? The path starts from the folder the terminal is in. Type <code class="cmd">cd</code>. It must show <code>D:\oss\&lt;your ID&gt;\oss-practice</code>. Then type <code class="cmd">dir data</code>. It must show <code>servers.csv</code>.</li>
+          <li><code>ModuleNotFoundError: No module named 'pandas'</code>? The box is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then do step 2 again.</li>
+          <li><code>can't open file ... [Errno 2] No such file or directory</code>? <code>lab09.py</code> is not in <code>oss-practice</code>. In the Explorer, drag it onto <code>oss-practice</code>.</li>
+        </ul></div>
+      </div>
+      <p class="done"><b>Done when</b> (.venv) in the prompt · pandas and openpyxl installed · data\servers.csv made · lab09.py prints 12 rows and (12, 5)</p>
+    </div>
+
+    <!-- PART 2 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 2</span><h3>Three filters, one rich table, one Excel file</h3><span class="budget">30 min</span></div>
+      <p class="goal">Add each block below to <code>lab09.py</code>. Save. <b>Run the file after every block.</b> The first lines of the output stay the same. Look at the end of the output.</p>
+
+      <div class="s4">
+        <h4>1. Three filters</h4>
+        <span class="k">Do</span><div class="v">Add these lines at the end of <code>lab09.py</code>. Save. Run.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>df_disk = df[df["disk"] &gt; 80]
+df_warn = df[df["status"] == "warn"]
+df_both = df[(df["disk"] &gt; 80) &amp; (df["status"] == "warn")]
+print(len(df_disk), len(df_warn), len(df_both))
+print(df_both)</code></pre>
+<pre data-kind="cmd"><code>python lab09.py</code></pre>
+          <p class="why">Why count first: a count is the quickest check that a filter is right.</p></div>
+        <span class="k see">You should see</span><div class="v">At the end of the output:<pre data-kind="out"><code>4 4 2
+      name  cpu  memory  disk status
+2    db-01   78      88    92   warn
+5  file-01   18      40    97   warn</code></pre>
+          Look at <code>web-02</code> and <code>backup-01</code> (slide 6): disk over 80, but status <code>ok</code>. That is why a tool that checks the numbers is useful.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Not <code>4 4 2</code>? Compare each line with the Copy box. It is <code>&gt; 80</code> and <code>== "warn"</code> (two <code>=</code>).</li>
+          <li><code>KeyError: 'disk'</code>? Your CSV has a space after a comma. Open <code>data\servers.csv</code>. Delete the spaces. Save.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Show <code>df_warn</code> as a rich table</h4>
+        <span class="k">Do</span><div class="v">Make 2 changes: the import lines at the top, and a block at the end. Save. Run.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">1) Find this line (the first line of the file):</p>
+<pre data-kind="code"><code>import pandas as pd</code></pre>
+<p class="lbl">Change it to:</p>
+<pre data-kind="code"><code>import pandas as pd
+from rich.console import Console
+from rich.table import Table</code></pre>
+<p class="lbl">2) Add these lines at the end:</p>
+<pre data-kind="code"><code>table = Table(title="Servers with status warn")
+for col in df_warn.columns:
+    table.add_column(col)
+for row in df_warn.itertuples(index=False):
+    table.add_row(*[str(value) for value in row])
+Console().print(table)</code></pre>
+<p class="why">A rich table is printed with <code>Console</code>: <code>Console().print(table)</code>.</p>
+<p class="why"><code>itertuples(index=False)</code> gives one row at a time, without the index. <code>str(value)</code> is needed because <code>add_row</code> takes text, not numbers. <code>*</code> gives the list to <code>add_row</code> as separate values.</p>
+<pre data-kind="cmd"><code>python lab09.py</code></pre></div>
+        <span class="k see">You should see</span><div class="v">At the end of the output:<pre class="term" data-kind="out"><code>         Servers with status warn
+┏━━━━━━━━━┳━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━┓
+┃ name    ┃ cpu ┃ memory ┃ disk ┃ status ┃
+┡━━━━━━━━━╇━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━┩
+│ db-01   │ 78  │ 88     │ 92   │ warn   │
+│ file-01 │ 18  │ 40     │ 97   │ warn   │
+│ vpn-01  │ 91  │ 64     │ 47   │ warn   │
+│ app-01  │ 87  │ 93     │ 55   │ warn   │
+└─────────┴─────┴────────┴──────┴────────┘</code></pre>
+          The title on top. One row for each <code>warn</code> server.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>NameError: name 'Console' is not defined</code>? The import lines are missing. Do 1) again.</li>
+          <li><code>ModuleNotFoundError: No module named 'rich'</code>? The box is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then do PART 1, step 2 again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Save it as an Excel file</h4>
+        <span class="k">Do</span><div class="v">Add these lines at the end. Save. Run.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>df_warn.to_excel("warn.xlsx", index=False)
+print("Saved warn.xlsx")</code></pre>
+<pre data-kind="cmd"><code>python lab09.py</code></pre>
+          <p class="why">Why the <code>print</code> line: saving prints nothing by itself.</p></div>
+        <span class="k see">You should see</span><div class="v">At the end of the output:<pre data-kind="out"><code>Saved warn.xlsx</code></pre>In the Explorer, <code>warn.xlsx</code> appears in <code>oss-practice</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>ModuleNotFoundError: No module named 'openpyxl'</code>? The terminal is not using your box, or you skipped the install. Check that <code>(.venv)</code> is in the prompt. Then type <code class="cmd">pip install openpyxl==3.1.5</code>.</li>
+          <li><code>PermissionError</code>? Excel has <code>warn.xlsx</code> open. Windows does not let Python change a file that Excel has open. Close Excel. Run again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Read the file back</h4>
+        <span class="k">Do</span><div class="v">Check the file with pandas. This works on every PC, also without Excel. Add these lines at the end. Save. Run.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>back = pd.read_excel("warn.xlsx")
+print(back)</code></pre>
+<pre data-kind="cmd"><code>python lab09.py</code></pre></div>
+        <span class="k see">You should see</span><div class="v">At the end of the output:<pre data-kind="out"><code>      name  cpu  memory  disk status
+0    db-01   78      88    92   warn
+1  file-01   18      40    97   warn
+2   vpn-01   91      64    47   warn
+3   app-01   87      93    55   warn</code></pre>
+          The index is now 0 to 3. The file does not keep the old row labels, because you saved with <code>index=False</code>. Does this PC have Excel? You can also double-click <code>warn.xlsx</code> in File Explorer. Close Excel before you run the script again.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>ImportError: `Import openpyxl` failed.  Use pip or conda to install the openpyxl package.</code>? Same cause as <code>ModuleNotFoundError</code> in step 3. Same fix.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>5. Make each error once, on purpose</h4>
+        <span class="k">Do</span><div class="v">Change one line. Save. Run. Read the <b>last line</b> of the error. Then change the line back. Do this three times. To find a line, press <kbd>Ctrl + F</kbd> and paste it. After the three errors: change every line back. Run again. You see <code>4 4 2</code> again.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">1) Find this line:</p>
+<pre data-kind="code"><code>df = pd.read_csv("data/servers.csv")</code></pre>
+<p class="lbl">Change it to (no <b>s</b> in server):</p>
+<pre data-kind="code"><code>df = pd.read_csv("data/server.csv")</code></pre>
+<p class="lbl">2) Find this line:</p>
+<pre data-kind="code"><code>df_disk = df[df["disk"] &gt; 80]</code></pre>
+<p class="lbl">Change it to (capital D):</p>
+<pre data-kind="code"><code>df_disk = df[df["Disk"] &gt; 80]</code></pre>
+<p class="lbl">3) Find this line:</p>
+<pre data-kind="code"><code>df_both = df[(df["disk"] &gt; 80) &amp; (df["status"] == "warn")]</code></pre>
+<p class="lbl">Change it to (<code>and</code> instead of <code>&amp;</code>):</p>
+<pre data-kind="code"><code>df_both = df[(df["disk"] &gt; 80) and (df["status"] == "warn")]</code></pre>
+<p class="why">Why: you will meet these errors in your own tool. Read the last line first. Then find the line with your file name, <code>lab09.py</code>. It shows the line number.</p></div>
+        <span class="k see">You should see</span><div class="v">The last line of each error:
+<p class="lbl">1)</p><pre data-kind="out"><code>FileNotFoundError: [Errno 2] No such file or directory: 'data/server.csv'</code></pre>
+<p class="lbl">2)</p><pre data-kind="out"><code>KeyError: 'Disk'</code></pre>
+<p class="lbl">3)</p><pre data-kind="out"><code>ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().</code></pre></div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>No error? You did not save. Press <kbd>Ctrl + S</kbd>. Run again.</li>
+        </ul></div>
+      </div>
+      <p class="done"><b>Done when</b> 4 4 2 printed · rich table shown · warn.xlsx saved and read back · three errors made and read</p>
+    </div>
+
+    <!-- PART 3 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 3</span><h3>Build your table tool and push it</h3><span class="budget">20 min</span></div>
+      <p class="goal">This is the assignment. One file, <code>tools/table_tool.py</code>, with <b>your own filter</b>. Do as much as you can here. Then continue in the 30-minute assignment block.</p>
+      <div class="callout">
+        <span class="mk">Watch only &middot; 5 min</span>
+        <p>First, the instructor shows <code>streamlit</code>. It turns the same DataFrame into a web page with one line, <code>st.dataframe(df)</code>. <b>Do not install it.</b> It is an optional library for the team project.</p>
+      </div>
+
+      <div class="s4">
+        <h4>1. Make your tool file</h4>
+        <span class="k">Do</span><div class="v">Your file goes into <code>oss-practice\tools\</code>. You made <code>tools</code> in Chapter 8. In the Explorer, right-click <code>tools</code> &rarr; <b>New File…</b> &rarr; type <code>table_tool.py</code>. Copy the whole file below into it. Save with <kbd>Ctrl + S</kbd>.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">No <code>tools</code> folder? First check the prompt. It must end with <code>\oss-practice&gt;</code>. Then make it:</p>
+<pre data-kind="cmd"><code>mkdir tools</code></pre>
+<p class="lbl">The whole file, <code>tools\table_tool.py</code>:</p>
+<pre data-kind="file"><code>import argparse
+
+import pandas as pd
+from rich.console import Console
+from rich.table import Table
+
+parser = argparse.ArgumentParser(description="Filter a CSV file and save the result.")
+parser.add_argument("csv_path", help="path to the CSV file")
+args = parser.parse_args()
+
+df = pd.read_csv(args.csv_path)
+result = df[df["disk"] &gt; 80]          # your filter goes here
+
+table = Table(title=f"{len(result)} rows from {args.csv_path}")
+for col in result.columns:
+    table.add_column(col)
+for row in result.itertuples(index=False):
+    table.add_row(*[str(value) for value in row])
+Console().print(table)
+
+result.to_excel("result.xlsx", index=False)
+print("Saved result.xlsx")</code></pre>
+          <p class="why">Why <code>argparse</code>: it reads the CSV path from the command line, like <code>--name</code> in Chapter 8. The rest is PART 2. <code>*</code> gives the list to <code>add_row</code> as separate values.</p></div>
+        <span class="k see">You should see</span><div class="v">In the Explorer: <code>oss-practice</code> &rsaquo; <code>tools</code> &rsaquo; <code>table_tool.py</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The file is not inside <code>tools</code>? In the Explorer, drag it onto <code>tools</code>.</li>
+          <li>cmd says <code>A subdirectory or file tools already exists.</code>? That is fine. Use it.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Run it with the CSV path</h4>
+        <span class="k">Do</span><div class="v">Run it from the <code>oss-practice</code> folder. The CSV path is the part after the file name.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python tools/table_tool.py data/servers.csv</code></pre></div>
+        <span class="k see">You should see</span><div class="v">With the filter as it is (<code>disk &gt; 80</code>):<pre class="term" data-kind="out"><code>        4 rows from data/servers.csv
+┏━━━━━━━━━━━┳━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━┓
+┃ name      ┃ cpu ┃ memory ┃ disk ┃ status ┃
+┡━━━━━━━━━━━╇━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━┩
+│ web-02    │ 42  │ 61     │ 85   │ ok     │
+│ db-01     │ 78  │ 88     │ 92   │ warn   │
+│ file-01   │ 18  │ 40     │ 97   │ warn   │
+│ backup-01 │ 12  │ 30     │ 88   │ ok     │
+└───────────┴─────┴────────┴──────┴────────┘
+Saved result.xlsx</code></pre>
+          This filter is one of the lab's. You change it in step 3.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>You forgot the path? <code>argparse</code> tells you:
+<pre data-kind="out"><code>usage: table_tool.py [-h] csv_path
+table_tool.py: error: the following arguments are required: csv_path</code></pre>Type the command again, with <code>data/servers.csv</code> at the end.</li>
+          <li><code>FileNotFoundError</code>? You are not in <code>oss-practice</code>. Type <code class="cmd">cd D:\oss\&lt;your ID&gt;\oss-practice</code>. Then run again.</li>
+          <li>Want the help text? Type <code class="cmd">python tools/table_tool.py -h</code>.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Write your own filter</h4>
+        <span class="k">Do</span><div class="v">Change the filter line to <b>your own filter</b>. Not one of the three from PART 2. Ideas: high <code>cpu</code>, low <code>memory</code>, one server name, or your own CSV file. Save. Run step 2 again.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">Find this line:</p>
+<pre data-kind="code"><code>result = df[df["disk"] &gt; 80]          # your filter goes here</code></pre>
+<p class="lbl">Change it to your own filter, in the same shape:</p>
+<pre data-kind="code"><code>result = df[&lt;your condition&gt;]</code></pre>
+          <p class="why">Why your own: a filter from the lab is Partial. Two submissions with the same text are both Partial. In the issue, you explain your filter line in your own words.</p></div>
+        <span class="k see">You should see</span><div class="v">The title shows how many rows your filter keeps, for example <code>2 rows from data/servers.csv</code>. The rows match your filter. The last line is <code>Saved result.xlsx</code>. Copy the whole output. You paste it into the issue.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>0 rows from data/servers.csv</code>? No row matches. Check the column name and the number.</li>
+          <li><code>KeyError</code>? Use one of the five column names: <code>name</code>, <code>cpu</code>, <code>memory</code>, <code>disk</code>, <code>status</code>.</li>
+          <li><code>TypeError</code> or <code>ValueError</code> with two conditions? Use <code>&amp;</code> and put each condition in round brackets (slide 6).</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Add the libraries to <code>requirements.txt</code></h4>
+        <span class="k">Do</span><div class="v">In the Explorer, open <code>oss-practice</code> &rsaquo; <code>requirements.txt</code> (from Chapter 8). Keep your Chapter 8 line. Add the lines that are missing. Save. Then check the file and install from the list.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">For example, with <code>tabulate</code> from Chapter 8:</p>
+<pre data-kind="file"><code>tabulate==0.10.0
+rich==15.0.0
+pandas==3.0.5
+openpyxl==3.1.5</code></pre>
+          <p class="why">Your first line can be different. Is <code>rich==15.0.0</code> already there? Do not write it twice.</p>
+<pre data-kind="cmd"><code>type requirements.txt
+pip install -r requirements.txt</code></pre>
+          <p class="why">Why: the next person installs from the list. Without these lines, their box has no <code>pandas</code>.</p></div>
+        <span class="k see">You should see</span><div class="v">Your lines, then:<pre data-kind="out"><code>Requirement already satisfied: tabulate==0.10.0 in ...
+Requirement already satisfied: rich==15.0.0 in ...
+Requirement already satisfied: pandas==3.0.5 in ...
+Requirement already satisfied: openpyxl==3.1.5 in ...</code></pre>
+          and more lines. Every line says <code>Requirement already satisfied</code>. The list and the box agree. You may also see a notice about a new pip. You can ignore it.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>No <code>requirements.txt</code>? Make it: right-click <code>oss-practice</code> &rarr; <b>New File…</b> &rarr; <code>requirements.txt</code>. Write the three lines <code>rich==15.0.0</code>, <code>pandas==3.0.5</code>, <code>openpyxl==3.1.5</code>.</li>
+          <li><code>ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirement.txt'</code>? A typo. Type <code>requirements.txt</code>, with an <b>s</b>.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>5. Keep result files out of Git</h4>
+        <span class="k">Do</span><div class="v">The tool makes <code>result.xlsx</code> again each time it runs. Result files do not go into the repository. In the Explorer, right-click <code>oss-practice</code> &rarr; <b>New File…</b> &rarr; type <code>.gitignore</code> (with the dot). Is it already there? Open it. Add one line. Save. Then check.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>*.xlsx</code></pre>
+<pre data-kind="cmd"><code>git status</code></pre>
+          <p class="why"><code>*.xlsx</code> means every file that ends with <code>.xlsx</code>.</p></div>
+        <span class="k see">You should see</span><div class="v">For example:<pre data-kind="out"><code>On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   requirements.txt
+
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+	.gitignore
+	data/
+	lab09.py
+	tools/table_tool.py
+
+no changes added to commit (use "git add" and/or "git commit -a")</code></pre>
+          <code>warn.xlsx</code> and <code>result.xlsx</code> are not in the list. <code>lab09.py</code> is practice. You do not add it.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>You still see <code>warn.xlsx</code> or <code>result.xlsx</code>? The file name must be <code>.gitignore</code>, with the dot. It must be in <code>oss-practice</code>, not in <code>tools</code>. Save it.</li>
+          <li><code>fatal: not a git repository</code>? You are not in <code>oss-practice</code>. Type <code class="cmd">cd D:\oss\&lt;your ID&gt;\oss-practice</code>.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>6. Save it to GitHub</h4>
+        <span class="k">Do</span><div class="v">Save all files first (<kbd>Ctrl</kbd> + <kbd>S</kbd>). Check the prompt: it ends with <code>\oss-practice&gt;</code>. Then send your work to GitHub with three commands.</div>
+        <span class="k">Copy</span><div class="v">
+          <p class="lbl">1) Add the four things</p>
+<pre data-kind="cmd"><code style="white-space:pre-wrap">git add .gitignore tools/table_tool.py data/servers.csv requirements.txt</code></pre>
+          <p class="lbl">2) Commit</p>
+<pre data-kind="cmd"><code>git commit -m "Add table tool"</code></pre>
+          <p class="lbl">3) Push</p>
+<pre data-kind="cmd"><code>git push</code></pre>
+          <p class="why">Why: <code>add</code> picks the files. <code>commit</code> saves them on this PC. <code>push</code> sends them to GitHub.</p></div>
+        <span class="k see">You should see</span><div class="v">After <code>commit</code>, for example:<pre data-kind="out"><code>[main a4061fc] Add table tool
+ 4 files changed, 39 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 data/servers.csv
+ create mode 100644 tools/table_tool.py</code></pre>Your numbers are different. After <code>push</code>, a small window <b>Connect to GitHub</b> may open. Click <b>Sign in with your browser</b>. Check that the avatar is yours. Click <b>Authorize</b>. The last line of the push ends with <code>main -&gt; main</code>.
+          <br>Then open <code>https://github.com/&lt;your-username&gt;/oss-practice</code>. You see <code>.gitignore</code>, <code>data/</code>, <code>tools/</code> and <code>requirements.txt</code> in the file list.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>fatal: not a git repository</code>? You are not in <code>oss-practice</code>. Type <code class="cmd">cd D:\oss\&lt;your ID&gt;\oss-practice</code>. Then do 1) to 3) again.</li>
+          <li><code>fatal: pathspec 'tools/table_tool.py' did not match any files</code>? You are in the wrong folder, or the file has another name. Type <code class="cmd">cd D:\oss\&lt;your ID&gt;\oss-practice</code>. Check the name in the Explorer. Then do 1) to 3) again.</li>
+          <li><code>nothing to commit, working tree clean</code>? Your files are not saved, or you already committed. Press <kbd>Ctrl</kbd> + <kbd>S</kbd> in each file. Then do 1) to 3) again.</li>
+          <li>Git says the push was rejected (<code>! [rejected]        main -&gt; main (fetch first)</code>)? GitHub has a commit you do not have. Type <code class="cmd">git pull --no-edit</code>. <code>--no-edit</code> stops Git from opening an editor. Git prints <code>Merge made by the 'ort' strategy.</code> <code>fatal: Need to specify how to reconcile divergent branches.</code>? Type <code class="cmd">git config pull.rebase false</code> (no <code>--global</code>). Then type <code class="cmd">git pull --no-edit</code> again. Then type <code class="cmd">git push</code> again. <b>Do not use <code>--force</code> or Force push &mdash; it deletes commits on GitHub.</b></li>
+          <li><code>no upstream branch</code>? Type <code class="cmd">git push -u origin main</code>.</li>
+          <li>Git asks who you are? Type the two <code class="cmd">git config</code> lines from Chapter 8, Ready check ③. Never use <code>--global</code>.</li>
+        </ul></div>
+      </div>
+      <p class="goal">Next: open the <b>Assignment</b> tab.</p>
+      <p class="done"><b>Done when</b> tools/table_tool.py runs with my own filter · requirements.txt has the three lines · .gitignore has *.xlsx · pushed and visible on GitHub</p>
+    </div>
+
+    <!-- PART 4 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 4</span><h3>Shared PC: end routine</h3><span class="budget">5 min</span></div>
+      <p class="goal">Do this <b>after</b> you open your assignment issue. If you sign out first, you cannot open the issue.</p>
+
+      <div class="s4">
+        <h4>1. Your work is on GitHub</h4>
+        <span class="k">Do</span><div class="v">Open your repository page.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com/&lt;your-username&gt;/oss-practice</code></pre></div>
+        <span class="k see">You should see</span><div class="v"><code>tools/</code>, <code>data/</code> and <code>requirements.txt</code> in the file list. <code>tools</code> has <code>table_tool.py</code>. Your <code>[Ch09]</code> issue is open in <code>practice-pr</code> (see the <b>Assignment</b> tab).</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The files are not there? Do PART 3, step 6 again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Sign out everywhere</h4>
+        <span class="k">Do</span><div class="v">Sign out of GitHub. Sign out of every site you used today (ChatGPT, Google, Claude).</div>
+        <span class="k">Copy</span><div class="v">Nothing to type. In the browser: avatar &rarr; <b>Sign out</b>.</div>
+        <span class="k see">You should see</span><div class="v">Each site shows a <b>Sign in</b> button.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Still signed in? Open the site again and sign out.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Delete the saved Git login</h4>
+        <span class="k">Do</span><div class="v">In a cmd terminal, delete the saved GitHub login. Then check again.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cmdkey /delete:git:https://github.com
+cmdkey /list | findstr github</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The second command shows no lines.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The first command says <code>CMDKEY: Element not found.</code>? Nothing was saved. That is fine.</li>
+          <li>The prompt starts with <code>PS</code>? Type <code class="cmd">cmd</code> first.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Close VS Code</h4>
+        <span class="k">Do</span><div class="v">Close VS Code.</div>
+        <span class="k">Copy</span><div class="v">Nothing to type.</div>
+        <span class="k see">You should see</span><div class="v">No VS Code window.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>VS Code asks to save a file? Click <b>Save</b>.</li>
+        </ul></div>
+      </div>
+      <p class="done"><b>Done when</b> Tool on GitHub · issue opened · signed out of every site · Git login deleted · VS Code closed</p>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Stuck?</span><h3>Prompts you can copy and paste</h3></div>
+      <p class="goal">Try AI first, then the course FAQ, then your row, then the instructor. Replace the parts in &lt; &gt; with what is on your own screen.</p>
+      <pre><code>I am using pandas==3.0.5 and openpyxl==3.1.5 on Windows. Here is my file:
+&lt;paste the file&gt;
+Here is the whole error, exactly as it appeared:
+&lt;paste the whole error&gt;
+I was trying to &lt;what you wanted to do&gt;. What does the last line of the
+error mean, and what is the smallest change that fixes it?
+
+My CSV has the columns name, cpu, memory, disk, status. I want the rows
+where &lt;your condition&gt;. Show me one pandas filter line for this, and
+explain each part of the line. I use pandas 3, not pandas 2.
+
+You told me to change &lt;my old line&gt; into &lt;your new line&gt;. Why does the
+new one work? Explain it in simple English, in three sentences.
+</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ Assignment ══════════ -->
+<section class="pane" id="pane-task" role="tabpanel" aria-labelledby="tab-task" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Mini Assignment #9 · 30 min</p>
+      <h2>A table tool that uses two libraries</h2>
+      <p>You hand in a small tool in your own repository, the command that runs it, and the text it prints. Everything is text or a link &mdash; no screenshots this time.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Assignment</span><h3>What to submit</h3></div>
+      <ol>
+        <li>Your public <code>oss-practice</code> repository has these things (Lab PART 3):
+          <ul>
+            <li><code>tools/table_tool.py</code>. It takes a CSV path from the command line. It applies <b>one filter that you chose</b> (not one of the three from the lab). It prints the result as a <code>rich</code> table. It saves the result as an <code>.xlsx</code> file with <code>to_excel(..., index=False)</code>.</li>
+            <li>The CSV file it reads (for example <code>data/servers.csv</code>).</li>
+            <li><code>requirements.txt</code> with these three lines (and your Chapter 8 line):
+<pre><code>rich==15.0.0
+pandas==3.0.5
+openpyxl==3.1.5</code></pre></li>
+            <li><code>.gitignore</code> with the line <code>*.xlsx</code>. Result files do not go into the repository.</li>
+          </ul>
+        </li>
+        <li>Do you make your own CSV? <b>Do not put personal data in it</b> &mdash; no names of real people, phone numbers or student IDs. This repository is public.</li>
+        <li>Open an issue in the course <code>practice-pr</code> repository with the Chapter 9 template. <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch09.md" target="_blank" rel="noopener"><b>Click here to open it with the template ready</b></a> (sign in first).</li>
+        <li>Title: <code>[Ch09] StudentID Name</code> &mdash; for example <code>[Ch09] 20261234 Gildong Hong</code>.</li>
+        <li>Write under each heading. Paste the terminal output as <b>text</b>: select it in the terminal, copy, and paste it between the <code>```</code> lines.</li>
+        <li>Under <code>## My filter line, explained in my own words</code>: paste your filter line. Then write what each part does, in your own words.</li>
+      </ol>
+      <pre><code>Title: [Ch09] 20261234 Gildong Hong
+
+## Link to my tool
+https://github.com/&lt;your-username&gt;/oss-practice/blob/main/tools/table_tool.py
+
+## Command I ran
+python tools/table_tool.py data/servers.csv
+
+## Output
+```
+(paste the rich table and the "Saved ..." line here)
+```
+
+## My filter in one sentence
+
+## My filter line, explained in my own words
+
+## AI use</code></pre>
+      <div class="callout warn">
+        <span class="mk">Use the template</span>
+        <p>Did you click <b>New issue</b> yourself? Then choose <b>Chapter 9 submission</b>. <b>Write under each heading. Do not delete the headings.</b></p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Grading</span><h3>How it's graded</h3></div>
+      <p class="goal">We check that the tool runs, that it really uses two libraries, and that you can explain your filter.</p>
+      <div class="rubric">
+        <div class="card"><b>Complete</b><p>The link opens your <code>table_tool.py</code>. It reads the CSV path from the command line, uses your own filter, prints a <code>rich</code> table and saves an <code>.xlsx</code> file. The output text matches the code. <code>requirements.txt</code> lists the libraries.</p></div>
+        <div class="card"><b>Partial</b><p>The tool runs but one part is missing: the path is written inside the code, the filter is one from the lab, there is no table or no Excel file, or the output is a screenshot instead of text. Also Partial: a result file (<code>.xlsx</code>) is in the repository, <code>requirements.txt</code> is missing one of the three lines, or your filter line is not explained in your own words. If two submissions are the same text, both are Partial.</p></div>
+        <div class="card"><b>Not submitted</b><p>No issue by the deadline. Late work still gets partial credit.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">You must explain it</span>
+        <p>Explain your filter line, part by part, in the issue (<code>## My filter line, explained in my own words</code>). If you cannot explain it, it does not count as complete &mdash; even if the tool runs.</p>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Deadline</span>
+        <p><b>11:59 PM the night before the next class — the exact date is in the ecampus notice.</b> Try to push and open the issue in today's 30 minutes.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Next</span><h3>Preview of Chapter 10</h3></div>
+      <p class="goal"><b>Is my open source safe?</b> &mdash; today you added two libraries to your <code>requirements.txt</code>. Next time you check that list for known security problems, and learn how to choose a library you can trust.</p>
+      <ul style="margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em; font-size:.95rem;">
+        <li>Keep your <code>requirements.txt</code> as it is. In Chapter 10 you will check lists like this one for known problems.</li>
+        <li>Your <code>.venv</code> with <code>pandas</code> and <code>openpyxl</code> stays on this PC.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>Open Source Software · Fall 2026 · Chapter 9 course material — based on the official syllabus</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── Tabs ── */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var pane = document.getElementById(t.getAttribute('aria-controls'));
+      var on = (t === tab);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      pane.hidden = !on;
+    });
+    window.scrollTo(0, 0);
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ selectTab(t); });
+    t.addEventListener('keydown', function(e){
+      var i = tabs.indexOf(t), n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowLeft')  n = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (n){ e.preventDefault(); n.focus(); selectTab(n); }
+    });
+  });
+
+  /* ── Slides ── */
+  var slides  = Array.prototype.slice.call(document.querySelectorAll('#pane-lecture .slide'));
+  var dotsBox = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var firstBtn = document.getElementById('first');
+  var lastBtn = document.getElementById('last');
+  var cur = 0;
+
+  slides.forEach(function(s, i){
+    var h = s.querySelector('h1, h2');
+    var t = h ? h.textContent.replace(/\s+/g, ' ').trim() : '';
+    var d = document.createElement('button');
+    d.type = 'button';
+    d.className = 'dot';
+    d.textContent = (i + 1);
+    d.title = (i + 1) + (t ? '. ' + t : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1) + (t ? ': ' + t : ''));
+    d.addEventListener('click', function(){ go(i); });
+    dotsBox.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function go(i){
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function(s, n){ s.hidden = (n !== cur); });
+    dots.forEach(function(d, n){ d.setAttribute('aria-current', n === cur ? 'true' : 'false'); });
+    counter.textContent = (cur + 1) + ' / ' + slides.length;
+    prevBtn.disabled = firstBtn.disabled = (cur === 0);
+    nextBtn.disabled = lastBtn.disabled = (cur === slides.length - 1);
+    window.scrollTo(0, 0);
+  }
+  prevBtn.addEventListener('click', function(){ go(cur - 1); });
+  nextBtn.addEventListener('click', function(){ go(cur + 1); });
+  firstBtn.addEventListener('click', function(){ go(0); });
+  lastBtn.addEventListener('click', function(){ go(slides.length - 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (document.getElementById('pane-lecture').hidden) return;
+    var t = e.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp'){   e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home'){ e.preventDefault(); go(0); }
+    if (e.key === 'End'){  e.preventDefault(); go(slides.length - 1); }
+  });
+  go(0);
+
+})();
+</script>
+</body>
+</html>
