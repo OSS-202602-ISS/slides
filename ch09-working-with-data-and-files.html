@@ -775,7 +775,7 @@ print(back)</code></pre>
       </div>
       <div class="callout warn">
         <span class="mk">Missed Chapter 8?</span>
-        <p>No <code>D:\oss\&lt;your ID&gt;</code> folder, no <code>.venv</code>, or no <code>oss-practice</code> clone? Open the Chapter 8 slides, <b>Lab</b> tab. Do <b>Ready check ③ and ④</b> (③ = the clone of your own <code>oss-practice</code> and the two <code class="cmd">git config</code> lines &mdash; never <code>--global</code>; ④ = <code class="cmd">python --version</code> and <code class="cmd">dir</code>). Then do <b>PART 1, steps 1&ndash;2</b> (make the box and activate it). Then come back here.</p>
+        <p>No <code>D:\oss\&lt;your ID&gt;</code> folder, no <code>.venv</code>, or no <code>oss-practice</code> clone? Open the Chapter 8 slides, <b>Lab</b> tab. Do <b>Ready check ② to ④</b> (② = your <code>oss-practice</code> repository is on GitHub &mdash; make it there if the page shows 404; ③ = the clone of your own <code>oss-practice</code> and the two <code class="cmd">git config</code> lines &mdash; never <code>--global</code>; ④ = <code class="cmd">python --version</code> and <code class="cmd">dir</code>). Then do <b>PART 1, steps 1&ndash;2</b> (make the box and activate it). Then come back here.</p>
       </div>
       <p class="done"><b>Done when</b> my own avatar · cmd terminal in D:\oss\&lt;my ID&gt; · cmdkey shows no github line · no sign-in in VS Code</p>
     </div>
@@ -817,12 +817,13 @@ print(back)</code></pre>
         <h4>3. Go to your repository</h4>
         <span class="k">Do</span><div class="v">Go into <code>oss-practice</code>. Get the newest version from GitHub. Then make a folder for the data.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cd oss-practice
-git pull
+git pull --no-edit
 mkdir data</code></pre>
-          <p class="why">Why <code class="cmd">git pull</code> first: your PC gets every commit from GitHub (for example <code>LICENSE</code> from Chapter 7). Then your push in PART 3 is not rejected.</p></div>
-        <span class="k see">You should see</span><div class="v"><code>Already up to date.</code> or a short list of files. <code class="cmd">mkdir data</code> prints nothing. The prompt starts with <code>(.venv)</code> and ends with <code>\oss-practice&gt;</code>.</div>
+          <p class="why">Why <code class="cmd">git pull --no-edit</code> first: your PC gets every commit from GitHub (for example <code>LICENSE</code> from Chapter 7). Then your push in PART 3 is not rejected. <code>--no-edit</code> stops Git from opening an editor.</p></div>
+        <span class="k see">You should see</span><div class="v"><code>Already up to date.</code>, or a short list of files, or <code>Merge made by the 'ort' strategy.</code> <code class="cmd">mkdir data</code> prints nothing. The prompt starts with <code>(.venv)</code> and ends with <code>\oss-practice&gt;</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>The system cannot find the path specified.</code>? There is no <code>oss-practice</code> here. Read <b>Missed Chapter 8?</b> in PART 0.</li>
+          <li><code>fatal: Need to specify how to reconcile divergent branches.</code>? Type <code class="cmd">git config pull.rebase false</code> (no <code>--global</code>). Then type <code class="cmd">git pull --no-edit</code> again.</li>
           <li><code>A subdirectory or file data already exists.</code>? That is fine. Use it.</li>
         </ul></div>
       </div>
@@ -993,7 +994,7 @@ print(back)</code></pre>
 <pre data-kind="code"><code>df_both = df[(df["disk"] &gt; 80) &amp; (df["status"] == "warn")]</code></pre>
 <p class="lbl">Change it to (<code>and</code> instead of <code>&amp;</code>):</p>
 <pre data-kind="code"><code>df_both = df[(df["disk"] &gt; 80) and (df["status"] == "warn")]</code></pre>
-<p class="why">Why: you will meet these errors in your own tool. Read the last line first. Then find the line with your file name, <code>lab09.py</code>. It shows the line number.</p></div>
+<p class="why">Why: you will meet these errors in your own tool. The first two are on slide 10. The third is on slide 6. Read the last line first. Then find the line with your file name, <code>lab09.py</code>. It shows the line number.</p></div>
         <span class="k see">You should see</span><div class="v">The last line of each error:
 <p class="lbl">1)</p><pre data-kind="out"><code>FileNotFoundError: [Errno 2] No such file or directory: 'data/server.csv'</code></pre>
 <p class="lbl">2)</p><pre data-kind="out"><code>KeyError: 'Disk'</code></pre>
@@ -1108,6 +1109,7 @@ Requirement already satisfied: pandas==3.0.5 in ...
 Requirement already satisfied: openpyxl==3.1.5 in ...</code></pre>
           and more lines. Every line says <code>Requirement already satisfied</code>. The list and the box agree. You may also see a notice about a new pip. You can ignore it.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>You see <code>Collecting</code> and <code>Successfully installed</code> lines? pip added a library from the list that was not in your box. That is fine.</li>
           <li>No <code>requirements.txt</code>? Make it: right-click <code>oss-practice</code> &rarr; <b>New File…</b> &rarr; <code>requirements.txt</code>. Write the three lines <code>rich==15.0.0</code>, <code>pandas==3.0.5</code>, <code>openpyxl==3.1.5</code>.</li>
           <li><code>ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirement.txt'</code>? A typo. Type <code>requirements.txt</code>, with an <b>s</b>.</li>
         </ul></div>
@@ -1115,7 +1117,7 @@ Requirement already satisfied: openpyxl==3.1.5 in ...</code></pre>
 
       <div class="s4">
         <h4>5. Keep result files out of Git</h4>
-        <span class="k">Do</span><div class="v">The tool makes <code>result.xlsx</code> again each time it runs. Result files do not go into the repository. In the Explorer, right-click <code>oss-practice</code> &rarr; <b>New File…</b> &rarr; type <code>.gitignore</code> (with the dot). Is it already there? Open it. Add one line. Save. Then check.</div>
+        <span class="k">Do</span><div class="v">The tool makes <code>result.xlsx</code> again each time it runs. Result files do not go into the repository. In the Explorer, look in <code>oss-practice</code> for a file named <code>.gitignore</code> (with the dot). Is it there? Open it. Not there? Right-click <code>oss-practice</code> &rarr; <b>New File…</b> &rarr; type <code>.gitignore</code>. Add the line below. Save. Then check.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>*.xlsx</code></pre>
 <pre data-kind="cmd"><code>git status</code></pre>
           <p class="why"><code>*.xlsx</code> means every file that ends with <code>.xlsx</code>.</p></div>
@@ -1148,6 +1150,7 @@ no changes added to commit (use "git add" and/or "git commit -a")</code></pre>
         <span class="k">Copy</span><div class="v">
           <p class="lbl">1) Add the four things</p>
 <pre data-kind="cmd"><code style="white-space:pre-wrap">git add .gitignore tools/table_tool.py data/servers.csv requirements.txt</code></pre>
+          <p class="why">Did you use your own CSV file? Add it too, for example <code class="cmd">git add data/&lt;your file&gt;.csv</code>.</p>
           <p class="lbl">2) Commit</p>
 <pre data-kind="cmd"><code>git commit -m "Add table tool"</code></pre>
           <p class="lbl">3) Push</p>
@@ -1232,8 +1235,10 @@ I was trying to &lt;what you wanted to do&gt;. What does the last line of the
 error mean, and what is the smallest change that fixes it?
 
 My CSV has the columns name, cpu, memory, disk, status. I want the rows
-where &lt;your condition&gt;. Show me one pandas filter line for this, and
-explain each part of the line. I use pandas 3, not pandas 2.
+where &lt;your condition&gt;. Here is the filter line I wrote:
+&lt;paste your filter line&gt;
+It gives &lt;the error, or the wrong rows&gt;. Which part of my line is wrong,
+and why? Do not write a new line for me. I use pandas 3, not pandas 2.
 
 You told me to change &lt;my old line&gt; into &lt;your new line&gt;. Why does the
 new one work? Explain it in simple English, in three sentences.
