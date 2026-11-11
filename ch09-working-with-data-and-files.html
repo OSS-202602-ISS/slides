@@ -676,7 +676,7 @@ print(back)</code></pre>
       </div>
       <div class="grid g2">
         <div class="card"><span class="tagline">Engine</span><h4>pandas asks openpyxl to do it</h4><p>pandas does not write Excel files itself. It hands the work to <code>openpyxl</code> (the engine). That is why you install both libraries.</p></div>
-        <div class="card"><span class="tagline">index=False</span><h4>Leave the index out</h4><p>Without it, the row labels become an extra first column. Read the file back and that column is called <code>Unnamed: 0</code>.</p></div>
+        <div class="card"><span class="tagline">index=False</span><h4>Leave the index out</h4><p>Without it, Excel shows an extra first column with no name: 2, 5, 8, 10.</p></div>
       </div>
     </article>
 
