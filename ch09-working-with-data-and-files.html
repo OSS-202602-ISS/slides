@@ -1212,10 +1212,11 @@ no changes added to commit (use "git add" and/or "git commit -a")</code></pre>
 
       <div class="s4">
         <h4>6. Save it to GitHub</h4>
-        <span class="k">Do</span><div class="v">Save all files first (<kbd>Ctrl</kbd> + <kbd>S</kbd>). Check the prompt: it ends with <code>\oss-practice&gt;</code>. Then send your work to GitHub with three commands.</div>
+        <span class="k">Do</span><div class="v">Save all files first (<kbd>Ctrl</kbd> + <kbd>S</kbd>). Check the prompt: it ends with <code>\oss-practice&gt;</code>. Then send your work to GitHub: 1) add, 2) commit, 3) push.</div>
         <span class="k">Copy</span><div class="v">
-          <p class="lbl">1) Add the four things</p>
-<pre data-kind="cmd"><code style="white-space:pre-wrap">git add .gitignore tools/table_tool.py data/servers.csv requirements.txt</code></pre>
+          <p class="lbl">1) Add the four things &mdash; two lines. Press Enter after each line.</p>
+<pre data-kind="cmd"><code>git add .gitignore requirements.txt
+git add tools/table_tool.py data/servers.csv</code></pre>
           <p class="why">Did you use your own CSV file? Add it too, for example <code class="cmd">git add data/&lt;your file&gt;.csv</code>.</p>
           <p class="lbl">2) Commit</p>
 <pre data-kind="cmd"><code>git commit -m "Add table tool"</code></pre>
@@ -1229,6 +1230,7 @@ no changes added to commit (use "git add" and/or "git commit -a")</code></pre>
  create mode 100644 tools/table_tool.py</code></pre>Your numbers are different. After <code>push</code>, a small window <b>Connect to GitHub</b> may open. Click <b>Sign in with your browser</b>. Check that the avatar is yours. Click <b>Authorize</b>. The last line of the push ends with <code>main -&gt; main</code>.
           <br>Then open <code>https://github.com/&lt;your-username&gt;/oss-practice</code>. You see <code>.gitignore</code>, <code>data/</code>, <code>tools/</code> and <code>requirements.txt</code> in the file list.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>After commit, fewer than <code>4 files changed</code>? A file was not added. Type both <code>git add</code> lines again. Then <code class="cmd">git commit -m "Add missing file"</code>. Then push.</li>
           <li><code>fatal: not a git repository</code>? You are not in <code>oss-practice</code>. Type <code class="cmd">cd D:\oss\&lt;your ID&gt;\oss-practice</code>. Then do 1) to 3) again.</li>
           <li><code>fatal: pathspec 'tools/table_tool.py' did not match any files</code>? You are in the wrong folder, or the file has another name. Type <code class="cmd">cd D:\oss\&lt;your ID&gt;\oss-practice</code>. Check the name in the Explorer. Then do 1) to 3) again.</li>
           <li><code>nothing to commit, working tree clean</code>? Your files are not saved, or you already committed. Press <kbd>Ctrl</kbd> + <kbd>S</kbd> in each file. Then do 1) to 3) again.</li>
