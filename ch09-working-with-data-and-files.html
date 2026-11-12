@@ -1159,17 +1159,16 @@ table_tool.py: error: the following arguments are required: csv_path</code></pre
 
       <div class="s4">
         <h4>4. Add the libraries to <code>requirements.txt</code></h4>
-        <span class="k">Do</span><div class="v">In the Explorer, open <code>oss-practice</code> &rsaquo; <code>requirements.txt</code> (from Chapter 8). Keep your Chapter 8 line. Add the lines that are missing. Save. Then check the file and install from the list.</div>
-        <span class="k">Copy</span><div class="v"><p class="lbl">For example, with <code>tabulate</code> from Chapter 8:</p>
-<pre data-kind="file"><code>tabulate==0.10.0
-rich==15.0.0
+        <span class="k">Do</span><div class="v">In the Explorer, open <code>oss-practice</code> &rsaquo; <code>requirements.txt</code> (from Chapter 8). Keep your Chapter 8 line at the top. Add three lines under it. Save. Then check the file and install from the list.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">Add these three lines <b>under</b> your Chapter 8 line. Do not delete your Chapter 8 line.</p>
+<pre data-kind="file"><code>rich==15.0.0
 pandas==3.0.5
 openpyxl==3.1.5</code></pre>
-          <p class="why">Your first line can be different. Is <code>rich==15.0.0</code> already there? Do not write it twice.</p>
+          <p class="why">Then the file has four lines. The first line is still yours from Chapter 8, for example <code>tabulate==0.10.0</code> or <code>python-dateutil==2.9.0.post0</code>. Why keep it: your Chapter 8 tool still needs it. Is <code>rich==15.0.0</code> already there? Do not write it twice.</p>
 <pre data-kind="cmd"><code>type requirements.txt
 pip install -r requirements.txt</code></pre>
           <p class="why">Why: the next person installs from the list. Without these lines, their box has no <code>pandas</code>.</p></div>
-        <span class="k see">You should see</span><div class="v">Your lines, then:<pre data-kind="out"><code>Requirement already satisfied: tabulate==0.10.0 in ...
+        <span class="k see">You should see</span><div class="v">Your lines, then:<pre data-kind="out"><code>Requirement already satisfied: &lt;your Chapter 8 line&gt; in ...
 Requirement already satisfied: rich==15.0.0 in ...
 Requirement already satisfied: pandas==3.0.5 in ...
 Requirement already satisfied: openpyxl==3.1.5 in ...</code></pre>
