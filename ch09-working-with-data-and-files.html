@@ -989,7 +989,7 @@ print(df_both)</code></pre>
 
       <div class="s4">
         <h4>2. Show <code>df_warn</code> as a rich table</h4>
-        <span class="k">Do</span><div class="v">Make 2 changes: the import lines at the top, and a block at the end. Save. Run.</div>
+        <span class="k">Do</span><div class="v">Make 2 changes in <code>lab09.py</code>: the import lines at the top, and a block at the end. Save. Run.</div>
         <span class="k">Copy</span><div class="v"><p class="lbl">1) Find this line (the first line of the file):</p>
 <pre data-kind="code"><code>import pandas as pd</code></pre>
 <p class="lbl">Change it to:</p>
@@ -1024,7 +1024,7 @@ Console().print(table)</code></pre>
 
       <div class="s4">
         <h4>3. Save it as an Excel file</h4>
-        <span class="k">Do</span><div class="v">Add these lines at the end. Save. Run.</div>
+        <span class="k">Do</span><div class="v">Add these lines at the end of <code>lab09.py</code>. Save. Run.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>df_warn.to_excel("warn.xlsx", index=False)
 print("Saved warn.xlsx")</code></pre>
 <pre data-kind="cmd"><code>python lab09.py</code></pre>
@@ -1038,7 +1038,7 @@ print("Saved warn.xlsx")</code></pre>
 
       <div class="s4">
         <h4>4. Read the file back</h4>
-        <span class="k">Do</span><div class="v">Check the file with pandas. This works on every PC, also without Excel. Add these lines at the end. Save. Run.</div>
+        <span class="k">Do</span><div class="v">Check the file with pandas. This works on every PC, also without Excel. Add these lines at the end of <code>lab09.py</code>. Save. Run.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>back = pd.read_excel("warn.xlsx")
 print(back)</code></pre>
 <pre data-kind="cmd"><code>python lab09.py</code></pre></div>
@@ -1055,7 +1055,7 @@ print(back)</code></pre>
 
       <div class="s4">
         <h4>5. Make each error once, on purpose</h4>
-        <span class="k">Do</span><div class="v">Change one line. Save. Run. Read the <b>last line</b> of the error. Then change the line back. Do this three times. To find a line, press <kbd>Ctrl + F</kbd> and paste it. After the three errors: change every line back. Run again. You see <code>4 4 2</code> again.</div>
+        <span class="k">Do</span><div class="v">Change one line in <code>lab09.py</code>. Save. Run <code class="cmd">python lab09.py</code>. Read the <b>last line</b> of the error. Then change the line back. Do this three times. To find a line, press <kbd>Ctrl + F</kbd> and paste it. After the three errors: change every line back. Run again. You see <code>4 4 2</code> again.</div>
         <span class="k">Copy</span><div class="v"><p class="lbl">1) Find this line:</p>
 <pre data-kind="code"><code>df = pd.read_csv("data/servers.csv")</code></pre>
 <p class="lbl">Change it to (no <b>s</b> in server):</p>
@@ -1151,7 +1151,7 @@ table_tool.py: error: the following arguments are required: csv_path</code></pre
 
       <div class="s4">
         <h4>3. Write your own filter</h4>
-        <span class="k">Do</span><div class="v">Change the filter line to <b>your own filter</b>. Not one of the three from PART 2. Ideas: high <code>cpu</code>, low <code>memory</code>, one server name, or your own CSV file. Save. Run step 2 again.</div>
+        <span class="k">Do</span><div class="v">In <code>tools/table_tool.py</code>, change the filter line to <b>your own filter</b>. Not one of the three from PART 2. Ideas: high <code>cpu</code>, low <code>memory</code>, one server name, or your own CSV file. Save. Run step 2 again: <code class="cmd">python tools/table_tool.py data/servers.csv</code></div>
         <span class="k">Copy</span><div class="v"><p class="lbl">Find this line:</p>
 <pre data-kind="code"><code>result = df[df["disk"] &gt; 80]          # your filter goes here</code></pre>
 <p class="lbl">Change it to your own filter, in the same shape:</p>
@@ -1302,7 +1302,7 @@ cmdkey /list | findstr github</code></pre></div>
       <div class="step-head"><span class="step-no">Stuck?</span><h3>Prompts you can copy and paste</h3></div>
       <p class="goal">Try AI first, then the course FAQ, then your row, then the instructor. Replace the parts in &lt; &gt; with what is on your own screen.</p>
       <pre><code>I am using pandas==3.0.5 and openpyxl==3.1.5 on Windows. Here is my file:
-&lt;paste the file&gt;
+&lt;paste the whole .py file that gives the error&gt;
 Here is the whole error, exactly as it appeared:
 &lt;paste the whole error&gt;
 I was trying to &lt;what you wanted to do&gt;. What does the last line of the
