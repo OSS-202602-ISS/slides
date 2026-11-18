@@ -429,12 +429,12 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
       <h2>Using open source takes four steps</h2>
       <div class="rule"></div>
       <p class="lead">In Chapters 4 to 7 you learned to share code. Today you use other people's code. Every open source project needs the same four steps.</p>
-      <div class="dg" role="img" aria-label="Four steps in a row. 1 clone: git clone gets a copy. 2 install: pip install -r fills the box. 3 run: python starts it. 4 change: edit one thing and run it again. Steps 1 to 3 are Lab PART 1. Step 4 is Lab PART 2." style="max-width:860px;">
+      <div class="dg" role="img" aria-label="Four steps in a row. 1 clone: git clone gets a copy. 2 install: pip install -r fills the virtual environment .venv. 3 run: python starts it. 4 change: edit one thing and run it again. Steps 1 to 3 are Lab PART 1. Step 4 is Lab PART 2." style="max-width:860px;">
         <svg viewBox="0 0 720 132" aria-hidden="true">
           <defs><marker id="ah8a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
           <line class="s-acc" x1="158" y1="62" x2="190" y2="62" stroke-width="2.5" marker-end="url(#ah8a)"/><line class="s-acc" x1="344" y1="62" x2="376" y2="62" stroke-width="2.5" marker-end="url(#ah8a)"/><line class="s-acc" x1="530" y1="62" x2="562" y2="62" stroke-width="2.5" marker-end="url(#ah8a)"/>
           <g><rect class="f-surf s-acc" x="6" y="6" width="150" height="120" rx="12" stroke-width="2"/><text class="mono t-acc" x="18" y="32" font-size="18">1 clone</text><text class="mono t-ink" x="18" y="56" font-size="12.5">git clone URL</text><text class="t-ink" x="18" y="77" font-size="13">Get a copy</text><rect class="f-soft s-al" x="18" y="92" width="80" height="22" rx="11" stroke-width="1"/><text class="t-acc" x="58" y="107" font-size="11.5" font-weight="600" text-anchor="middle">Lab PART 1</text></g>
-          <g><rect class="f-surf s-acc" x="192" y="6" width="150" height="120" rx="12" stroke-width="2"/><text class="mono t-acc" x="204" y="32" font-size="18">2 install</text><text class="mono t-ink" x="204" y="56" font-size="12.5">pip install -r</text><text class="t-ink" x="204" y="77" font-size="13">Fill the box</text><rect class="f-soft s-al" x="204" y="92" width="80" height="22" rx="11" stroke-width="1"/><text class="t-acc" x="244" y="107" font-size="11.5" font-weight="600" text-anchor="middle">Lab PART 1</text></g>
+          <g><rect class="f-surf s-acc" x="192" y="6" width="150" height="120" rx="12" stroke-width="2"/><text class="mono t-acc" x="204" y="32" font-size="18">2 install</text><text class="mono t-ink" x="204" y="56" font-size="12.5">pip install -r</text><text class="t-ink" x="204" y="77" font-size="13">Fill .venv</text><rect class="f-soft s-al" x="204" y="92" width="80" height="22" rx="11" stroke-width="1"/><text class="t-acc" x="244" y="107" font-size="11.5" font-weight="600" text-anchor="middle">Lab PART 1</text></g>
           <g><rect class="f-surf s-acc" x="378" y="6" width="150" height="120" rx="12" stroke-width="2"/><text class="mono t-acc" x="390" y="32" font-size="18">3 run</text><text class="mono t-ink" x="390" y="56" font-size="12.5">python file.py</text><text class="t-ink" x="390" y="77" font-size="13">Start it</text><rect class="f-soft s-al" x="390" y="92" width="80" height="22" rx="11" stroke-width="1"/><text class="t-acc" x="430" y="107" font-size="11.5" font-weight="600" text-anchor="middle">Lab PART 1</text></g>
           <g><rect class="f-soft s-acc" x="564" y="6" width="150" height="120" rx="12" stroke-width="2.5"/><text class="mono t-acc" x="576" y="32" font-size="18">4 change</text><text class="t-ink" x="576" y="56" font-size="13">Edit one thing</text><text class="t-ink" x="576" y="77" font-size="13">Run it again</text><rect class="f-acc" x="576" y="92" width="80" height="22" rx="11"/><text class="t-on" x="616" y="107" font-size="11.5" font-weight="600" text-anchor="middle">Lab PART 2</text></g>
         </svg>
@@ -448,10 +448,10 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
 
     <article class="slide dgs" hidden>
       <p class="eyebrow">Review of Chapter 3</p>
-      <h2>One box per project &mdash; you already made one</h2>
+      <h2>One .venv per project &mdash; you already made one</h2>
       <div class="rule"></div>
-      <p class="lead">A virtual environment (<code>.venv</code>) is a box of libraries. You made it in Chapter 3. Today you use it again.</p>
-      <div class="dg" role="img" aria-label="Your PC folder D:\oss\your ID holds three things side by side. Left: the box .venv with rich and the 3 libraries it needs. It has no .git folder, so Git does not see it, and it is never uploaded. Right: two repositories, teacher-demo-oss-project and oss-practice, both made by git clone. Each has a .git folder, so Git saves everything inside it. requirements.txt in the demo says rich==15.0.0, and pip install -r fills the box from it. Below: GitHub. Only oss-practice goes up to GitHub, with git push." style="max-width:900px;">
+      <p class="lead">A virtual environment (<code>.venv</code>) is the folder that holds your project's libraries. You made it in Chapter 3. Today you use it again.</p>
+      <div class="dg" role="img" aria-label="Your PC folder D:\oss\your ID holds three things side by side. Left: the virtual environment .venv with rich and the 3 libraries it needs. It has no .git folder, so Git does not see it, and it is never uploaded. Right: two repositories, teacher-demo-oss-project and oss-practice, both made by git clone. Each has a .git folder, so Git saves everything inside it. requirements.txt in the demo says rich==15.0.0, and pip install -r fills .venv from it. Below: GitHub. Only oss-practice goes up to GitHub, with git push." style="max-width:900px;">
         <svg viewBox="0 0 720 312" aria-hidden="true">
           <defs><marker id="ah8b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
           <rect class="f-s2 s-line" x="4" y="4" width="712" height="234" rx="12" stroke-width="1.5"/>
@@ -459,7 +459,7 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
           <rect class="f-acc" x="430" y="14" width="40" height="21" rx="6"/><text class="mono t-on" x="450" y="29" font-size="12.5" text-anchor="middle">.git</text>
           <text class="t-ink" x="478" y="29" font-size="13.5" font-weight="600">= Git saves this folder</text>
           <rect class="f-soft s-acc" x="20" y="46" width="272" height="178" rx="12" stroke-width="2"/>
-          <text class="mono t-acc" x="36" y="72" font-size="18">.venv</text><text class="t-mut" x="96" y="72" font-size="13.5" font-weight="600">your box</text>
+          <text class="mono t-acc" x="36" y="72" font-size="18">.venv</text><text class="t-mut" x="96" y="72" font-size="13.5" font-weight="600">your libraries</text>
           <rect class="f-surf s-acc" x="36" y="84" width="116" height="32" rx="8" stroke-width="1.5"/><text class="mono t-acc" x="94" y="105" font-size="14" text-anchor="middle">rich</text>
           <rect class="f-surf s-line" x="160" y="84" width="116" height="32" rx="8" stroke-width="1"/><text class="mono t-ink" x="218" y="105" font-size="12.5" text-anchor="middle">pygments</text>
           <rect class="f-surf s-line" x="36" y="124" width="116" height="32" rx="8" stroke-width="1"/><text class="mono t-ink" x="94" y="145" font-size="12" text-anchor="middle">markdown-it-py</text>
@@ -476,7 +476,7 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
           <text class="mono t-ink" x="444" y="182" font-size="13">oss-practice\</text><text class="t-mut" x="444" y="206" font-size="13">your work</text>
           <line class="s-acc" x1="442" y1="108" x2="298" y2="108" stroke-width="2.5" marker-end="url(#ah8b)"/>
           <text class="mono t-acc" x="368" y="98" font-size="13" text-anchor="middle">pip install -r</text>
-          <text class="t-mut" x="368" y="128" font-size="12.5" text-anchor="middle">fills the box</text>
+          <text class="t-mut" x="368" y="128" font-size="12.5" text-anchor="middle">fills .venv</text>
           <text class="t-ink" x="360" y="180" font-size="13" font-weight="600" text-anchor="middle">both made by</text>
           <text class="mono t-acc" x="360" y="200" font-size="13.5" text-anchor="middle">git clone</text>
           <line class="s-acc" x1="402" y1="178" x2="426" y2="146" stroke-width="2" marker-end="url(#ah8b)"/>
@@ -485,16 +485,16 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
           <text class="t-ink" x="565" y="290" font-size="15" font-weight="700" text-anchor="middle">GitHub</text>
           <line class="s-acc" x1="565" y1="226" x2="565" y2="260" stroke-width="2.5" marker-end="url(#ah8b)"/>
           <text class="mono t-acc" x="575" y="250" font-size="13">git push</text>
-          <text class="t-bad" x="36" y="290" font-size="14" font-weight="700">&#x2715; The box is never uploaded.</text>
+          <text class="t-bad" x="36" y="290" font-size="14" font-weight="700">&#x2715; .venv is never uploaded.</text>
         </svg>
       </div>
       <ul>
-        <li><b><code>.venv</code> is your box of libraries.</b> It has no <code>.git</code>. So Git never uploads it.</li>
-        <li><b>GitHub gets <code>requirements.txt</code>, not the box.</b> Each PC makes its own box.</li>
+        <li><b><code>.venv</code> holds your libraries.</b> It has no <code>.git</code>. So Git never uploads it.</li>
+        <li><b>GitHub gets <code>requirements.txt</code>, not <code>.venv</code>.</b> Each PC makes its own <code>.venv</code>.</li>
       </ul>
       <div class="callout warn">
         <span class="mk">Different PC today?</span>
-        <p>Your box stays on the old PC. <b>Make a new one. It takes about 20 seconds.</b> Lab PART 1, step 1 shows how.</p>
+        <p>Your <code>.venv</code> stays on the old PC. <b>Make a new one. It takes about 20 seconds.</b> Lab PART 1, step 1 shows how.</p>
       </div>
     </article>
 
@@ -533,7 +533,7 @@ Cloning into 'teacher-demo-oss-project'...
 &gt; cd teacher-demo-oss-project</code></pre>
       <ul>
         <li><b>Clone once.</b> Next time, type <code class="cmd">git pull</code>. It gets only the new changes (Chapter 4).</li>
-        <li><b>Clone in <code>D:\oss\&lt;your ID&gt;</code>.</b> Then the repository sits next to your box (slide 3).</li>
+        <li><b>Clone in <code>D:\oss\&lt;your ID&gt;</code>.</b> Then the repository sits next to your <code>.venv</code> (slide 3).</li>
         <li><b>A public repository needs no login to clone.</b> You need a login only to push.</li>
       </ul>
       <div class="callout">
@@ -546,7 +546,7 @@ Cloning into 'teacher-demo-oss-project'...
       <p class="eyebrow">After step one: read the list first</p>
       <h2>Read requirements.txt first</h2>
       <div class="rule"></div>
-      <p class="lead">After you clone a project (<code class="cmd">git clone</code>), open this file first. It lists what goes into the box. Then install.</p>
+      <p class="lead">After you clone a project (<code class="cmd">git clone</code>), open this file first. It lists what goes into <code>.venv</code>. Then install.</p>
       <div class="grid g2">
         <div class="card"><span class="tagline">The demo, today</span><pre><code>rich==15.0.0</code></pre><p>One library. <code>==</code> means <b>exactly this version</b>. Not newer, not older.</p></div>
         <div class="card"><span class="tagline">The demo, after the Lab</span><pre><code>rich==15.0.0
@@ -561,9 +561,9 @@ tabulate==0.10.0</code></pre><p><b>Use a new library? Add a line.</b> You do it 
 
     <article class="slide" hidden>
       <p class="eyebrow">Step two of four</p>
-      <h2>One command fills the box</h2>
+      <h2>One command fills .venv</h2>
       <div class="rule"></div>
-      <p class="lead"><code class="cmd">pip install -r requirements.txt</code> reads the list. It installs every line. This is a real run in a new box:</p>
+      <p class="lead"><code class="cmd">pip install -r requirements.txt</code> reads the list. It installs every line. This is a real run in a new <code>.venv</code>:</p>
       <pre><code>&gt; pip install -r requirements.txt
 Collecting rich==15.0.0 (from -r requirements.txt (line 1))
 ...
@@ -596,7 +596,7 @@ Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.
       </div>
       <div class="callout">
         <span class="mk">Today in the lab</span>
-        <p>Most of you skip step 2: <b>you already have a box</b> (slide 3). New PC? PART 1 step 1 makes the box. <b>Knowing which step to skip is also reading a README.</b> In the assignment, you write one README line: how to run your tool.</p>
+        <p>Most of you skip step 2: <b>you already have a <code>.venv</code></b> (slide 3). New PC? PART 1 step 1 makes <code>.venv</code>. <b>Knowing which step to skip is also reading a README.</b> In the assignment, you write one README line: how to run your tool.</p>
       </div>
     </article>
 
@@ -791,7 +791,7 @@ cd ..</code></pre>
       </div>
 
       <div class="s4">
-        <h4>④ Get ready to make the box</h4>
+        <h4>④ Get ready to make .venv</h4>
         <span class="k">Do</span><div class="v">Check that Python works. Then list the folders here.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python --version
 dir</code></pre></div>
@@ -805,7 +805,7 @@ dir</code></pre></div>
 11/05/2026  10:06 AM    &lt;DIR&gt;          .venv
 11/05/2026  10:06 AM    &lt;DIR&gt;          oss-practice
                0 File(s)              0 bytes
-               4 Dir(s)  87,975,211,008 bytes free</code></pre>Look at the names at the end of the lines. <code>oss-practice</code> must be there. <code>.venv</code> is there if you made a box here before. Ignore <code>.</code> and <code>..</code> (this folder and the folder above). Your dates and numbers are different.</div>
+               4 Dir(s)  87,975,211,008 bytes free</code></pre>Look at the names at the end of the lines. <code>oss-practice</code> must be there. <code>.venv</code> is there if you made it here before. Ignore <code>.</code> and <code>..</code> (this folder and the folder above). Your dates and numbers are different.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>No <code>.venv</code> in the list? That is fine. You make it in PART 1, step 1.</li>
           <li>No <code>oss-practice</code> in the list? Do ③ again.</li>
@@ -876,18 +876,18 @@ dir</code></pre></div>
       <p class="places-cap">The demo: download only. Your <code>oss-practice</code>: download and upload.</p>
 
       <div class="s4">
-        <h4>1. Make the box (only if <code>.venv</code> is not here)</h4>
-        <span class="k">Do</span><div class="v">In <code>D:\oss\&lt;your ID&gt;</code>, make a new box. Skip this step if Ready check ④ showed <code>.venv</code>.</div>
+        <h4>1. Make .venv (only if <code>.venv</code> is not here)</h4>
+        <span class="k">Do</span><div class="v">In <code>D:\oss\&lt;your ID&gt;</code>, make a new <code>.venv</code>. Skip this step if Ready check ④ showed <code>.venv</code>.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python -m venv .venv</code></pre></div>
         <span class="k see">You should see</span><div class="v">Nothing for about 20 seconds. Then the prompt appears again.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>You see <code>Error: [Errno 13] Permission denied: '...\.venv\Scripts\python.exe'</code>? Your box is already active. Type <code class="cmd">deactivate</code> first. Or skip this step: the box is already here.</li>
+          <li>You see <code>Error: [Errno 13] Permission denied: '...\.venv\Scripts\python.exe'</code>? Your <code>.venv</code> is already active. Type <code class="cmd">deactivate</code> first. Or skip this step: <code>.venv</code> is already here.</li>
         </ul></div>
       </div>
 
       <div class="s4">
-        <h4>2. Activate the box</h4>
-        <span class="k">Do</span><div class="v">Activate your box. Do this in every new terminal. A new terminal starts with the box not active.</div>
+        <h4>2. Activate .venv</h4>
+        <span class="k">Do</span><div class="v">Activate your <code>.venv</code>. Do this in every new terminal. A new terminal starts with <code>.venv</code> not active.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>.venv\Scripts\activate</code></pre></div>
         <span class="k see">You should see</span><div class="v">The prompt now starts with <code>(.venv)</code>:<pre data-kind="out"><code>(.venv) D:\oss\&lt;your ID&gt;&gt;</code></pre></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
@@ -911,7 +911,7 @@ cd teacher-demo-oss-project</code></pre></div>
         <h4>4. Read the list first</h4>
         <span class="k">Do</span><div class="v">In the VS Code Explorer (the file list on the left), open <code>teacher-demo-oss-project</code> &rsaquo; <code>README.md</code> and read it. Then show the list of libraries.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>type requirements.txt</code></pre></div>
-        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>rich==15.0.0</code></pre>One library, one exact version. Skip README step 2. You already have a box.</div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>rich==15.0.0</code></pre>One library, one exact version. Skip README step 2. You already have a <code>.venv</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>cmd cannot find the file? You are in the wrong folder. Type <code class="cmd">cd teacher-demo-oss-project</code>.</li>
         </ul></div>
@@ -919,17 +919,17 @@ cd teacher-demo-oss-project</code></pre></div>
 
       <div class="s4">
         <h4>5. Install</h4>
-        <span class="k">Do</span><div class="v">Put the libraries from the list into your box.</div>
+        <span class="k">Do</span><div class="v">Put the libraries from the list into your <code>.venv</code>.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip install -r requirements.txt</code></pre></div>
-        <span class="k see">You should see</span><div class="v">A new box: some <code>Collecting</code> lines, then this line:
+        <span class="k see">You should see</span><div class="v">A new <code>.venv</code>: some <code>Collecting</code> lines, then this line:
 <pre data-kind="out"><code>Successfully installed markdown-it-py-4.2.0 mdurl-0.1.2 pygments-2.21.0 rich-15.0.0</code></pre>
-          A box from Chapter 3 already has <code>rich</code>. Then you see:
+          A <code>.venv</code> from Chapter 3 already has <code>rich</code>. Then you see:
 <pre data-kind="out"><code>Requirement already satisfied: rich==15.0.0 in ...</code></pre>
           and more lines. Both are correct. You may also see a notice about a new pip. You can ignore it.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirement.txt'</code>? A typo. The name is <code>requirements.txt</code>, with an <b>s</b>.</li>
           <li>No <code>(.venv)</code> at the start of the prompt? Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
-          <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? The box is not active. pip put the library outside the box. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
+          <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? Your <code>.venv</code> is not active. So pip put the library outside <code>.venv</code>. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
         </ul></div>
       </div>
 
@@ -951,7 +951,7 @@ cd teacher-demo-oss-project</code></pre></div>
           <b>The lines can look a little different. The words must be the same.</b>
           <p>Panel on top. Table below. In the VS Code terminal, the corners and lines of the panel and the table can look different, and there is colour. The words are the same.</p></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li><code>ModuleNotFoundError: No module named 'rich'</code>? The box is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then do step 5 and step 6 again.</li>
+          <li><code>ModuleNotFoundError: No module named 'rich'</code>? Your <code>.venv</code> is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then do step 5 and step 6 again.</li>
           <li><code>can't open file '...\hello_tool.py': [Errno 2] No such file or directory</code>? You are in the wrong folder. Type <code class="cmd">cd teacher-demo-oss-project</code>.</li>
         </ul></div>
       </div>
@@ -1098,7 +1098,7 @@ Tools in this course
 +--------+---------------------------------+-----------+</code></pre>
           <p>In the VS Code terminal, the corners of the panel can look different, and there is colour. The <code>tabulate</code> table looks the same: it is plain text. The words are the same.</p></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li><code>ModuleNotFoundError: No module named 'tabulate'</code>? <code>tabulate</code> is not in this box. Check for <code>(.venv)</code> in the prompt. Then do Change 3a again.</li>
+          <li><code>ModuleNotFoundError: No module named 'tabulate'</code>? <code>tabulate</code> is not in this <code>.venv</code>. Check for <code>(.venv)</code> in the prompt. Then do Change 3a again.</li>
           <li>You still see the old table? Save the file (<kbd>Ctrl + S</kbd>). Run again.</li>
         </ul></div>
       </div>
@@ -1109,10 +1109,10 @@ Tools in this course
         <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>rich==15.0.0
 tabulate==0.10.0</code></pre>
 <pre data-kind="cmd"><code>pip install -r requirements.txt</code></pre>
-          <p class="why">Why: the next person installs from the list. Without this line, their box has no <code>tabulate</code>.</p></div>
+          <p class="why">Why: the next person installs from the list. Without this line, their <code>.venv</code> has no <code>tabulate</code>.</p></div>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Requirement already satisfied: rich==15.0.0 in ...
 Requirement already satisfied: tabulate==0.10.0 in ...</code></pre>
-          and more lines. Every line says <code>Requirement already satisfied</code>. The list and the box agree. You may also see a notice about a new pip. You can ignore it.</div>
+          and more lines. Every line says <code>Requirement already satisfied</code>. The list and your <code>.venv</code> agree. You may also see a notice about a new pip. You can ignore it.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirement.txt'</code>? A typo. Type <code>requirements.txt</code>, with an <b>s</b>.</li>
         </ul></div>
@@ -1183,10 +1183,10 @@ git pull</code></pre></div>
 <pre data-kind="out"><code>Successfully installed tabulate-0.10.0</code></pre>
           With <code>python-dateutil</code>:
 <pre data-kind="out"><code>Successfully installed python-dateutil-2.9.0.post0 six-1.17.0</code></pre>
-          <code>rich</code> and <code>tabulate</code> are already in your box from PART 2. Then you see <code>Requirement already satisfied</code>. Both are correct. You may also see a notice about a new pip. You can ignore it.</div>
+          <code>rich</code> and <code>tabulate</code> are already in your <code>.venv</code> from PART 2. Then you see <code>Requirement already satisfied</code>. Both are correct. You may also see a notice about a new pip. You can ignore it.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>No <code>(.venv)</code> in the prompt? Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
-          <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? The box is not active. pip put the library outside the box. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
+          <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? Your <code>.venv</code> is not active. So pip put the library outside <code>.venv</code>. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
           <li><code>ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirement.txt'</code>? A typo. Type <code>requirements.txt</code>, with an <b>s</b>.</li>
         </ul></div>
       </div>
@@ -1335,7 +1335,7 @@ print(f"Hello, {args.name}! The latest rich on PyPI is {version}.")</code></pre>
           </div></div>
         <span class="k see">You should see</span><div class="v">Like the output in step 4, with your own words and values. Check: the name after <code>--name</code> (here <code>Ada</code>) is in the output. Copy the whole output. You paste it into the assignment issue.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li><code>ModuleNotFoundError: No module named '...'</code>? Your library is not in this box. Do step 3 again.</li>
+          <li><code>ModuleNotFoundError: No module named '...'</code>? Your library is not in this <code>.venv</code>. Do step 3 again.</li>
           <li><code>can't open file ... [Errno 2] No such file or directory</code>? Run it from <code>oss-practice</code>. Check the file name.</li>
         </ul></div>
       </div>
@@ -1508,7 +1508,7 @@ What I changed or checked myself:
       </div>
       <div class="callout warn">
         <span class="mk">Deadline</span>
-        <p><b>11:59 PM the night before the next class — the exact date is in the ecampus notice.</b> You can finish at home. Clone your <code>oss-practice</code>. Make a box (Lab PART 1, steps 1–2). Type <code class="cmd">pip install -r requirements.txt</code>. Run it. Does it work on a second computer? Then your README is good.</p>
+        <p><b>11:59 PM the night before the next class — the exact date is in the ecampus notice.</b> You can finish at home. Clone your <code>oss-practice</code>. Make a <code>.venv</code> (Lab PART 1, steps 1–2). Type <code class="cmd">pip install -r requirements.txt</code>. Run it. Does it work on a second computer? Then your README is good.</p>
       </div>
     </div>
 
@@ -1516,7 +1516,7 @@ What I changed or checked myself:
       <div class="step-head"><span class="step-no">Next</span><h3>Preview of Chapter 9</h3></div>
       <p class="goal"><b>Working with data and files.</b> You read a CSV file with <code>pandas</code>. You keep only the rows you need. You show them as a <code>rich</code> table. You save them as an Excel file with <code>openpyxl</code>.</p>
       <ul style="margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em; font-size:.95rem;">
-        <li>Sit at the same PC. You use your box in <code>D:\oss\&lt;your ID&gt;\.venv</code> again.</li>
+        <li>Sit at the same PC. You use your virtual environment in <code>D:\oss\&lt;your ID&gt;\.venv</code> again.</li>
         <li>Your new tool goes into the same <code>oss-practice/tools/</code> folder. <code>requirements.txt</code> gets two more lines.</li>
         <li>Section 3 of the review packet (<code>python-review-packet.md</code> in the <code>course-notice</code> repository) is about lists and dictionaries. A table is made of them. Review it if the self-check below shows a gap.</li>
       </ul>

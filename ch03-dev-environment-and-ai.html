@@ -332,39 +332,39 @@ pre code{background:none; border:0; padding:0; font-size:.85rem; line-height:1.6
 
     <article class="slide" hidden>
       <p class="eyebrow">The main idea of today</p>
-      <h2>A virtual environment is<br>one box per project</h2>
+      <h2>A virtual environment is<br>one .venv per project</h2>
       <div class="rule"></div>
-      <p class="lead">A virtual environment (a separate box of libraries for one project) lives inside your project folder. Libraries you install go into that box, and nowhere else.</p>
+      <p class="lead">A virtual environment (<code>.venv</code>) is a separate folder of libraries for one project. It lives inside your project folder. Libraries you install go into <code>.venv</code>, and nowhere else.</p>
       <div class="grid g2">
-        <div class="card"><h4>Without a box</h4><p>Every library you install goes into one shared pile on the whole computer. Project A needs version 15 of a library. Project B needs version 10. The shared pile can hold only one of them, so one project breaks.</p></div>
-        <div class="card"><h4>With a box</h4><p>Project A has its own box with version 15. Project B has its own box with version 10. Neither project knows about the other. And you can delete a box and build it again in one minute.</p></div>
+        <div class="card"><h4>Without a .venv</h4><p>Every library you install goes into one shared pile on the whole computer. Project A needs version 15 of a library. Project B needs version 10. The shared pile can hold only one of them, so one project breaks.</p></div>
+        <div class="card"><h4>With a .venv</h4><p>Project A has its own <code>.venv</code> with version 15. Project B has its own <code>.venv</code> with version 10. Neither project knows about the other. And you can delete a <code>.venv</code> and build it again in one minute.</p></div>
       </div>
       <table>
         <thead><tr><th>You do</th><th>What happens</th></tr></thead>
         <tbody>
-          <tr><td><code>python -m venv .venv</code></td><td>Makes an <b>empty box</b>: a folder <code>.venv</code> with its own Python.</td></tr>
-          <tr><td><kbd>Ctrl+Shift+P</kbd> &rarr; <b>Python: Select Interpreter</b> &rarr; the <code>.venv</code> one</td><td>Tells VS Code: <b>run my code with the Python in the box</b>.</td></tr>
-          <tr><td><b>Terminal &rsaquo; New Terminal</b></td><td>A new terminal opens <b>inside the box</b>: you see <code>(.venv)</code>.</td></tr>
-          <tr><td><code>pip install rich==15.0.0</code></td><td>Puts one library <b>into the box only</b>.</td></tr>
+          <tr><td><code>python -m venv .venv</code></td><td>Makes an <b>empty <code>.venv</code></b>: a folder with its own Python.</td></tr>
+          <tr><td><kbd>Ctrl+Shift+P</kbd> &rarr; <b>Python: Select Interpreter</b> &rarr; the <code>.venv</code> one</td><td>Tells VS Code: <b>run my code with the Python in <code>.venv</code></b>.</td></tr>
+          <tr><td><b>Terminal &rsaquo; New Terminal</b></td><td>A new terminal opens <b>inside <code>.venv</code></b>: you see <code>(.venv)</code>.</td></tr>
+          <tr><td><code>pip install rich==15.0.0</code></td><td>Puts one library <b>into <code>.venv</code> only</b>.</td></tr>
         </tbody>
       </table>
       <div class="callout">
         <span class="mk">You will see this today</span>
-        <p>Inside your box, <code>pip list</code> shows a short list and <b>no pandas</b> &mdash; though pandas is installed for the whole computer. Same computer, different box.</p>
+        <p>Inside your <code>.venv</code>, <code>pip list</code> shows a short list and <b>no pandas</b> &mdash; though pandas is installed for the whole computer. Same computer, different <code>.venv</code>.</p>
       </div>
     </article>
 
     <article class="slide" hidden>
-      <p class="eyebrow">How the box travels</p>
-      <h2>requirements.txt is the list<br>of what is in the box</h2>
+      <p class="eyebrow">How .venv travels</p>
+      <h2>requirements.txt is the list<br>of what is in .venv</h2>
       <div class="rule"></div>
-      <p class="lead">A box is useful on your own machine. A written list of what is inside the box is useful to everyone else.</p>
+      <p class="lead">A <code>.venv</code> is useful on your own machine. A written list of what is inside <code>.venv</code> is useful to everyone else.</p>
       <pre><code>rich==15.0.0
 pandas==3.0.5
 requests==2.34.2</code></pre>
       <ul>
         <li><b>One library and one version on each line.</b> The version number is the important part.</li>
-        <li><b>Your classmate types one command</b> &mdash; <code>pip install -r requirements.txt</code> &mdash; and gets the same box you have.</li>
+        <li><b>Your classmate types one command</b> &mdash; <code>pip install -r requirements.txt</code> &mdash; and gets the same libraries in their own <code>.venv</code>.</li>
         <li><b>This is the answer to slide 3.</b> The three reasons code breaks were the Python version, a missing library, and a wrong library version. This file fixes the last two. The Python version comes from the installer &mdash; everyone here has 3.12.</li>
       </ul>
       <div class="callout">
@@ -451,7 +451,7 @@ requests==2.34.2</code></pre>
       <div class="rule"></div>
       <div class="grid g2">
         <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Name the three tools and say what each one does. Explain why the same code fails on another computer. Say what a virtual environment holds, and give the four steps for asking AI about an error.</p></div>
-        <div class="card"><span class="tagline">90 min · Lab</span><h4>What's next</h4><p>Install the three tools, check three version numbers, build your first box with <code>rich</code> inside it, then break three small files on purpose and let AI help you read the errors.</p></div>
+        <div class="card"><span class="tagline">90 min · Lab</span><h4>What's next</h4><p>Install the three tools, check three version numbers, build your first <code>.venv</code> with <code>rich</code> inside it, then break three small files on purpose and let AI help you read the errors.</p></div>
       </div>
       <p class="lead">Switch to the <b>Lab</b> tab above and get started.</p>
     </article>
@@ -538,29 +538,29 @@ git --version</code></pre>
 
     <div class="step">
       <div class="step-head"><span class="step-no">PART 2</span><h3>Your first virtual environment</h3><span class="budget">20 min</span></div>
-      <p class="goal">Build one box, put one library into it, and see with your own eyes that the box is separate from the rest of the computer. Screenshot 2 comes from here.</p>
+      <p class="goal">Build one <code>.venv</code>, put one library into it, and see with your own eyes that your <code>.venv</code> is separate from the rest of the computer. Screenshot 2 comes from here.</p>
       <ol>
         <li>In VS Code open a terminal: <b>Terminal &rsaquo; New Terminal</b>. It starts inside your folder.
-          <span class="why"><b>What is happening:</b> the box will be made in the folder where the terminal is, so we start in your own folder.</span></li>
-        <li>Make the box. It takes about 12 seconds, and a folder named <code>.venv</code> appears in the file list on the left.
+          <span class="why"><b>What is happening:</b> <code>.venv</code> will be made in the folder where the terminal is, so we start in your own folder.</span></li>
+        <li>Make <code>.venv</code>. It takes about 12 seconds, and a folder named <code>.venv</code> appears in the file list on the left.
 <pre><code>python -m venv .venv</code></pre>
-          <span class="why"><b>What is happening:</b> Python builds a new, <b>empty</b> box. The <code>.venv</code> folder holds its own <code>python.exe</code> and its own shelf for libraries. Nothing is on the shelf yet.</span>
+          <span class="why"><b>What is happening:</b> Python builds a new, <b>empty</b> virtual environment. The <code>.venv</code> folder holds its own <code>python.exe</code> and its own folder for libraries. No library is in that folder yet.</span>
         </li>
         <li>Tell VS Code to use it. Press <kbd>Ctrl + Shift + P</kbd> to open the <b>Command Palette</b>, type <b>Python: Select Interpreter</b>, press Enter, and choose the one that has <code>.venv</code> in its path. It is usually at the <b>bottom</b> of the list, marked <b>Workspace</b>. Click it. If the top line already says <code>.venv</code>, it is already chosen &mdash; press <kbd>Esc</kbd>. Then go to step 4.
-          <span class="why"><b>What is happening:</b> this PC now has two Pythons &mdash; one for the whole computer and one in your box. Here you tell VS Code which one runs your code. The name of the chosen one appears in the bottom-right corner.</span></li>
-        <li><b>Open a new terminal again</b> (<b>Terminal &rsaquo; New Terminal</b>). VS Code turns the box on by itself, and you see <code>(.venv)</code> at the left of the prompt.
-          <span class="why"><b>What is happening:</b> a terminal keeps the settings it had when it opened. The old one does not know about the box; the new one opens with the box turned on. <code>(.venv)</code> means &ldquo;you are inside the box now&rdquo;.</span>
+          <span class="why"><b>What is happening:</b> this PC now has two Pythons &mdash; one for the whole computer and one in your <code>.venv</code>. Here you tell VS Code which one runs your code. The name of the chosen one appears in the bottom-right corner.</span></li>
+        <li><b>Open a new terminal again</b> (<b>Terminal &rsaquo; New Terminal</b>). VS Code turns <code>.venv</code> on by itself, and you see <code>(.venv)</code> at the left of the prompt.
+          <span class="why"><b>What is happening:</b> a terminal keeps the settings it had when it opened. The old one does not know about <code>.venv</code>; the new one opens with <code>.venv</code> turned on. <code>(.venv)</code> means &ldquo;you are inside <code>.venv</code> now&rdquo;.</span>
           <ul>
             <li>Backup only, if <code>(.venv)</code> does not appear: type <code>.venv\Scripts\activate</code> in a <code>cmd</code> terminal.</li>
           </ul>
         </li>
-        <li>Install one library into the box. About 14 seconds.
+        <li>Install one library into <code>.venv</code>. About 14 seconds.
           <span class="why"><b>What is <code>pip</code>?</b> Python&rsquo;s tool for installing libraries. It comes with Python. <code>pip install &lt;name&gt;</code> downloads a library from <b>PyPI</b> (the public store of Python libraries) and installs it. <code>pip list</code> shows what is installed.</span>
           <span class="why"><b>What is <code>rich</code>?</b> The project you toured in Chapter 2 (<code>Textualize/rich</code>). It makes text in the terminal look better &mdash; colours, tables, progress bars. We use it today because it is small, installs fast, and you can see it work with one line.</span>
 <pre><code>pip install rich==15.0.0</code></pre>
-          <span class="why"><b>What is happening:</b> <code>pip</code> downloads <code>rich</code> and puts it on <b>the box&rsquo;s shelf only</b>. <code>==15.0.0</code> fixes the version, so everyone in this room gets the same one.</span>
+          <span class="why"><b>What is happening:</b> <code>pip</code> downloads <code>rich</code> and puts it <b>in <code>.venv</code> only</b>. <code>==15.0.0</code> fixes the version, so everyone in this room gets the same one.</span>
         </li>
-        <li>Look inside the box:
+        <li>Look inside <code>.venv</code>:
 <pre><code>pip list</code></pre>
           You see a short list: <code>rich</code>, the small libraries that rich needs, and <code>pip</code>. <b>This PC has pandas</b> (a library for tables of data &mdash; you saw it in Chapter 2 and will use it in Chapter 9) <b>and many other libraries installed for the whole computer, and none of them are here.</b> That is what a virtual environment does.
         </li>
@@ -568,12 +568,12 @@ git --version</code></pre>
         <li>Run one line and see the colour:
 <pre><code>python -c "from rich import print; print('[bold green]hello[/]')"</code></pre>
           The word <code>hello</code> is printed in green. <code>rich</code> is the library you use again in Chapter 8.
-          <span class="why"><b>What is happening:</b> the Python in the box finds <code>rich</code> on its own shelf and uses it. This proves the box works.</span>
+          <span class="why"><b>What is happening:</b> the Python in <code>.venv</code> finds <code>rich</code> in <code>.venv</code> and uses it. This proves your <code>.venv</code> works.</span>
         </li>
       </ol>
       <div class="callout warn">
         <span class="mk">If pip list shows pandas</span>
-        <p>Then this terminal is using the whole computer, not your box. Look at the bottom-right corner of VS Code: it shows which interpreter is selected. Choose the <code>.venv</code> one again, and open one more new terminal.</p>
+        <p>Then this terminal is using the whole computer, not your <code>.venv</code>. Look at the bottom-right corner of VS Code: it shows which interpreter is selected. Choose the <code>.venv</code> one again, and open one more new terminal.</p>
       </div>
       <label class="check"><input type="checkbox" data-k="s2"><span>.venv made · interpreter selected · rich installed · pip list checked · screenshot 2 added to my issue · green hello printed</span></label>
     </div>

@@ -722,7 +722,7 @@ print(back)</code></pre>
       <h2>Two libraries, one small tool</h2>
       <div class="rule"></div>
       <p class="lead">You put the four steps into one file in your own <code>oss-practice</code> repository: <code>tools/table_tool.py</code>.</p>
-      <div class="dg" role="img" aria-label="Top: the cmd terminal. The prompt is (.venv) D:\oss\your ID\oss-practice. The command is python tools/table_tool.py data/servers.csv. An arrow goes from tools/table_tool.py to the file tools\table_tool.py, and an arrow goes from data/servers.csv to the file data\servers.csv. Below: your PC, the folder D:\oss\your ID. On the left, the box .venv with pandas, openpyxl and rich. On the right, the repository oss-practice with a .git folder. It holds tools\table_tool.py (your tool), data\servers.csv (the CSV it reads), requirements.txt (three pinned lines added), lab09.py (practice, not added), result.xlsx (made by the tool, not uploaded) and .gitignore with the line *.xlsx." style="max-width:900px;">
+      <div class="dg" role="img" aria-label="Top: the cmd terminal. The prompt is (.venv) D:\oss\your ID\oss-practice. The command is python tools/table_tool.py data/servers.csv. An arrow goes from tools/table_tool.py to the file tools\table_tool.py, and an arrow goes from data/servers.csv to the file data\servers.csv. Below: your PC, the folder D:\oss\your ID. On the left, the virtual environment .venv with pandas, openpyxl and rich. On the right, the repository oss-practice with a .git folder. It holds tools\table_tool.py (your tool), data\servers.csv (the CSV it reads), requirements.txt (three pinned lines added), lab09.py (practice, not added), result.xlsx (made by the tool, not uploaded) and .gitignore with the line *.xlsx." style="max-width:900px;">
         <svg viewBox="0 0 720 250" aria-hidden="true">
           <defs><marker id="ah9c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
           <rect class="f-s2 s-line" x="4" y="4" width="712" height="62" rx="10" stroke-width="1.5"/>
@@ -732,7 +732,7 @@ print(back)</code></pre>
           <rect class="f-s2 s-line" x="4" y="84" width="712" height="162" rx="12" stroke-width="1.5"/>
           <text class="t-ink" x="18" y="106" font-size="14" font-weight="700">Your PC</text><text class="mono t-ink" x="84" y="106" font-size="12.5">D:\oss\&lt;your ID&gt;\</text>
           <rect class="f-soft s-acc" x="18" y="118" width="150" height="116" rx="10" stroke-width="1.5"/>
-          <text class="mono t-acc" x="30" y="140" font-size="15">.venv</text><text class="t-mut" x="84" y="140" font-size="12" font-weight="600">your box</text>
+          <text class="mono t-acc" x="30" y="140" font-size="15">.venv</text><text class="t-mut" x="84" y="140" font-size="12" font-weight="600">your libraries</text>
           <text class="mono t-ink" x="30" y="166" font-size="12.5">pandas</text><text class="mono t-ink" x="30" y="188" font-size="12.5">openpyxl</text><text class="mono t-ink" x="30" y="210" font-size="12.5">rich</text>
           <rect class="f-surf s-acc" x="186" y="118" width="516" height="116" rx="10" stroke-width="1.5"/>
           <text class="mono t-ink" x="200" y="138" font-size="13">oss-practice\</text>
@@ -761,7 +761,7 @@ print(back)</code></pre>
       <div class="rule"></div>
       <div class="grid g2">
         <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Say what a DataFrame is. Read a CSV with <code>pd.read_csv</code> and check it with <code>head()</code> and <code>columns</code>. Write a filter with one and with two conditions. Save with <code>to_excel(..., index=False)</code>. Name the three errors and their fix.</p></div>
-        <div class="card"><span class="tagline">90 min · Lab</span><h4>What's next</h4><p>Activate your box in cmd. Install <code>pandas</code> and <code>openpyxl</code>. Make <code>data\servers.csv</code>. Run three filters. Print one as a <code>rich</code> table. Save it to Excel and read it back. Then build your own <code>table_tool.py</code> and push it.</p></div>
+        <div class="card"><span class="tagline">90 min · Lab</span><h4>What's next</h4><p>Activate your <code>.venv</code> (the folder that holds your project's libraries, Chapter 3) in cmd. Install <code>pandas</code> and <code>openpyxl</code>. Make <code>data\servers.csv</code>. Run three filters. Print one as a <code>rich</code> table. Save it to Excel and read it back. Then build your own <code>table_tool.py</code> and push it.</p></div>
       </div>
       <p class="lead">Open the <b>Lab</b> tab above. PART 0 is the first box.</p>
     </article>
@@ -845,7 +845,7 @@ print(back)</code></pre>
       </div>
       <div class="callout warn">
         <span class="mk">Missed Chapter 8?</span>
-        <p>No <code>D:\oss\&lt;your ID&gt;</code> folder, no <code>.venv</code>, or no <code>oss-practice</code> clone? Open the Chapter 8 slides, <b>Lab</b> tab. Do <b>Ready check ② to ④</b> (② = your <code>oss-practice</code> repository is on GitHub &mdash; make it there if the page shows 404; ③ = the clone of your own <code>oss-practice</code> and the two <code class="cmd">git config</code> lines &mdash; never <code>--global</code>; ④ = <code class="cmd">python --version</code> and <code class="cmd">dir</code>). Then do <b>PART 1, steps 1&ndash;2</b> (make the box and activate it). Then come back here.</p>
+        <p>No <code>D:\oss\&lt;your ID&gt;</code> folder, no <code>.venv</code>, or no <code>oss-practice</code> clone? Open the Chapter 8 slides, <b>Lab</b> tab. Do <b>Ready check ② to ④</b> (② = your <code>oss-practice</code> repository is on GitHub &mdash; make it there if the page shows 404; ③ = the clone of your own <code>oss-practice</code> and the two <code class="cmd">git config</code> lines &mdash; never <code>--global</code>; ④ = <code class="cmd">python --version</code> and <code class="cmd">dir</code>). Then do <b>PART 1, steps 1&ndash;2</b> (make <code>.venv</code> and activate it). Then come back here.</p>
       </div>
       <p class="done"><b>Done when</b> my own avatar · cmd terminal in D:\oss\&lt;my ID&gt; · cmdkey shows no github line · no sign-in in VS Code</p>
     </div>
@@ -853,16 +853,16 @@ print(back)</code></pre>
     <!-- PART 1 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 1</span><h3>Install two libraries, read the file</h3><span class="budget">20 min</span></div>
-      <p class="goal">Put <code>pandas</code> and <code>openpyxl</code> into your box. Make the data file. Read it with pandas. Slide 11 shows where each file goes.</p>
+      <p class="goal">Put <code>pandas</code> and <code>openpyxl</code> into your <code>.venv</code>. Make the data file. Read it with pandas. Slide 11 shows where each file goes.</p>
 
       <div class="s4">
-        <h4>1. Activate the box</h4>
-        <span class="k">Do</span><div class="v">In the terminal from PART 0, activate your box. Do this in every new terminal. A new terminal starts with the box not active.</div>
+        <h4>1. Activate .venv</h4>
+        <span class="k">Do</span><div class="v">In the terminal from PART 0, activate your <code>.venv</code>. Do this in every new terminal. A new terminal starts with <code>.venv</code> not active.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>.venv\Scripts\activate</code></pre></div>
         <span class="k see">You should see</span><div class="v">The prompt now starts with <code>(.venv)</code>:<pre data-kind="out"><code style="white-space:nowrap">(.venv) D:\oss\&lt;your ID&gt;&gt;</code></pre>Was <code>(.venv)</code> already there? Then nothing changes. That is fine.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>The prompt starts with <code>PS</code>? Type <code class="cmd">cmd</code> and press Enter. Then type this command again.</li>
-          <li><code>The system cannot find the path specified.</code>? There is no box in this folder. Read <b>Missed Chapter 8?</b> in PART 0.</li>
+          <li><code>The system cannot find the path specified.</code>? There is no <code>.venv</code> in this folder. Read <b>Missed Chapter 8?</b> in PART 0.</li>
           <li>VS Code runs your file with another Python (not the one in <code>.venv</code>)? Press <kbd>Ctrl + Shift + P</kbd> &rarr; <b>Python: Select Interpreter</b> &rarr; the one inside <code>.venv</code>. Then open a new terminal and type this command again.</li>
         </ul></div>
       </div>
@@ -871,15 +871,15 @@ print(back)</code></pre>
         <h4>2. Install the two libraries</h4>
         <span class="k">Do</span><div class="v">Install <code>pandas</code> and <code>openpyxl</code>, with their versions. First check the prompt: it starts with <code>(.venv)</code>. The folder does not matter for this command. It can take about a minute.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip install pandas==3.0.5 openpyxl==3.1.5 rich==15.0.0</code></pre>
-          <p class="why">Why <code>rich</code> too: you use it in PART 2. Is it already in your box? Then pip skips it.</p></div>
-        <span class="k see">You should see</span><div class="v">Some <code>Collecting</code> lines. Your box from Chapter 8 already has <code>rich</code>. Then you see:
+          <p class="why">Why <code>rich</code> too: you use it in PART 2. Is it already in your <code>.venv</code>? Then pip skips it.</p></div>
+        <span class="k see">You should see</span><div class="v">Some <code>Collecting</code> lines. Your <code>.venv</code> from Chapter 8 already has <code>rich</code>. Then you see:
 <pre data-kind="out"><code>Requirement already satisfied: rich==15.0.0 in ...</code></pre>
           and at the end:
 <pre data-kind="out"><code>Successfully installed et-xmlfile-2.0.0 numpy-2.5.4 openpyxl-3.1.5 pandas-3.0.5 python-dateutil-4.0.0 tzdata-2026.6</code></pre>
-          Your line can be a little different. A new box also lists <code>rich</code> and its three libraries. <code>pandas-3.0.5</code> and <code>openpyxl-3.1.5</code> must be in it. You may also see a notice about a new pip. You can ignore it.</div>
+          Your line can be a little different. A new <code>.venv</code> also lists <code>rich</code> and its three libraries. <code>pandas-3.0.5</code> and <code>openpyxl-3.1.5</code> must be in it. You may also see a notice about a new pip. You can ignore it.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>No <code>(.venv)</code> at the start of the prompt? Do step 1. Then install again.</li>
-          <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? The box is not active. pip put the library outside the box. Do step 1. Then install again.</li>
+          <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? Your <code>.venv</code> is not active. So pip put the library outside <code>.venv</code>. Do step 1. Then install again.</li>
         </ul></div>
       </div>
 
@@ -950,7 +950,7 @@ Index(['name', 'cpu', 'memory', 'disk', 'status'], dtype='str')</code></pre>
           The 12 rows, then the size <code>(12, 5)</code>, then the five column names. The numbers 0 to 11 on the left are the index (slide 4).</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>FileNotFoundError: [Errno 2] No such file or directory: 'data/servers.csv'</code>? The path starts from the folder the terminal is in. Type <code class="cmd">cd</code>. It must show <code>D:\oss\&lt;your ID&gt;\oss-practice</code>. Then type <code class="cmd">dir data</code>. It must show <code>servers.csv</code>.</li>
-          <li><code>ModuleNotFoundError: No module named 'pandas'</code>? The box is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then do step 2 again.</li>
+          <li><code>ModuleNotFoundError: No module named 'pandas'</code>? Your <code>.venv</code> is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then do step 2 again.</li>
           <li><code>can't open file ... [Errno 2] No such file or directory</code>? <code>lab09.py</code> is not in <code>oss-practice</code>. In the Explorer, drag it onto <code>oss-practice</code>.</li>
         </ul></div>
       </div>
@@ -1014,7 +1014,7 @@ Console().print(table)</code></pre>
           The title on top. One row for each <code>warn</code> server.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>NameError: name 'Console' is not defined</code>? The import lines are missing. Do 1) again.</li>
-          <li><code>ModuleNotFoundError: No module named 'rich'</code>? The box is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then do PART 1, step 2 again.</li>
+          <li><code>ModuleNotFoundError: No module named 'rich'</code>? Your <code>.venv</code> is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then do PART 1, step 2 again.</li>
         </ul></div>
       </div>
 
@@ -1027,7 +1027,7 @@ print("Saved warn.xlsx")</code></pre>
           <p class="why">Why the <code>print</code> line: saving prints nothing by itself.</p></div>
         <span class="k see">You should see</span><div class="v">At the end of the output:<pre data-kind="out"><code>Saved warn.xlsx</code></pre>In the Explorer, <code>warn.xlsx</code> appears in <code>oss-practice</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li><code>ModuleNotFoundError: No module named 'openpyxl'</code>? The terminal is not using your box, or you skipped the install. Check that <code>(.venv)</code> is in the prompt. Then type <code class="cmd">pip install openpyxl==3.1.5</code>.</li>
+          <li><code>ModuleNotFoundError: No module named 'openpyxl'</code>? The terminal is not using your <code>.venv</code>, or you skipped the install. Check that <code>(.venv)</code> is in the prompt. Then type <code class="cmd">pip install openpyxl==3.1.5</code>.</li>
           <li><code>PermissionError</code>? Excel has <code>warn.xlsx</code> open. Windows does not let Python change a file that Excel has open. Close Excel. Run again.</li>
         </ul></div>
       </div>
@@ -1167,14 +1167,14 @@ openpyxl==3.1.5</code></pre>
           <p class="why">Then the file has four lines. The first line is still yours from Chapter 8, for example <code>tabulate==0.10.0</code> or <code>python-dateutil==2.9.0.post0</code>. Why keep it: your Chapter 8 tool still needs it. Is <code>rich==15.0.0</code> already there? Do not write it twice.</p>
 <pre data-kind="cmd"><code>type requirements.txt
 pip install -r requirements.txt</code></pre>
-          <p class="why">Why: the next person installs from the list. Without these lines, their box has no <code>pandas</code>.</p></div>
+          <p class="why">Why: the next person installs from the list. Without these lines, their <code>.venv</code> has no <code>pandas</code>.</p></div>
         <span class="k see">You should see</span><div class="v">Your lines, then:<pre data-kind="out"><code>Requirement already satisfied: &lt;your Chapter 8 line&gt; in ...
 Requirement already satisfied: rich==15.0.0 in ...
 Requirement already satisfied: pandas==3.0.5 in ...
 Requirement already satisfied: openpyxl==3.1.5 in ...</code></pre>
-          and more lines. Every line says <code>Requirement already satisfied</code>. The list and the box agree. You may also see a notice about a new pip. You can ignore it.</div>
+          and more lines. Every line says <code>Requirement already satisfied</code>. The list and your <code>.venv</code> agree. You may also see a notice about a new pip. You can ignore it.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>You see <code>Collecting</code> and <code>Successfully installed</code> lines? pip added a library from the list that was not in your box. That is fine.</li>
+          <li>You see <code>Collecting</code> and <code>Successfully installed</code> lines? pip added a library from the list that was not in your <code>.venv</code>. That is fine.</li>
           <li>No <code>requirements.txt</code>? Make it: right-click <code>oss-practice</code> &rarr; <b>New File…</b> &rarr; <code>requirements.txt</code>. Write the three lines <code>rich==15.0.0</code>, <code>pandas==3.0.5</code>, <code>openpyxl==3.1.5</code>.</li>
           <li><code>ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirement.txt'</code>? A typo. Type <code>requirements.txt</code>, with an <b>s</b>.</li>
         </ul></div>
