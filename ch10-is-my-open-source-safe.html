@@ -440,7 +440,7 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
     <article class="slide cover">
       <p class="eyebrow">Chapter 10 · 2026 Fall</p>
       <h1>Is My Open Source<br>Safe?</h1>
-      <p class="sub">When you use someone else's code, its security holes become your holes too.<br>Today you learn how to check for them.</p>
+      <p class="sub">Other people's code can have security problems. When you use their code, your program has the same problems.<br>So today you learn how to check for these problems.</p>
       <dl>
         <div><dt>Course</dt><dd>Open Source Software</dd></div>
         <div><dt>New tools</dt><dd><code style="white-space:nowrap">pip-audit</code> · <code>osv.dev</code> · <code>python-dotenv</code></dd></div>
@@ -452,21 +452,22 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
       <p class="eyebrow">Where we stopped</p>
       <h2>You install other people's code.<br>Who checks it?</h2>
       <div class="rule"></div>
-      <p class="lead">In Chapters 8 and 9 you typed <code class="cmd">pip install</code> and used <code>rich</code>, <code>pandas</code> and <code>openpyxl</code>. You did not read one line of their code. Nobody does. So how do you know that code is safe?</p>
+      <p class="lead">In Chapters 8 and 9 you typed <code class="cmd">pip install</code> and used <code>rich</code>, <code>pandas</code> and <code>openpyxl</code>. But you did not read any line of their code. Most people never read it. So how do you know that this code is safe?</p>
+      <p>This chapter answers that question. At the end of this chapter, you can:</p>
       <ul>
-        <li><b>Say what a dependency is</b>, and why its problems are your problems.</li>
+        <li><b>Explain what a dependency is</b>, and why its security problems are also in your program.</li>
         <li><b>Run <code style="white-space:nowrap">pip-audit</code></b> on a <code>requirements.txt</code> and read every column of the output.</li>
         <li><b>Compare two libraries</b> that do the same job, using five checks on GitHub.</li>
-        <li><b>Keep a secret out of your code</b> with a <code>.env</code> file and <code>.gitignore</code>.</li>
-        <li><b>Write down your team's project plan</b> &mdash; topic, libraries, track, roles.</li>
+        <li><b>Keep a secret (a password or key) out of your code</b> with a <code>.env</code> file and <code>.gitignore</code>.</li>
+        <li><b>Write down your team's project plan:</b> topic, libraries, track, roles.</li>
       </ul>
     </article>
 
     <article class="slide dgs" hidden>
       <p class="eyebrow">The idea</p>
-      <h2>A dependency is someone else's code<br>that your code trusts</h2>
+      <h2>A dependency is other people's code<br>inside your program</h2>
       <div class="rule"></div>
-      <p class="lead">Every line in <code>requirements.txt</code> is a dependency (a library your program needs in order to run). It runs with the same rights as your own code.</p>
+      <p class="lead">Every line in <code>requirements.txt</code> is a dependency (a library that your program needs to run). A dependency runs with the same rights as your own code. This means a dependency can do anything your code can do.</p>
       <div class="dg" role="img" aria-label="One big box: your program. Everything in it runs with your rights. Left: your code, app.py, with import requests and import yaml. Middle, direct dependencies, you import them: requests 2.19.1 (line 1 of requirements.txt) and PyYAML 5.3 (line 2). Right, indirect dependencies, requests needs them: urllib3 1.23 (line 3 of requirements.txt) and idna 2.7, which is not in requirements.txt. Arrows go from app.py to requests and PyYAML, and from requests to urllib3 and idna." style="max-width:820px;">
         <svg viewBox="0 0 720 214" aria-hidden="true">
           <defs><marker id="ah10a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
@@ -493,10 +494,10 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
           <text class="t-mut" x="428" y="90" font-size="11.5" font-weight="600" text-anchor="middle">uses</text>
         </svg>
       </div>
-      <p class="places-cap">Direct: you import it. Indirect: your library needs it. <code>requests</code> sends web requests through <code>urllib3</code>. You never import <code>urllib3</code> or <code>idna</code>, but they run anyway.</p>
+      <p class="places-cap">Direct: you import it. Indirect: your library needs it. For example, <code>requests</code> uses <code>urllib3</code> to send web requests. You never import <code>urllib3</code> or <code>idna</code>. But these two libraries still run inside your program.</p>
       <div class="callout warn">
-        <span class="mk">The price</span>
-        <p>Using someone else's code is free. The price is that <b>their security holes are now inside your program</b>. You cannot take the features and leave the holes behind.</p>
+        <span class="mk">The risk</span>
+        <p>Other people's code costs no money. But their code can have security problems. When you install their library, <b>those problems come into your program too</b>. So you must check the libraries you use.</p>
       </div>
     </article>
 
@@ -504,16 +505,17 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
       <p class="eyebrow">How a problem becomes known</p>
       <h2>From one bug to a warning<br>on your screen</h2>
       <div class="rule"></div>
+      <p class="lead">A security problem goes through five steps before you see a warning:</p>
       <div class="timeline">
-        <div class="tl-item"><span class="yr">1</span><p><b>Someone finds it.</b> For example, a researcher sees that a library can leak a password.</p></div>
-        <div class="tl-item"><span class="yr">2</span><p><b>They report it privately</b> to the maintainers, in the way <code>SECURITY.md</code> says.</p></div>
-        <div class="tl-item"><span class="yr">3</span><p><b>A fixed version comes out.</b> For example 5.3 &rarr; 5.3.1.</p></div>
-        <div class="tl-item"><span class="yr">4</span><p><b>An advisory is published</b> (a public notice: which versions are affected, which version fixes it).</p></div>
-        <div class="tl-item"><span class="yr">5</span><p><b>Databases collect it.</b> Tools like <code style="white-space:nowrap">pip-audit</code> and Dependabot read those databases.</p></div>
+        <div class="tl-item"><span class="yr">1</span><p><b>Someone finds a bug.</b> For example, a researcher sees that a library can show a password to other people.</p></div>
+        <div class="tl-item"><span class="yr">2</span><p><b>The researcher tells the maintainers</b> (the project owners) privately. The file <code>SECURITY.md</code> says how.</p></div>
+        <div class="tl-item"><span class="yr">3</span><p><b>Then a fixed version comes out.</b> For example 5.3 &rarr; 5.3.1.</p></div>
+        <div class="tl-item"><span class="yr">4</span><p><b>Next, an advisory comes out</b> (a public notice). The advisory says which versions have the bug and which version fixes it.</p></div>
+        <div class="tl-item"><span class="yr">5</span><p><b>Databases store the advisory.</b> Tools like <code style="white-space:nowrap">pip-audit</code> and Dependabot read these databases.</p></div>
       </div>
       <div class="callout">
         <span class="mk">Why step 2 is private</span>
-        <p>If the bug is posted in a public issue first, attackers read it before a fix exists. That is why a good project tells you <b>where to report a security problem</b> &mdash; in a file called <code>SECURITY.md</code>.</p>
+        <p>Everyone can read a public issue. So if someone posts the bug there first, attackers learn about the bug before a fix exists. Because of this, a good project has a file called <code>SECURITY.md</code>. This file tells you <b>where to report a security problem</b>.</p>
       </div>
     </article>
 
@@ -521,29 +523,29 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
       <p class="eyebrow">Reading the names</p>
       <h2>One problem, three names</h2>
       <div class="rule"></div>
-      <p class="lead">The same advisory is stored in several databases, and each database gives it its own ID. They are not three different problems.</p>
+      <p class="lead">Several databases store the same advisory. Each database gives the advisory its own ID. So the three IDs in this table are not three different problems:</p>
       <div class="scroll-x">
         <table>
           <thead><tr><th>ID</th><th>Who gives it</th><th>Where you see it</th></tr></thead>
           <tbody>
-            <tr><td><code>CVE-2020-1747</code></td><td>CVE, the world-wide list of known vulnerabilities</td><td>News and every database</td></tr>
+            <tr><td><code>CVE-2020-1747</code></td><td>CVE, the world-wide list of known vulnerabilities (security problems)</td><td>News and every database</td></tr>
             <tr><td><code>GHSA-6757-jp84-gxfx</code></td><td>GitHub Advisory Database</td><td>Dependabot alerts on GitHub</td></tr>
             <tr><td><code>PYSEC-2020-96</code></td><td>Python Packaging Advisory Database</td><td><code style="white-space:nowrap">pip-audit</code> output</td></tr>
           </tbody>
         </table>
       </div>
-      <p>All three rows are the same problem in <b>PyYAML 5.3</b>: loading an untrusted YAML file with the full loader can run code hidden inside it. <b>Fixed in 5.3.1.</b></p>
+      <p>All three rows are the same problem in <b>PyYAML 5.3</b>. PyYAML can read a YAML file with its full loader. Suppose your program uses the full loader on a YAML file from a stranger. Then hidden code in that file can run. <b>Fixed in 5.3.1.</b></p>
       <div class="callout">
         <span class="mk">OSV</span>
-        <p><a href="https://osv.dev" target="_blank" rel="noopener">osv.dev</a> (Open Source Vulnerabilities) brings these databases together. Open any ID there, and the <b>Aliases</b> line lists its other names.</p>
+        <p><a href="https://osv.dev" target="_blank" rel="noopener">osv.dev</a> (Open Source Vulnerabilities) puts the data of these databases in one place. So you can open the osv.dev page of any ID. On that page, the <b>Aliases</b> line lists the other IDs of the same problem.</p>
       </div>
     </article>
 
     <article class="slide dgs" hidden>
-      <p class="eyebrow">The robot on GitHub</p>
+      <p class="eyebrow">The tool on GitHub</p>
       <h2>What Dependabot does</h2>
       <div class="rule"></div>
-      <p class="lead">Dependabot is a GitHub feature. It reads the dependency files in a repository, such as <code>requirements.txt</code>. It compares every version with the GitHub Advisory Database.</p>
+      <p class="lead">Dependabot is a GitHub feature. First, Dependabot reads the dependency files in a repository, such as <code>requirements.txt</code>. Then Dependabot compares every version with the GitHub Advisory Database.</p>
       <div class="dg" role="img" aria-label="Three parts. Left: GitHub, seen on the instructor's screen. requirements.txt, then Dependabot, then alerts in the Security and quality tab and a pull request. Middle: advisory databases, GHSA IDs from GitHub and PYSEC IDs from Python. The same kind of data goes to both sides. Right: your PC, you run it. requirements.txt, then pip-audit, then rows in the cmd terminal. Nothing is installed." style="max-width:820px;">
         <svg viewBox="0 0 720 244" aria-hidden="true">
           <defs><marker id="ah10b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
@@ -570,14 +572,15 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
           <rect class="f-surf s-acc" x="498" y="164" width="204" height="64" rx="8" stroke-width="1.5"/><text class="t-ink" x="510" y="184" font-size="12.5">Rows in the cmd terminal</text><text class="t-mut" x="510" y="202" font-size="12">nothing is installed</text>
         </svg>
       </div>
-      <p class="places-cap">Same kind of databases, same warnings. Dependabot runs on GitHub. <code style="white-space:nowrap">pip-audit</code> runs on your PC.</p>
+      <p class="places-cap">Both tools use the same kind of databases, so they give the same warnings. But Dependabot runs on GitHub, and <code style="white-space:nowrap">pip-audit</code> runs on your PC.</p>
+      <p>Dependabot does two jobs:</p>
       <ul>
-        <li><b>Job 1 · Alerts.</b> When a version you use has an advisory, an alert appears in the repository's <b>Security and quality</b> tab: which package, how serious, which version fixes it.</li>
-        <li><b>Job 2 · A fix as a pull request.</b> It can open a pull request that changes the version line. A person still reads the PR, runs the tests, and decides to merge (Chapter 5).</li>
+        <li><b>Job 1 · Alerts.</b> If a version you use has an advisory, an alert appears in the <b>Security and quality</b> tab. The alert shows the package, how serious the problem is, and the fix version.</li>
+        <li><b>Job 2 · A fix as a pull request.</b> Dependabot can open a pull request (PR) that changes the version line. But a person still reads the PR and runs the tests. Then this person decides to merge or not (Chapter 5).</li>
       </ul>
       <div class="callout warn">
         <span class="mk">Why I show it on my screen</span>
-        <p>Dependabot alerts are shown only to people who manage the repository. With your permission in the course organization, you cannot see them. So you use <code style="white-space:nowrap">pip-audit</code> on your own PC, and I show Dependabot on my screen.</p>
+        <p>GitHub shows Dependabot alerts only to people who manage the repository. Your account in the course organization does not have this permission. So you use <code style="white-space:nowrap">pip-audit</code> on your own PC, and the instructor shows Dependabot on the screen.</p>
       </div>
     </article>
 
@@ -585,16 +588,16 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
       <p class="eyebrow">The tool on your PC</p>
       <h2>Reading pip-audit output</h2>
       <div class="rule"></div>
-      <p class="lead"><code style="white-space:nowrap">pip-audit</code> reads a <code>requirements.txt</code> and finds every library those lines would bring in. It asks a vulnerability database about each one. It plans the install in a temporary place and throws it away. Nothing goes into your box.</p>
+      <p class="lead">First, <code style="white-space:nowrap">pip-audit</code> reads a <code>requirements.txt</code> and finds every library that these lines need. Next, pip-audit asks a vulnerability database about each library. pip-audit does this work in a temporary place and then deletes that place. So nothing goes into your box. The notes on the right explain each part of the output:</p>
       <div class="codex">
       <pre data-kind="cmd"><code>pip-audit -r requirements.txt</code></pre>
       <ul class="cx-notes">
         <li><code>Name</code>The package.</li>
         <li><code>Version</code>The version you have.</li>
         <li><code>ID</code>The advisory (one known problem).</li>
-        <li><code>Fix Versions</code>The first version where this problem is fixed.</li>
-        <li><code>PYSEC-2018-28</code>Printed twice. The database keeps two records of most problems. <b>Count each ID once:</b> 41 rows are 21 problems.</li>
-        <li><code>idna</code>Not in the file. <code style="display:inline">requests</code> brings it in (slide 3).</li>
+        <li><code>Fix Versions</code>The first version that fixes this problem.</li>
+        <li><code>PYSEC-2018-28</code>Printed twice, because the database has two records of most problems. So <b>count each ID once:</b> 41 rows are 21 problems.</li>
+        <li><code>idna</code>Not in the file. But <code style="display:inline">requests</code> needs it (slide 3).</li>
       </ul>
       <pre data-kind="out"><code>Found 41 known vulnerabilities in 4 packages
 Name     Version ID              Fix Versions
@@ -609,21 +612,21 @@ pyyaml   5.3     PYSEC-2020-96   5.3.1
 idna     2.7     PYSEC-2024-60   3.7
 ...</code></pre>
       </div>
-      <p>Some rows from the demo repository, <code>vulnerable-demo</code>. The <code>...</code> lines are rows left out here. Read one row from left to right.</p>
+      <p>These are some rows from the demo repository, <code>vulnerable-demo</code>. Each <code>...</code> line means: more rows, not shown here. Now read one row from left to right.</p>
     </article>
 
     <article class="slide" hidden>
       <p class="eyebrow">What to do about it</p>
-      <h2>The fix: raise the version,<br>then test again</h2>
+      <h2>The fix: use a newer version,<br>then test again</h2>
       <div class="rule"></div>
-      <p class="lead">For each package, find the highest number in its <b>Fix Versions</b> column. Move to that version or a newer one. Then run the program and the tests again, because a new version can change how a function works.</p>
+      <p class="lead">For each package, find the highest number in its <b>Fix Versions</b> column. Then change to that version or a newer one. After the change, run the program and the tests again. Why: a new version can change how a function works. The two cards show what happens in the demo repository:</p>
       <div class="grid g2">
-        <div class="card"><span class="tagline">The trap</span><h4>You cannot always fix one line</h4><p><code>urllib3</code> needs 2.8.0 to fix every row, and <code>idna</code> needs 3.15. But <code>requests 2.19.1</code> only works with a <code>urllib3</code> older than 1.24 and an <code>idna</code> older than 2.8. So you have to raise <code>requests</code> too. Old versions block each other.</p></div>
-        <div class="card"><span class="tagline">The good news</span><h4>The course versions pass</h4><p>The whitelist versions <code>requests==2.34.2</code> and <code>PyYAML==6.0.3</code>, together with <code>urllib3==2.8.0</code>, get this answer from the same tool:<br><code>No known vulnerabilities found</code></p></div>
+        <div class="card"><span class="tagline">The hard part</span><h4>You cannot always change only one line</h4><p><code>urllib3</code> needs 2.8.0 to fix every row, and <code>idna</code> needs 3.15. But <code>requests 2.19.1</code> works only with a <code>urllib3</code> older than 1.24 and an <code>idna</code> older than 2.8. So you must change <code>requests</code> to a newer version too. This means one old version can stop you from updating another.</p></div>
+        <div class="card"><span class="tagline">The good news</span><h4>The course versions pass</h4><p>The whitelist (the course list of allowed libraries) has <code>requests==2.34.2</code> and <code>PyYAML==6.0.3</code>. Check them together with <code>urllib3==2.8.0</code>. Then the same tool gives this answer:<br><code>No known vulnerabilities found</code></p></div>
       </div>
       <div class="callout warn">
         <span class="mk">Pinned is not the same as safe</span>
-        <p>In Chapter 3 you learned to pin versions (write the exact version, like <code>==2.34.2</code>), so that the box is the same tomorrow. That is still right. But a pinned version gets old, and new advisories keep arriving. <b>Check again before every release.</b></p>
+        <p>In Chapter 3 you learned to pin versions (write the exact version, like <code>==2.34.2</code>). Pinning keeps the box the same tomorrow, so pinning is still right. But a pinned version gets old, and new advisories come out often. So <b>check again before every release</b> (every new version of your program).</p>
       </div>
     </article>
 
@@ -631,7 +634,7 @@ idna     2.7     PYSEC-2024-60   3.7
       <p class="eyebrow">Before you add a library</p>
       <h2>Five checks for choosing a library</h2>
       <div class="rule"></div>
-      <p class="lead">Advisories tell you about problems that are already known. These five checks tell you whether someone will fix the <i>next</i> one. Each takes about a minute on the GitHub page.</p>
+      <p class="lead">Advisories tell you about problems that people already know. But these five checks show whether someone will fix the <i>next</i> problem. Each check takes about one minute on the GitHub page. Here are the five checks:</p>
       <div class="g-fig">
         <div class="dg" role="img" aria-label="A simplified GitHub repository page for psf/requests, with five numbered marks. 1: the line above the file list, Latest commit, 3 days ago. 2: Contributors on the right side. 3: the Security and quality tab at the top. 4: the license name on the right side, Apache-2.0 license. 5: the Issues tab at the top.">
           <svg viewBox="0 0 440 290" aria-hidden="true">
@@ -661,20 +664,20 @@ idna     2.7     PYSEC-2024-60   3.7
         </div>
         <div class="ladder">
           <div class="rung"><div><b>Recent commit</b><span>When did the code last change? Look at the line above the file list. Years without a change is a warning sign.</span></div></div>
-          <div class="rung"><div><b>People</b><span>The <b>Contributors</b> number on the right side of the page. If only one person keeps working on it, it stops when that person stops.</span></div></div>
+          <div class="rung"><div><b>People</b><span>Find the <b>Contributors</b> number on the right side of the page. If only one person works on the project, the project stops when that person stops.</span></div></div>
           <div class="rung"><div><b>SECURITY.md</b><span>Open the <b>Security and quality</b> tab. Is there a security policy, or does it say <i>No security policy detected</i>?</span></div></div>
-          <div class="rung"><div><b>License</b><span>The license name on the right side of the page. From Chapter 7: is it permissive (MIT, BSD, Apache)?</span></div></div>
+          <div class="rung"><div><b>License</b><span>Find the license name on the right side of the page. Then ask (Chapter 7): is this license permissive (MIT, BSD, Apache)?</span></div></div>
           <div class="rung"><div><b>Issue response</b><span>Open the three newest issues. Did anyone other than the writer answer?</span></div></div>
         </div>
       </div>
-      <p class="places-cap">A GitHub repository page, simplified. The numbers on the page match the numbers of the list.</p>
+      <p class="places-cap">A simple drawing of a GitHub repository page. Each number on the drawing matches the same number in the list.</p>
     </article>
 
     <article class="slide dgs" hidden>
       <p class="eyebrow">A secret is not code</p>
       <h2>Keep secrets out of your code</h2>
       <div class="rule"></div>
-      <p class="lead">An API key (a password that lets a program use a service) written inside a <code>.py</code> file goes to GitHub with your next push. On a public repository, anyone can copy it.</p>
+      <p class="lead">An API key is a password that lets a program use a service. Suppose you write an API key inside a <code>.py</code> file. With your next push, the key goes to GitHub. On a public repository, anyone can then copy the key.</p>
       <div class="dg" role="img" aria-label="Left: your PC, a project folder. The file .env holds API_KEY=fake-key-12345 and stays on the PC. Arrow: secret_demo.py reads it when the program starts, with load_dotenv() and os.getenv(&quot;API_KEY&quot;). The file .gitignore has the line .env on line 2, so Git never adds .env. Middle: git push. Right: GitHub gets secret_demo.py and .gitignore. .env is never there." style="max-width:820px;">
         <svg viewBox="0 0 720 214" aria-hidden="true">
           <defs><marker id="ah10c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
@@ -704,7 +707,7 @@ idna     2.7     PYSEC-2024-60   3.7
           <text class="t-bad" x="546" y="178" font-size="12" font-weight="700">never here</text>
         </svg>
       </div>
-      <p class="places-cap"><code>.env</code> stays on your PC. The code asks for the key by name. GitHub gets the code, never the key.</p>
+      <p class="places-cap"><code>.env</code> stays on your PC. The code asks for the key by name. GitHub gets the code, never the key. The code below asks for the key. The notes explain each line:</p>
       <div class="codex">
       <pre data-kind="file"><code>import os
 from dotenv import load_dotenv
@@ -713,37 +716,38 @@ load_dotenv()
 key = os.getenv("API_KEY")</code></pre>
       <ul class="cx-notes">
         <li><code>from dotenv import load_dotenv</code>The library <code style="display:inline">python-dotenv</code>. In code its name is <code style="display:inline">dotenv</code>.</li>
-        <li><code>load_dotenv()</code>Read <code style="display:inline">.env</code> (one secret per line, like <code style="display:inline">API_KEY=...</code>).</li>
-        <li><code>os.getenv("API_KEY")</code>Ask for the value by name. The value itself is never in the code.</li>
+        <li><code>load_dotenv()</code>Reads the file <code style="display:inline">.env</code>. This file has one secret per line, like <code style="display:inline">API_KEY=...</code>.</li>
+        <li><code>os.getenv("API_KEY")</code>Asks for the value by name. So the value itself is never in the code.</li>
       </ul>
       </div>
       <div class="callout warn">
         <span class="mk">If a key was pushed once</span>
-        <p>Deleting the file in the next commit is not enough &mdash; the old commit still holds it. <b>Treat that key as stolen: cancel it and make a new one.</b></p>
+        <p>Deleting the file in the next commit is not enough, because the old commit still has the key. So <b>think of that key as stolen. Cancel that key and make a new key.</b></p>
       </div>
     </article>
 
     <article class="slide" hidden>
       <p class="eyebrow">Your team, today</p>
-      <h2>The team plan becomes<br>one issue</h2>
+      <h2>Write the team plan<br>in one issue</h2>
       <div class="rule"></div>
-      <p class="lead">In the next chapter your team starts building. Before that, the plan has to be written down in one place that all of you can see. Today each team opens <b>one</b> issue in <code>practice-pr</code>.</p>
+      <p class="lead">In the next chapter, your team starts to build the project. So before that, your team writes the plan in one place that all members can see. Today each team opens <b>one</b> issue in <code>practice-pr</code>. The plan answers three questions:</p>
       <div class="grid g3">
-        <div class="card"><span class="tagline">What</span><h4>Topic and libraries</h4><p>One topic. Libraries only from the course whitelist &mdash; and today you learned how to check them.</p></div>
-        <div class="card"><span class="tagline">Shape</span><h4>Input &rarr; process &rarr; output</h4><p>One line each: what the tool reads, the one thing it decides or calculates, and what the user gets back.</p></div>
-        <div class="card"><span class="tagline">Who</span><h4>Track and roles</h4><p>Track A (every team): a tool built with whitelist libraries. A + B (challenge): also change a small open source project. Roles: PM (project manager), developer, documentation, reviewer.</p></div>
+        <div class="card"><span class="tagline">What</span><h4>Topic and libraries</h4><p>Choose one topic. Then use libraries only from the course whitelist. Today you learned how to check these libraries.</p></div>
+        <div class="card"><span class="tagline">Shape</span><h4>Input &rarr; process &rarr; output</h4><p>Write one line for each part. Input: what the tool reads. Process: the one thing the tool decides or calculates. Output: what the user gets back.</p></div>
+        <div class="card"><span class="tagline">Who</span><h4>Track and roles</h4><p>Track A (every team): build a tool with whitelist libraries. A + B (challenge): also change a small open source project. Roles: PM (project manager), developer, documentation, reviewer.</p></div>
       </div>
     </article>
 
     <article class="slide" hidden>
       <p class="eyebrow">Before you switch tabs</p>
-      <h2>Checklist to close</h2>
+      <h2>Lecture checklist</h2>
       <div class="rule"></div>
+      <p>Check the two cards below. The first card lists what you learned. The second card lists what you do next in the Lab.</p>
       <div class="grid g2">
-        <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Explain what a dependency is. Read one row of <code style="white-space:nowrap">pip-audit</code> output. Say why one problem has three IDs. Name the five checks for a library, and say where a secret goes instead of the code.</p></div>
+        <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Explain what a dependency is. Read one row of <code style="white-space:nowrap">pip-audit</code> output. Explain why one problem has three IDs. Name the five checks for a library. Explain where to keep a secret, so that it is not in the code.</p></div>
         <div class="card"><span class="tagline">85 min · Lab</span><h4>What's next</h4><p>Activate your box in cmd. Install <code style="white-space:nowrap">pip-audit</code>. Check the demo repository and fill a worksheet. Watch Dependabot on my screen. Compare two libraries with the five checks. Load a fake key from <code>.env</code>.</p></div>
       </div>
-      <p class="lead">Open the <b>Lab</b> tab above. PART 0 is the first box.</p>
+      <p class="lead">Now open the <b>Lab</b> tab above. Start with PART 0.</p>
     </article>
 
   </div>
@@ -764,7 +768,8 @@ key = os.getenv("API_KEY")</code></pre>
     <div class="doc-head">
       <p class="eyebrow">Lab · 85 min · Step by step</p>
       <h2>Check old code, compare two libraries, hide one secret</h2>
-      <p>Do the parts in order. Each part ends with a <b>Done when</b> line. Check it before you go on. Every output below comes from a real run with the same versions. Some numbers can be higher on your screen: new advisories come out every week. That is expected.</p>
+      <p>Do the parts in order. Each part ends with a <b>Done when</b> line. Check that line before you go on. Every output below comes from a real run with the same versions. But some numbers on your screen can be higher, because new advisories come out every week. That is normal.</p>
+      <p>Each step below uses these four labels:</p>
       <div class="legend">
         <span><b>Do</b> what to do</span>
         <span><b>Copy</b> type or paste this</span>
@@ -773,14 +778,14 @@ key = os.getenv("API_KEY")</code></pre>
       </div>
       <div class="callout">
         <span class="mk">AI, same as always</span>
-        <p>1. <b>Paste the error exactly.</b> 2. Add one line: what you wanted. 3. <b>Ask why</b> the fix works. 4. Explain the fixed code yourself. Use AI to understand. Do not let it write your work. <b>If you cannot explain it, it does not count.</b></p>
+        <p>When you ask AI, do four things: 1. <b>Paste the error exactly.</b> 2. Add one line: what you wanted. 3. <b>Ask why</b> the fix works. 4. Explain the fixed code yourself. Use AI to understand. But do not let AI write your work. <b>If you cannot explain your work, it does not count.</b></p>
       </div>
     </div>
 
     <!-- PART 0 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 0</span><h3>Shared PC: start routine</h3><span class="budget">5 min</span></div>
-      <p class="goal">Everybody uses one Windows account on this PC. These checks make sure your work goes out under your name. Work only in <code>D:\oss\&lt;your ID&gt;\</code>.</p>
+      <p class="goal">All students use the same Windows account on this PC. So these checks make sure that GitHub shows your work under your name. Work only in <code>D:\oss\&lt;your ID&gt;\</code>. Do the four steps below:</p>
 
       <div class="s4">
         <h4>1. Sign in to GitHub</h4>
@@ -788,7 +793,7 @@ key = os.getenv("API_KEY")</code></pre>
         <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com</code></pre></div>
         <span class="k see">You should see</span><div class="v">Your own picture (avatar) in the top-right corner.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>It is another person's avatar? Click it. Click <b>Sign out</b>. Then sign in again.</li>
+          <li>It is another person's avatar? Click the avatar. Click <b>Sign out</b>. Then sign in again.</li>
         </ul></div>
       </div>
 
@@ -820,7 +825,7 @@ key = os.getenv("API_KEY")</code></pre>
         <span class="k">Copy</span><div class="v">Nothing to type.</div>
         <span class="k see">You should see</span><div class="v">No chat panel. No sign-in window.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>VS Code asks you to sign in? Close the window. A sign-in in VS Code stays on this shared PC.</li>
+          <li>VS Code asks you to sign in? Close the window. Why: a sign-in in VS Code stays on this shared PC.</li>
         </ul></div>
       </div>
       <div class="callout warn">
@@ -828,8 +833,8 @@ key = os.getenv("API_KEY")</code></pre>
         <p>Today you need only two things: the folder <code>D:\oss\&lt;your ID&gt;</code> and your box <code>.venv</code> in it.<br>
         <b>No folder?</b> Type <code class="cmd" style="white-space:nowrap">mkdir D:\oss\&lt;your ID&gt;</code>. Then open it in VS Code (step 2).<br>
         <b>No <code>.venv</code> in the folder?</b> Type <code class="cmd">python -m venv .venv</code> in <code>D:\oss\&lt;your ID&gt;</code>. It takes about 20 seconds.<br>
-        <b>Chapters 8 and 9:</b> their code is not used today. Your own <code>requirements.txt</code> is not checked today. You check your team's list in the project.<br>
-        <b>Your project team</b> is your row. Not sure? Ask the instructor now. You need your team in the Assignment block.</p>
+        <b>Chapters 8 and 9:</b> you do not use their code today. You also do not check your own <code>requirements.txt</code> today. Later, in the project, you check your team's list.<br>
+        <b>Your project team</b> is your row. Not sure? Ask the instructor now, because you need your team in the Assignment tab.</p>
       </div>
       <p class="done"><b>Done when</b> my own avatar · cmd terminal in D:\oss\&lt;my ID&gt; · cmdkey shows no github line · no sign-in in VS Code</p>
     </div>
@@ -837,7 +842,7 @@ key = os.getenv("API_KEY")</code></pre>
     <!-- PART 1 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 1</span><h3>Read the warnings in an old project</h3><span class="budget">25 min</span></div>
-      <p class="goal">Run <code style="white-space:nowrap">pip-audit</code> on a repository that is out of date on purpose. Turn its output into a small worksheet. At the end, watch the same warnings on GitHub on the instructor's screen.</p>
+      <p class="goal">The demo repository has old versions on purpose. First, run <code style="white-space:nowrap">pip-audit</code> on this repository. Next, write the output in a small worksheet. Last, watch the same warnings on GitHub, on the instructor's screen. The picture shows where each file is. Then do the eight steps below.</p>
       <div class="dg" role="img" aria-label="Your PC, the folder D:\oss\your ID. Left: the box .venv with pip-audit and python-dotenv, plus your libraries from Chapters 8 and 9. Middle: vulnerable-demo, the clone for PART 1 and PART 3. It holds requirements.txt, .gitignore and app.py. PART 3 adds .env and secret_demo.py. Right: ch10-notes.md, your worksheet, next to vulnerable-demo. Below it: oss-practice, not used today." style="max-width:780px;">
         <svg viewBox="0 0 720 172" aria-hidden="true">
           <rect class="f-s2 s-line" x="4" y="4" width="712" height="164" rx="12" stroke-width="1.5"/>
@@ -873,13 +878,13 @@ key = os.getenv("API_KEY")</code></pre>
 
       <div class="s4">
         <h4>2. Install the checking tool</h4>
-        <span class="k">Do</span><div class="v">Install <code style="white-space:nowrap">pip-audit</code>, with its version. First check the prompt: it starts with <code>(.venv)</code>. The folder does not matter for this command. It takes about 20 seconds.</div>
+        <span class="k">Do</span><div class="v">Install <code style="white-space:nowrap">pip-audit</code> with its exact version. First, check that the prompt starts with <code>(.venv)</code>. The folder does not matter for this command. The install takes about 20 seconds.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip install pip-audit==2.10.1</code></pre></div>
         <span class="k see">You should see</span><div class="v">Many <code>Collecting</code> lines. Your box already has <code>rich</code> from Chapter 8. Then you see, for example:
 <pre data-kind="out"><code>Requirement already satisfied: rich&gt;=12.4 in ...</code></pre>
           At the end, one long line:
 <pre data-kind="out"><code>Successfully installed CacheControl-0.15.0 boolean.py-5.0 certifi-2026.10.23 ...</code></pre>
-          <code>pip-audit-2.10.1</code> must be in that line. You may also see a notice about a new pip. You can ignore it.</div>
+          <code>pip-audit-2.10.1</code> must be in that line. You may also see a notice about a new pip. You can ignore that notice.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>No <code>(.venv)</code> at the start of the prompt? Do step 1. Then install again.</li>
           <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? The box is not active. pip put the library outside the box. Do step 1. Then install again.</li>
@@ -888,15 +893,15 @@ key = os.getenv("API_KEY")</code></pre>
 
       <div class="s4">
         <h4>3. Get the demo repository</h4>
-        <span class="k">Do</span><div class="v">Check the prompt: it ends with <code style="white-space:nowrap">D:\oss\&lt;your ID&gt;&gt;</code>. Download the demo. Then go into its folder. Type or paste the three lines. Press Enter after each line.</div>
+        <span class="k">Do</span><div class="v">Check the prompt: it ends with <code style="white-space:nowrap">D:\oss\&lt;your ID&gt;&gt;</code>. Then download the demo repository and go into its folder. Type or paste the three lines. Press Enter after each line.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>set ORG=https://github.com/OSS-202602-ISS
 git clone %ORG%/vulnerable-demo.git
 cd vulnerable-demo</code></pre>
-          <p class="why">Why two lines for one address: the address is long. Line 1 keeps its first part under the name <code>ORG</code>. Line 2 uses it as <code>%ORG%</code>.</p></div>
+          <p class="why">Why two lines for one address: the address is long. So line 1 saves the first part of the address under the name <code>ORG</code>. Then line 2 uses this part as <code>%ORG%</code>.</p></div>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'vulnerable-demo'...</code></pre>and a few more lines. Then the prompt ends with <code>\vulnerable-demo&gt;</code>. The repository is public, so no login is needed.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>fatal: repository '%ORG%/vulnerable-demo.git' does not exist</code>? You skipped line 1, or the prompt starts with <code>PS</code>. If it starts with <code>PS</code>, type <code class="cmd">cmd</code> first. Then type all three lines again.</li>
-          <li><code>fatal: destination path 'vulnerable-demo' already exists and is not an empty directory.</code>? You cloned it before. Type <code class="cmd">cd vulnerable-demo</code>. Then type <code class="cmd">git pull --no-edit</code>. It prints <code>Already up to date.</code> <code>--no-edit</code> stops Git from opening an editor.</li>
+          <li><code>fatal: destination path 'vulnerable-demo' already exists and is not an empty directory.</code>? You cloned the repository before. Type <code class="cmd">cd vulnerable-demo</code>. Then type <code class="cmd">git pull --no-edit</code>. Git prints <code>Already up to date.</code> <code>--no-edit</code> stops Git from opening an editor.</li>
           <li><code>fatal: Need to specify how to reconcile divergent branches.</code>? Type <code class="cmd">git config pull.rebase false</code> (no <code>--global</code>). Then type <code class="cmd">git pull --no-edit</code> again.</li>
           <li>A window asks about pasting 3 lines? Click <b>Paste</b>.</li>
         </ul></div>
@@ -906,28 +911,28 @@ cd vulnerable-demo</code></pre>
         <h4>4. Read the list. Do not install it.</h4>
         <span class="k">Do</span><div class="v">Show the list of libraries in <code>vulnerable-demo</code>. <b>Do not run <code>pip install -r requirements.txt</code> here.</b></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>type requirements.txt</code></pre>
-          <p class="why">Why not install: these versions are unsafe on purpose. You only check them. Then they never go into your box.</p></div>
+          <p class="why">Why not install: these versions are unsafe on purpose. So you only check these versions. Then the unsafe versions never go into your box.</p></div>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>requests==2.19.1
 PyYAML==5.3
-urllib3==1.23</code></pre>Three old versions, pinned (slide 3).</div>
+urllib3==1.23</code></pre>Three old versions. Each line has an exact version (pinned, slide 8).</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>The system cannot find the file specified.</code>? You are not in <code>vulnerable-demo</code>. Type <code class="cmd">cd vulnerable-demo</code>.</li>
-          <li>You installed it by mistake? Tell the instructor. Your box may now hold the unsafe versions.</li>
+          <li>You installed the list by mistake? Tell the instructor, because your box may now have the unsafe versions.</li>
         </ul></div>
       </div>
 
       <div class="s4">
         <h4>5. Check the list with <code style="white-space:nowrap">pip-audit</code></h4>
-        <span class="k">Do</span><div class="v">Run the check in <code>vulnerable-demo</code>. <b>It takes one or two minutes. It may look stuck. Wait.</b> While you wait, start step 6: make the file <code>ch10-notes.md</code>.</div>
+        <span class="k">Do</span><div class="v">Run the check in <code>vulnerable-demo</code>. <b>The check takes one or two minutes. During this time, the screen may not change. Wait.</b> While you wait, start step 6: make the file <code>ch10-notes.md</code>.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip-audit -r requirements.txt</code></pre>
-          <p class="why">Why it is slow: it finds every library these three lines would bring in. It does this in a temporary place. Nothing is installed into your box.</p></div>
+          <p class="why">Why it is slow: pip-audit finds every library that these three lines need. pip-audit does this work in a temporary place. So nothing goes into your box.</p></div>
         <span class="k see">You should see</span><div class="v">The top of the output:<pre data-kind="out"><code>Found 41 known vulnerabilities in 4 packages
 Name     Version ID              Fix Versions
 -------- ------- --------------- -------------
 requests 2.19.1  PYSEC-2018-28   2.20.0
 requests 2.19.1  PYSEC-2018-28   2.20.0
 requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
-          and more rows, 41 in total. Four package names: <code>requests</code>, <code>urllib3</code>, <code>pyyaml</code>, <code>idna</code>. <code style="white-space:nowrap">pip-audit</code> prints names in small letters: <code>PyYAML</code> is <code>pyyaml</code>. The order of the rows can be different. Your number can be higher than 41: a new advisory came out.</div>
+          and more rows, 41 in total. Four package names: <code>requests</code>, <code>urllib3</code>, <code>pyyaml</code>, <code>idna</code>. <code style="white-space:nowrap">pip-audit</code> prints names in small letters: <code>PyYAML</code> is <code>pyyaml</code>. The order of the rows can be different. Your number can also be higher than 41. This means a new advisory came out.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>'pip-audit' is not recognized as an internal or external command,</code>? The box is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then run the check again.</li>
           <li><code>ERROR:pip_audit._cli:invalid requirements input: requirement.txt</code>? A typo, or the wrong folder. The name is <code>requirements.txt</code>, with an <b>s</b>. The prompt ends with <code>\vulnerable-demo&gt;</code>.</li>
@@ -936,44 +941,44 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
 
       <div class="s4">
         <h4>6. Fill the worksheet in <code>ch10-notes.md</code></h4>
-        <span class="k">Do</span><div class="v">Make the file <code>ch10-notes.md</code> in <code>D:\oss\&lt;your ID&gt;</code>. In the Explorer (the file list on the left), right-click the empty space below the files &rarr; <b>New File…</b> &rarr; type <code>ch10-notes.md</code>. Paste the table below. The <code>requests</code> row is filled as an example. Fill the <code>pyyaml</code> row and the <code>idna</code> row from your <code style="white-space:nowrap">pip-audit</code> output. Save with <kbd>Ctrl + S</kbd>.</div>
+        <span class="k">Do</span><div class="v">Make the file <code>ch10-notes.md</code> in <code>D:\oss\&lt;your ID&gt;</code>. In the Explorer (the file list on the left), right-click the empty space below the files &rarr; <b>New File…</b> &rarr; type <code>ch10-notes.md</code>. Paste the table below. We filled the <code>requests</code> row as an example. Then fill the <code>pyyaml</code> row and the <code>idna</code> row from your <code style="white-space:nowrap">pip-audit</code> output. Save with <kbd>Ctrl + S</kbd>.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>| Package  | My version | Different IDs | Highest fix version |
 |----------|------------|---------------|---------------------|
 | requests | 2.19.1     | 5             | 2.33.0              |
 | pyyaml   |            |               |                     |
 | idna     |            |               |                     |</code></pre>
-          <p class="why"><b>How the example row was made:</b> <code>requests</code> has 10 rows in the output. Five IDs are printed twice, so there are 5 different IDs. The biggest number in its <b>Fix Versions</b> column is <code>2.33.0</code>.</p>
-          <p class="why"><b>Count each ID only once.</b> Most IDs are printed twice (slide 7). <b>Highest fix version</b> = the biggest number in the <b>Fix Versions</b> column for that package. Compare part by part, not as decimals: <code>3.15</code> is newer than <code>3.7</code>, because 15 is bigger than 7.</p></div>
+          <p class="why"><b>How we filled the example row:</b> <code>requests</code> has 10 rows in the output. But five IDs are printed twice, so there are 5 different IDs. The biggest number in its <b>Fix Versions</b> column is <code>2.33.0</code>.</p>
+          <p class="why"><b>Count each ID only once,</b> because most IDs are printed twice (slide 7). <b>Highest fix version</b> = the biggest number in the <b>Fix Versions</b> column for that package. Compare version numbers part by part, not as decimal numbers. For example, <code>3.15</code> is newer than <code>3.7</code>, because 15 is bigger than 7.</p></div>
         <span class="k see">You should see</span><div class="v">Three rows. Every cell is filled. For <code>pyyaml</code> and <code>idna</code>, <b>Different IDs</b> is smaller than the number of rows in the output.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li><code>ch10-notes.md</code> is inside <code>vulnerable-demo</code>? In the Explorer, drag it onto the empty space below the files. It must be next to <code>vulnerable-demo</code> (see the picture above).</li>
-          <li>Finished early? Add a row for <code>urllib3</code>. It has more than 20 rows. Some cells show two numbers, like <code>1.26.17,2.0.6</code>: two fixed versions. Use the bigger one.</li>
+          <li><code>ch10-notes.md</code> is inside <code>vulnerable-demo</code>? In the Explorer, drag the file onto the empty space below the files. The file must be next to <code>vulnerable-demo</code> (see the picture above).</li>
+          <li>Finished early? Add a row for <code>urllib3</code>. This package has more than 20 rows. Some cells show two numbers, like <code>1.26.17,2.0.6</code>. These are two fixed versions, so use the bigger one.</li>
         </ul></div>
       </div>
 
       <div class="s4">
         <h4>7. Check one ID on osv.dev</h4>
-        <span class="k">Do</span><div class="v">Pick any ID from your output. Open its page on osv.dev. The example below is the PyYAML ID from slide 5. For another ID, change the end of the address. Find the <b>Aliases</b> line and the <b>Fixed</b> version. Write both under your worksheet in <code>ch10-notes.md</code>. Save.</div>
+        <span class="k">Do</span><div class="v">Pick any ID from your output. Then open the osv.dev page of this ID. The example below is the PyYAML ID from slide 5. For another ID, change the end of the address. On the page, find the <b>Aliases</b> line and the <b>Fixed</b> version. Write both under your worksheet in <code>ch10-notes.md</code>. Save.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://osv.dev/vulnerability/PYSEC-2020-96</code></pre></div>
         <span class="k see">You should see</span><div class="v">For <code>PYSEC-2020-96</code>: <b>Aliases</b> lists <code>CVE-2020-1747</code> and <code>GHSA-6757-jp84-gxfx</code>. Lower on the page: <b>Introduced</b> <code>5.1</code> and <b>Fixed</b> <code>5.3.1</code>. The fixed version is the same as in the <b>Fix Versions</b> column.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>The page does not show your ID at the top? Copy the ID again from your output. One wrong letter or number gives another page.</li>
+          <li>The page does not show your ID at the top? Copy the ID again from your output, because one wrong letter or number opens a different page.</li>
           <li>osv.dev does not open? Watch the instructor's screen. Fill the worksheet only.</li>
         </ul></div>
       </div>
 
       <div class="s4">
         <h4>8. Instructor's screen: Dependabot (5 min)</h4>
-        <span class="k">Do</span><div class="v">Watch the same repository on GitHub, as Dependabot sees it. Look for the <code>GHSA-</code> IDs. Compare them with the <b>Aliases</b> you found in step 7.</div>
+        <span class="k">Do</span><div class="v">Watch the same repository on GitHub, with its Dependabot alerts. Look for the <code>GHSA-</code> IDs. Compare them with the <b>Aliases</b> you found in step 7.</div>
         <span class="k">Copy</span><div class="v">Nothing to type.</div>
         <span class="k see">You should see</span><div class="v">The <b>Security and quality</b> tab of <code>vulnerable-demo</code>, with a list of Dependabot alerts. Each alert names a package and a <code>GHSA-</code> ID. One of them is in your <b>Aliases</b> line from step 7. If you used <code>PYSEC-2020-96</code> in step 7, look for <code>GHSA-6757-jp84-gxfx</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>The screen is too small to read? Open your osv.dev page from step 7 again. The <code>GHSA-</code> ID in <b>Aliases</b> is the one on the screen.</li>
+          <li>You cannot read the instructor's screen? Open your osv.dev page from step 7 again. The <code>GHSA-</code> ID in <b>Aliases</b> is the same ID as on the instructor's screen.</li>
         </ul></div>
       </div>
       <div class="callout">
         <span class="mk">A name you did not write</span>
-        <p><code>idna</code> is not in <code>requirements.txt</code>. It is there because <code>requests 2.19.1</code> needs it &mdash; an indirect dependency (slide 3). Its holes are in your program too.</p>
+        <p><code>idna</code> is not in <code>requirements.txt</code>. But <code>requests 2.19.1</code> needs this library. So this library is an indirect dependency (slide 3). This means the security problems of this library are in your program too.</p>
       </div>
       <p class="done"><b>Done when</b> (.venv) in the prompt · pip-audit installed · vulnerable-demo cloned, not installed · worksheet filled in ch10-notes.md · one ID checked on osv.dev</p>
     </div>
@@ -981,7 +986,7 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
     <!-- PART 2 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 2</span><h3>Compare two libraries with five checks</h3><span class="budget">25 min</span></div>
-      <p class="goal">One library from our whitelist, and one other library that does the same job. You look at both on GitHub and write down what you see. Your row letter (A to J) decides your pair, so that every pair is covered.</p>
+      <p class="goal">You compare two libraries that do the same job. One library is from our whitelist, and the other library is not. You look at both libraries on GitHub and write down what you see. Your row letter (A to J) decides your pair. So three or four rows check each pair. The table shows the three pairs. Find your pair in the table, then do the three steps below it.</p>
       <div class="scroll-x">
         <table>
           <thead><tr><th>Pair</th><th>Rows</th><th>Whitelist library</th><th>Other library</th><th>Both of them…</th></tr></thead>
@@ -995,7 +1000,7 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
 
       <div class="s4">
         <h4>1. Open the two pages of your pair</h4>
-        <span class="k">Do</span><div class="v">Find your row in the table above. Open its two links. Each link opens in a new tab.</div>
+        <span class="k">Do</span><div class="v">Find your row letter in the <b>Rows</b> column of the table above. Then open the two links in that table row. Each link opens in a new tab.</div>
         <span class="k">Copy</span><div class="v">Nothing to type. Click the two links.</div>
         <span class="k see">You should see</span><div class="v">Two GitHub repository pages, for example <code>psf/requests</code> and <code>encode/httpx</code>. Each page has a file list, tabs at the top, and an <b>About</b> part on the right.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
@@ -1007,13 +1012,13 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
         <h4>2. Do the five checks. Write them in <code>ch10-notes.md</code></h4>
         <span class="k">Do</span><div class="v">For each library, check the five items in this order (slide 9 shows where they are on the page):
           <ul>
-            <li><b>Recent commit</b> &mdash; the time on the line above the file list (for example <i>3 days ago</i>).</li>
-            <li><b>People</b> &mdash; the <b>Contributors</b> number on the right side.</li>
-            <li><b>SECURITY.md</b> &mdash; open the <b>Security and quality</b> tab. Write <b>Yes</b> if there is a security policy, <b>No</b> if it says <i>No security policy detected</i>.</li>
-            <li><b>License</b> &mdash; the license name on the right side.</li>
-            <li><b>Issue response</b> &mdash; open the <b>Issues</b> tab and the three newest issues. How many of the three got an answer from someone other than the writer?</li>
+            <li><b>Recent commit:</b> the time on the line above the file list (for example <i>3 days ago</i>).</li>
+            <li><b>People:</b> the <b>Contributors</b> number on the right side.</li>
+            <li><b>SECURITY.md:</b> open the <b>Security and quality</b> tab. Write <b>Yes</b> if there is a security policy. Write <b>No</b> if the tab says <i>No security policy detected</i>.</li>
+            <li><b>License:</b> the license name on the right side.</li>
+            <li><b>Issue response:</b> open the <b>Issues</b> tab and the three newest issues. How many of the three issues got an answer from someone other than the writer?</li>
           </ul>
-          Add the table below at the end of <code>ch10-notes.md</code>, under your worksheet. Put your two library names in the first line. Fill it. Save.</div>
+          Then add the table below at the end of <code>ch10-notes.md</code>, under your worksheet. Put your two library names in the first line. Fill the table. Save.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>| Check            | &lt;whitelist library&gt; | &lt;other library&gt; |
 |------------------|---------------------|-----------------|
 | Recent commit    |                     |                 |
@@ -1021,26 +1026,26 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
 | SECURITY.md      |                     |                 |
 | License          |                     |                 |
 | Issue response   |                     |                 |</code></pre>
-          <p class="why">Why write what the page shows: the numbers change every day. What you saw today is the right answer.</p></div>
+          <p class="why">Why write what the page shows: the numbers change every day. So what you saw today is the right answer.</p></div>
         <span class="k see">You should see</span><div class="v">Ten cells filled in <code>ch10-notes.md</code>, for example <code>3 days ago</code>, <code>Yes</code>, <code>2 of 3</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>GitHub shows <b>Other</b> as the license? Open the <code>LICENSE</code> file in the file list. Read its first lines. Write the license name you find there.</li>
+          <li>GitHub shows <b>Other</b> as the license? Open the <code>LICENSE</code> file in the file list. Read the first lines of this file. Then write the license name you find there.</li>
           <li>Your numbers are different from your partner's? That is fine. Write what you see.</li>
         </ul></div>
       </div>
 
       <div class="s4">
         <h4>3. Write two sentences</h4>
-        <span class="k">Do</span><div class="v">Under the table in <code>ch10-notes.md</code>, write <b>two sentences in your own words</b>: which library you would choose for a team project, and which check decided it. Save.</div>
+        <span class="k">Do</span><div class="v">Under the table in <code>ch10-notes.md</code>, write <b>two sentences in your own words</b>. Sentence 1: which library would you choose for a team project? Sentence 2: which check made you choose this library? Save.</div>
         <span class="k">Copy</span><div class="v">Nothing to copy. Write them yourself.</div>
         <span class="k see">You should see</span><div class="v">Two sentences. One names a library. One names a check.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>AI wrote the sentences? Then it is Partial (see the <b>Assignment</b> tab). Write your own, even if the English is simple.</li>
+          <li>AI wrote the sentences? Then your grade is Partial (see the <b>Assignment</b> tab). So write your own sentences, even if the English is simple.</li>
         </ul></div>
       </div>
       <div class="callout">
         <span class="mk">No wrong answer</span>
-        <p>The whitelist library does not win every row. That is fine &mdash; the point is that you <b>looked</b> before you chose. This table goes into your assignment.</p>
+        <p>The whitelist library is not better in every row. That is fine, because the important thing is this: you <b>looked</b> before you chose. Next, you paste this table into your assignment.</p>
       </div>
       <p class="done"><b>Done when</b> both pages checked · ten cells filled in ch10-notes.md · two sentences written</p>
     </div>
@@ -1048,13 +1053,13 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
     <!-- PART 3 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 3</span><h3>Load a fake secret from .env</h3><span class="budget">15 min</span></div>
-      <p class="goal">Watch it once on the instructor's screen (5 min). Then do it yourself (10 min). Stay in the <code>vulnerable-demo</code> folder. Its <code>.gitignore</code> already has the line <code>.env</code>. Slide 10 shows where each file goes.</p>
+      <p class="goal">First, watch the steps once on the instructor's screen (5 min). Then do the six steps below yourself (10 min). Stay in the <code>vulnerable-demo</code> folder, because the file <code>.gitignore</code> in this folder already has the line <code>.env</code>. Slide 10 shows where each file goes.</p>
 
       <div class="s4">
         <h4>1. Install <code>python-dotenv</code></h4>
         <span class="k">Do</span><div class="v">Check the prompt: it starts with <code>(.venv)</code> and ends with <code>\vulnerable-demo&gt;</code>. Install the library into your box.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip install python-dotenv==1.2.3</code></pre></div>
-        <span class="k see">You should see</span><div class="v">At the end:<pre data-kind="out"><code>Successfully installed python-dotenv-1.2.3</code></pre>You may also see a notice about a new pip. You can ignore it.</div>
+        <span class="k see">You should see</span><div class="v">At the end:<pre data-kind="out"><code>Successfully installed python-dotenv-1.2.3</code></pre>You may also see a notice about a new pip. You can ignore that notice.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>No <code>(.venv)</code> at the start of the prompt? Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
           <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? The box is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
@@ -1075,7 +1080,7 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
 
       <div class="s4">
         <h4>3. Make <code>secret_demo.py</code></h4>
-        <span class="k">Do</span><div class="v">In the Explorer, right-click <code>vulnerable-demo</code> &rarr; <b>New File…</b> &rarr; type <code>secret_demo.py</code>. Copy the lines below into it. Save.</div>
+        <span class="k">Do</span><div class="v">In the Explorer, right-click <code>vulnerable-demo</code> &rarr; <b>New File…</b> &rarr; type <code>secret_demo.py</code>. Copy the lines below into the new file. Save.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>import os
 from dotenv import load_dotenv
 
@@ -1085,7 +1090,7 @@ if key:
     print("Key found. First 4 letters:", key[:4])
 else:
     print("No key. Check the .env file.")</code></pre>
-          <p class="why">Why only 4 letters: a program should never print the whole key. <code>key[:4]</code> means the first 4 letters.</p></div>
+          <p class="why">Why only 4 letters: a program should never print the whole key. So the code prints only part of the key. <code>key[:4]</code> means the first 4 letters.</p></div>
         <span class="k see">You should see</span><div class="v">In the Explorer: <code>vulnerable-demo</code> &rsaquo; <code>secret_demo.py</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>The file is not inside <code>vulnerable-demo</code>? In the Explorer, drag it onto <code>vulnerable-demo</code>.</li>
@@ -1094,9 +1099,9 @@ else:
 
       <div class="s4">
         <h4>4. Run <code>secret_demo.py</code></h4>
-        <span class="k">Do</span><div class="v">Run it from the <code>vulnerable-demo</code> folder.</div>
+        <span class="k">Do</span><div class="v">Run the file from the <code>vulnerable-demo</code> folder.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python secret_demo.py</code></pre></div>
-        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Key found. First 4 letters: fake</code></pre>The key came from the file <code>.env</code>, not from the code.</div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Key found. First 4 letters: fake</code></pre>This means the key came from the file <code>.env</code>, not from the code.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>No key. Check the .env file.</code>? Check three things: <code>.env</code> is in <code>vulnerable-demo</code>, its name is exactly <code>.env</code>, and the line starts with <code>API_KEY=</code> (capital letters). Save <code>.env</code>. Run again.</li>
           <li><code>ModuleNotFoundError: No module named 'dotenv'</code>? The box is not active, or you skipped step 1. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then do step 1 again.</li>
@@ -1106,10 +1111,10 @@ else:
 
       <div class="s4">
         <h4>5. Ask Git about <code>.env</code></h4>
-        <span class="k">Do</span><div class="v">Ask Git whether it would ever add the secret file. Then look at the list of new files.</div>
+        <span class="k">Do</span><div class="v">First, ask Git: will Git ever add the secret file? Then look at the list of new files.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git check-ignore -v .env
 git status</code></pre></div>
-        <span class="k see">You should see</span><div class="v">The first command names the rule that protects <code>.env</code> (line 2 of <code>.gitignore</code>):<pre data-kind="out"><code>.gitignore:2:.env	.env</code></pre>Then <code class="cmd">git status</code>:<pre data-kind="out"><code>On branch main
+        <span class="k see">You should see</span><div class="v">The first command shows the rule that stops Git from adding <code>.env</code> (line 2 of <code>.gitignore</code>):<pre data-kind="out"><code>.gitignore:2:.env	.env</code></pre>Then <code class="cmd">git status</code>:<pre data-kind="out"><code>On branch main
 Your branch is up to date with 'origin/main'.
 
 Untracked files:
@@ -1117,7 +1122,7 @@ Untracked files:
 	secret_demo.py
 
 nothing added to commit but untracked files present (use "git add" to track)</code></pre>
-          <code>secret_demo.py</code> is listed. <code>.env</code> is not listed at all.</div>
+          <code>secret_demo.py</code> is listed. But <code>.env</code> is not listed at all.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>The first command prints nothing? You are in another repository, for example <code>oss-practice</code>. Type <code class="cmd" style="white-space:nowrap">cd D:\oss\&lt;your ID&gt;\vulnerable-demo</code>. Then type both lines again.</li>
           <li><code>fatal: not a git repository (or any of the parent directories): .git</code>? You are not in <code>vulnerable-demo</code>. Type <code class="cmd">cd vulnerable-demo</code>. Then type both lines again.</li>
@@ -1126,12 +1131,12 @@ nothing added to commit but untracked files present (use "git add" to track)</co
 
       <div class="s4">
         <h4>6. Find the line that reads <code>.env</code></h4>
-        <span class="k">Do</span><div class="v">In <code>secret_demo.py</code>, make one change. Save. Run <code class="cmd">python secret_demo.py</code>. Then change the line back. Save. Run again. To find the line, press <kbd>Ctrl + F</kbd> and paste it.</div>
+        <span class="k">Do</span><div class="v">In <code>secret_demo.py</code>, make one change. Save. Run <code class="cmd">python secret_demo.py</code>. Then change the line back. Save. Run again. To find the line, press <kbd>Ctrl + F</kbd> and paste the line.</div>
         <span class="k">Copy</span><div class="v"><p class="lbl">Find this line:</p>
 <pre data-kind="code"><code>load_dotenv()</code></pre>
 <p class="lbl">Change it to (a <code>#</code> in front):</p>
 <pre data-kind="code"><code># load_dotenv()</code></pre>
-          <p class="why">Why: <code>#</code> turns the line into a comment. Python skips it. Now you see which line reads the file.</p></div>
+          <p class="why">Why: <code>#</code> turns the line into a comment, and Python skips a comment. So you can see which line reads the file.</p></div>
         <span class="k see">You should see</span><div class="v">With the <code>#</code>:<pre data-kind="out"><code>No key. Check the .env file.</code></pre>Without the <code>#</code> again:<pre data-kind="out"><code>Key found. First 4 letters: fake</code></pre></div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>Still <code>Key found</code> with the <code>#</code>? You did not save. Press <kbd>Ctrl + S</kbd>. Run again.</li>
@@ -1139,7 +1144,7 @@ nothing added to commit but untracked files present (use "git add" to track)</co
       </div>
       <div class="callout warn">
         <span class="mk">Do not commit here</span>
-        <p>This clone is only for practice. Do not commit or push anything in <code>vulnerable-demo</code>. In your team project the rule is the same: <code>.env</code> stays on your PC. Only <code>env.example</code> (names, no values) goes to GitHub.</p>
+        <p>This clone is only for practice. So do not commit or push anything in <code>vulnerable-demo</code>. In your team project, the rule is the same: <code>.env</code> stays on your PC. Only <code>env.example</code> (names, no values) goes to GitHub.</p>
       </div>
       <p class="goal">Next: open the <b>Assignment</b> tab.</p>
       <p class="done"><b>Done when</b> python-dotenv installed · fake key loaded · git check-ignore shows the .gitignore rule · load_dotenv() line tested and changed back</p>
@@ -1148,7 +1153,7 @@ nothing added to commit but untracked files present (use "git add" to track)</co
     <!-- PART 4 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 4</span><h3>Shared PC: end routine</h3><span class="budget">5 min</span></div>
-      <p class="goal">Do this <b>after</b> you open your assignment issue. If you sign out first, you cannot open the issue.</p>
+      <p class="goal">Do this <b>after</b> you open your assignment issue. Why: after you sign out, you cannot open the issue. Do the four steps below:</p>
 
       <div class="s4">
         <h4>1. Your two issues are open</h4>
@@ -1177,7 +1182,7 @@ nothing added to commit but untracked files present (use "git add" to track)</co
 cmdkey /list | findstr github</code></pre></div>
         <span class="k see">You should see</span><div class="v">The second command shows no lines.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>The first command says <code>CMDKEY: Element not found.</code>? Nothing was saved. That is fine.</li>
+          <li>The first command says <code>CMDKEY: Element not found.</code>? This means no login was saved. That is fine.</li>
           <li>The prompt starts with <code>PS</code>? Type <code class="cmd">cmd</code> first.</li>
         </ul></div>
       </div>
@@ -1196,7 +1201,7 @@ cmdkey /list | findstr github</code></pre></div>
 
     <div class="step">
       <div class="step-head"><span class="step-no">Stuck?</span><h3>Prompts you can copy and paste</h3></div>
-      <p class="goal">Try AI first, then your row, then the instructor. Replace the parts in &lt; &gt; with what is on your own screen.</p>
+      <p class="goal">First ask AI. Next ask the students in your row. Last, ask the instructor. Below are three prompts for AI. Replace the parts in &lt; &gt; with what is on your own screen.</p>
       <pre><code>I ran "pip-audit -r requirements.txt" in the folder vulnerable-demo.
 Here is one row of the output:
 &lt;paste one row&gt;
@@ -1221,41 +1226,44 @@ The .env file is in &lt;folder&gt;. What should I check?
     <div class="doc-head">
       <p class="eyebrow">Mini Assignment #10 · 35 min</p>
       <h2>One team plan, one comparison checklist</h2>
-      <p>First your team writes its plan together (20 min). Then each of you submits your own comparison checklist, with a link to that plan (15 min).</p>
+      <p>This assignment has two parts. First, your team writes its plan together (20 min). Then each student submits a comparison checklist with a link to the team plan (15 min).</p>
     </div>
 
     <div class="step">
-      <div class="step-head"><span class="step-no">Team</span><h3>Team plan &mdash; one issue per team</h3><span class="budget">20 min</span></div>
+      <div class="step-head"><span class="step-no">Team</span><h3>Team plan: one issue per team</h3><span class="budget">20 min</span></div>
+      <p class="goal">Your team writes one plan in one issue. Do these five steps together:</p>
       <ol>
-        <li>Sit with your project team. First choose your PM (project manager). <b>The PM opens the issue</b>. Everyone else talks and checks.</li>
-        <li>Open it with the team plan template &mdash; <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=team-plan.md" target="_blank" rel="noopener"><b>click here to open it with the template ready</b></a> (sign in first).</li>
-        <li>Title: <code>[Team plan] Row &lt;letter&gt;</code> &mdash; for example <code>[Team plan] Row C</code>. Your team is your row.</li>
-        <li>Fill every heading:
+        <li>Sit with your project team. First, choose your PM (project manager). <b>The PM opens the issue</b>. The other members talk and check.</li>
+        <li>The PM signs in to GitHub first. Then the PM uses this link to open the team plan template: <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=team-plan.md" target="_blank" rel="noopener"><b>click here to open a new issue with the template</b></a>.</li>
+        <li>Title: <code>[Team plan] Row &lt;letter&gt;</code>. For example: <code>[Team plan] Row C</code>. Your team is your row.</li>
+        <li>Write something under every heading:
           <ul>
-            <li><b>Topic</b> &mdash; one sentence: what the tool does, and for whom.</li>
-            <li><b>Libraries</b> &mdash; only from the course whitelist. The whole list is inside the template, so you do not need to search for it. Two or three is enough.</li>
-            <li><b>Input / Process / Output</b> &mdash; one line each.</li>
-            <li><b>Track</b> &mdash; A only, or A + B (challenge). Every team does A.</li>
-            <li><b>Roles</b> &mdash; PM, developer, documentation, reviewer. Write GitHub usernames. In a team of three, one person takes two roles.</li>
+            <li><b>Topic:</b> one sentence. What does the tool do, and for whom?</li>
+            <li><b>Libraries:</b> only from the course whitelist. The template has the whole whitelist, so you do not need to search for it. Two or three libraries are enough.</li>
+            <li><b>Input / Process / Output:</b> one line each.</li>
+            <li><b>Track:</b> A only, or A + B (challenge). Every team does A.</li>
+            <li><b>Roles:</b> PM, developer, documentation, reviewer. Write GitHub usernames. In a team of three, one person takes two roles.</li>
           </ul>
         </li>
-        <li>Every other member leaves one comment on the issue: <i>"Agreed"</i>, or a real question.</li>
+        <li>Last, every other member writes one comment on the issue: <i>"Agreed"</i>, or a real question.</li>
       </ol>
       <div class="callout">
         <span class="mk">Keep it small</span>
-        <p>The goal for the project is <b>one run command, one input, one output</b>. If your input/process/output lines need more than one line each, the plan is too big.</p>
+        <p>The goal for the project is <b>one run command, one input, one output</b>. So check your input, process and output lines. Does one of them need more than one line? Then the plan is too big.</p>
       </div>
     </div>
 
     <div class="step">
       <div class="step-head"><span class="step-no">Assignment</span><h3>Your comparison checklist</h3><span class="budget">15 min</span></div>
+      <p class="goal">Each student opens one issue alone. Do these five steps:</p>
       <ol>
-        <li>Open an issue in <code>practice-pr</code> using the Chapter 10 template &mdash; <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch10.md" target="_blank" rel="noopener"><b>click here to open it with the template ready</b></a>.</li>
-        <li>Title: <code>[Ch10] StudentID Name</code> &mdash; for example <code>[Ch10] 20261234 Gildong Hong</code>.</li>
-        <li>Under <code>## My pair</code>: keep the line of your pair. Delete the other two.</li>
+        <li>Open an issue in <code>practice-pr</code> with the Chapter 10 template. Use this link: <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch10.md" target="_blank" rel="noopener"><b>click here to open a new issue with the template</b></a>.</li>
+        <li>Title: <code>[Ch10] StudentID Name</code>. For example: <code>[Ch10] 20261234 Gildong Hong</code>.</li>
+        <li>Under <code>## My pair</code>: keep the line of your pair. Delete the other two lines.</li>
         <li>Under <code>## Comparison checklist</code>: delete the empty table. Paste your table from <code>ch10-notes.md</code> (Lab PART 2, step 2). Under <code>## My choice and why</code>: paste your two sentences (PART 2, step 3).</li>
-        <li>Under <code>## My team plan issue</code>: paste the link to your team's <code>[Team plan]</code> issue. Open that issue and copy the address from the address bar.</li>
+        <li>Under <code>## My team plan issue</code>: paste the link to your team's <code>[Team plan]</code> issue. To get the link, open that issue and copy the address from the address bar.</li>
       </ol>
+      <p class="goal">Your issue has this shape. Your table has your own values:</p>
       <pre><code>Title: [Ch10] 20261234 Gildong Hong
 
 ## My pair
@@ -1282,24 +1290,24 @@ Pair 1: requests vs httpx
 
     <div class="step">
       <div class="step-head"><span class="step-no">Grading</span><h3>How it's graded</h3></div>
-      <p class="goal">We look at <b>whether you looked, and whether you can explain what you saw</b>.</p>
+      <p class="goal">We check two things: <b>did you really look at the pages, and can you explain what you saw?</b> There are three grades:</p>
       <div class="rubric">
-        <div class="card"><b>Complete</b><p>All ten cells show what the GitHub pages really say, the two sentences are your own words, and the team plan link opens your team's issue.</p></div>
-        <div class="card"><b>Partial</b><p>Cells are empty or guessed, the reason is copied from AI, or the team plan link is missing. If two submissions are the same text, both are Partial.</p></div>
+        <div class="card"><b>Complete</b><p>All ten cells show what the GitHub pages really say. The two sentences are in your own words. The team plan link opens your team's issue.</p></div>
+        <div class="card"><b>Partial</b><p>Some cells are empty or guessed. Or the reason is copied from AI. Or the team plan link is missing. Also, if two submissions have the same text, both are Partial.</p></div>
         <div class="card"><b>Not submitted</b><p>No issue by the deadline. Late work still gets partial credit.</p></div>
       </div>
       <div class="callout warn">
         <span class="mk">Deadline</span>
-        <p><b>11:59 PM the night before the next class.</b> The same deadline is for the team plan issue. Your team starts building from it in the next class.</p>
+        <p><b>11:59 PM the night before the next class.</b> The team plan issue has the same deadline. Why: your team starts to build from the team plan in the next class.</p>
       </div>
     </div>
 
     <div class="step">
       <div class="step-head"><span class="step-no">Next</span><h3>Preview of Chapter 11</h3></div>
-      <p class="goal"><b>Project Kickoff</b> &mdash; your team forks the template skeleton, writes the plan into the repository, and opens its first three issues. Today's team plan is where you start.</p>
+      <p class="goal"><b>Project Kickoff:</b> first, your team forks the template repository (the starting files). Next, your team writes the plan into this repository. Last, your team opens its first three issues. So today's team plan is where you start. Remember three things:</p>
       <ul style="margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em; font-size:.95rem;">
-        <li>Sit with your project team next time.</li>
-        <li>Keep <code>ch10-notes.md</code>. Your library choice may change, and the table is your reason.</li>
+        <li>In the next class, sit with your project team.</li>
+        <li>Keep <code>ch10-notes.md</code>. Your library choice may change later, and the table shows the reason for your choice.</li>
         <li>Before you add any library to your project, run <code class="cmd">pip-audit -r requirements.txt</code> on your <code>requirements.txt</code>.</li>
       </ul>
     </div>
