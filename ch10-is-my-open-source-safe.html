@@ -1,0 +1,1386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 10 · Is My Open Source Safe?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── 토큰 ─────────────────────────────────────────── */
+:root{
+  --ground:#F6F8F6; --surface:#FFFFFF; --surface-2:#ECF1EE; --sunken:#E3EAE6;
+  --line:#D6DEDA; --line-strong:#B9C5BF;
+  --ink:#141E1A; --ink-2:#4B5B56; --ink-3:#78887F;
+  --code-bg:#EAF3FC; --code-line:#9DBCE0; --code-edge:#2F6DB5;
+  --accent:#0B6E55; --accent-ink:#095643; --accent-soft:#E1F0EA; --accent-line:#9FCDBD;
+  --warn:#8F5410; --warn-soft:#F8EEDD; --warn-line:#E0C79A;
+  --shadow:0 1px 2px rgba(20,30,26,.05), 0 8px 24px -12px rgba(20,30,26,.18);
+  --display:"Gowun Batang","Batang","Malgun Gothic",serif;
+  --body:"IBM Plex Sans KR","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  --mono:"IBM Plex Mono","Consolas","D2Coding",monospace;
+  --topbar:64px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+    --line:#28382F; --line-strong:#3A4E45;
+    --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+    --code-bg:#132131; --code-line:#2C4864; --code-edge:#6AA6E8;
+    --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+    --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+  --line:#28382F; --line-strong:#3A4E45;
+  --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+  --code-bg:#132131; --code-line:#2C4864; --code-edge:#6AA6E8;
+  --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+  --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+
+/* ─── 기본 ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-weight:400; font-size:16px; line-height:1.68;
+  word-break:keep-all; overflow-wrap:break-word;
+}
+h1,h2,h3,h4{font-family:var(--display); font-weight:700; line-height:1.28; text-wrap:balance; margin:0;}
+p{margin:0;}
+a{color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent-line);}
+a:hover{border-bottom-color:var(--accent);}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:3px; border-radius:3px;}
+code,kbd{font-family:var(--mono); font-size:.88em; background:var(--surface-2); padding:.12em .38em; border-radius:4px; border:1px solid var(--line);}
+kbd{font-size:.8em; box-shadow:0 1px 0 var(--line-strong);}
+.eyebrow{font-family:var(--body); font-size:.95rem; font-weight:600; letter-spacing:.01em; color:var(--ink-2);}
+
+/* ─── 상단바 ───────────────────────────────────────── */
+.topbar{
+  position:sticky; top:0; z-index:50; height:var(--topbar);
+  display:flex; align-items:center; gap:20px;
+  padding:0 clamp(14px,3vw,36px);
+  background:var(--ground);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex; flex-direction:column; gap:1px; min-width:0;}
+.brand b{font-family:var(--display); font-size:1.02rem; font-weight:700; white-space:nowrap;}
+.brand span{font-family:var(--body); font-size:.8rem; letter-spacing:.01em; color:var(--ink-3);}
+.tabs{display:flex; gap:4px; margin-left:auto; background:var(--surface-2); padding:4px; border-radius:10px; border:1px solid var(--line);}
+.tab{
+  appearance:none; border:0; background:transparent; cursor:pointer;
+  font-family:var(--body); font-size:.86rem; font-weight:600; color:var(--ink-2);
+  padding:7px 13px; border-radius:7px; display:flex; align-items:baseline; gap:7px; white-space:nowrap;
+}
+.tab .min{font-family:var(--mono); font-size:.68rem; font-weight:500; color:var(--ink-3);}
+.tab:hover{color:var(--ink);}
+.tab[aria-selected="true"]{background:var(--surface); color:var(--accent-ink); box-shadow:var(--shadow);}
+.tab[aria-selected="true"] .min{color:var(--accent);}
+
+/* ─── 강의: 슬라이드 ───────────────────────────────── */
+.stage{
+  min-height:calc(100vh - var(--topbar) - 62px);
+  display:flex; align-items:center; justify-content:center;
+  padding:clamp(24px,4vw,56px) clamp(16px,5vw,60px);
+}
+.slide{width:100%; max-width:960px; display:flex; flex-direction:column; gap:clamp(16px,2.2vw,26px);}
+.slide h2{font-size:clamp(1.75rem,3.9vw,2.85rem);}
+.slide h3{font-size:clamp(1.1rem,1.9vw,1.35rem); color:var(--accent-ink);}
+.slide p{font-size:clamp(1.05rem,1.8vw,1.38rem); color:var(--ink-2); max-width:62ch;}
+.slide .lead{font-size:clamp(1.2rem,2.2vw,1.62rem); color:var(--ink);}
+.slide ul{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.55em; font-size:clamp(1.05rem,1.7vw,1.34rem);}
+.slide ul li::marker{color:var(--accent);}
+.rule{height:3px; width:56px; background:var(--accent); border-radius:2px;}
+
+.cover{gap:clamp(20px,3vw,34px);}
+.cover h1{font-size:clamp(2.3rem,6.2vw,4.4rem); letter-spacing:-.015em;}
+.cover .sub{font-size:clamp(1.15rem,2.1vw,1.58rem); color:var(--ink-2);}
+.cover dl{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:18px; margin:0; padding-top:16px; border-top:1px solid var(--line);}
+.cover dt{font-family:var(--body); font-size:.8rem; font-weight:600; letter-spacing:.01em; color:var(--ink-3); margin-bottom:3px;}
+.cover dd{margin:0; font-size:1.05rem; font-weight:500;}
+
+.grid{display:grid; gap:14px;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.g3{grid-template-columns:repeat(auto-fit,minmax(215px,1fr));}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px; display:flex; flex-direction:column; gap:7px; box-shadow:var(--shadow);
+}
+.card h4{font-family:var(--body); font-weight:600; font-size:1.12rem;}
+.card p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+.card .tagline{font-family:var(--body); font-size:.85rem; font-weight:600; letter-spacing:.01em; color:var(--accent);}
+
+.freedoms{display:flex; flex-direction:column; gap:10px; counter-reset:f -1;}
+.freedom{
+  display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:baseline;
+  padding:13px 18px; background:var(--surface); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:0 10px 10px 0;
+}
+.freedom::before{
+  counter-increment:f; content:"Freedom " counter(f);
+  font-family:var(--mono); font-size:.72rem; font-weight:600; color:var(--accent);
+  letter-spacing:.05em; white-space:nowrap;
+}
+.freedom b{font-weight:600;}
+.freedom span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+/* ─── 트랙 비교(필수 A / 선택 B) ───────────────────── */
+.tracks{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(290px,1fr));}
+.track{
+  background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0; padding:18px 20px;
+  display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow);
+}
+.track.optional{background:var(--surface-2); border-left-style:dashed; border-left-color:var(--line-strong); box-shadow:none;}
+.track .badge{
+  align-self:flex-start; font-family:var(--body); font-size:.8rem; font-weight:700;
+  padding:3px 11px; border-radius:20px; background:var(--accent-soft); color:var(--accent-ink);
+}
+.track.optional .badge{background:var(--sunken); color:var(--ink-3);}
+.track h4{font-family:var(--body); font-weight:700; font-size:1.18rem;}
+.track p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+
+.timeline{display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); border-top:2px solid var(--line-strong);}
+.tl-item{padding:16px 14px 0 0; position:relative;}
+.tl-item::before{content:""; position:absolute; top:-6px; left:0; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid var(--ground);}
+.tl-item .yr{font-family:var(--mono); font-size:1.18rem; font-weight:600; color:var(--accent-ink); display:block; margin-bottom:3px;}
+.tl-item p{font-size:.98rem; line-height:1.55;}
+
+.callout{
+  display:flex; gap:14px; padding:16px 20px; border-radius:10px;
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+}
+.callout .mk{font-family:var(--body); font-size:.9rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink); padding-top:2px; white-space:nowrap;}
+.callout p{color:var(--ink); max-width:none;}
+.callout.warn{background:var(--warn-soft); border-color:var(--warn-line);}
+.callout.warn .mk{color:var(--warn);}
+
+/* ─── 코드 + 오른쪽 줄별 설명(강의 탭) ───────────────── */
+.codex{display:grid; grid-template-columns:minmax(0,3fr) minmax(0,2fr); gap:12px 14px; align-items:start;}
+.codex>pre{grid-column:1;}
+.codex>.cx-notes{grid-column:2; grid-row:1 / span 2;}
+.codex:not(:has(>pre[data-kind="out"]))>.cx-notes{grid-row:1;}
+@media (max-width:760px){ .codex{grid-template-columns:minmax(0,1fr);} .codex>.cx-notes{grid-column:1; grid-row:auto;} }
+.slide ul.cx-notes, .slide.dgs ul.cx-notes{list-style:none; margin:0; padding:12px 16px; gap:.75em; font-size:1.02rem; line-height:1.45; color:var(--ink); background:var(--surface); border:1.5px solid var(--line-strong); border-left:4px solid var(--accent); border-radius:0 9px 9px 0;}
+.cx-notes li code{display:block; width:fit-content; background:none; border:0; padding:0; margin-bottom:2px; font-size:.95rem; font-weight:600; color:var(--accent-ink);}
+.cx-notes li code[style]{display:inline !important;}
+/* 강의 탭: 투영용 코드 칸(연파랑)·큰 글자 */
+#pane-lecture pre code{font-size:1.02rem; line-height:1.5;}
+#pane-lecture pre[data-kind="file"]{background:var(--code-bg); border:1.5px solid var(--code-line); border-left:5px solid var(--code-edge);}
+#pane-lecture pre[data-kind="out"]{border:1.5px solid var(--line-strong);}
+#pane-lecture .slide:has(.codex) h2{font-size:clamp(1.6rem,3vw,2.2rem);}
+#pane-lecture .slide:has(.codex){gap:14px;}
+@media print{ .codex{break-inside:avoid;} }
+
+table{width:100%; border-collapse:collapse; font-size:1.02rem;}
+th,td{border-bottom:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top;}
+th{font-family:var(--body); font-size:.88rem; letter-spacing:.01em; color:var(--ink-3); font-weight:600; border-bottom:1.5px solid var(--line-strong);}
+td.num{font-variant-numeric:tabular-nums; font-family:var(--mono); white-space:nowrap; color:var(--accent-ink); font-weight:500;}
+.scroll-x{overflow-x:auto;}
+td.where{white-space:normal; font-size:.88em; color:var(--ink-2); width:26%;}
+.where-in{font-size:.9em; color:var(--ink-2); margin-top:8px; padding-top:8px; border-top:1px solid var(--line);}
+@media print{ a[href^="http"]{ text-decoration:underline; text-underline-offset:2px; } }
+
+.slidenav{
+  position:sticky; bottom:0; z-index:40;
+  display:flex; align-items:center; gap:14px;
+  padding:11px clamp(14px,3vw,36px);
+  background:var(--ground); border-top:1px solid var(--line);
+}
+.dots{display:flex; gap:4px; flex:1; flex-wrap:wrap; align-items:center;}
+.dot{
+  min-width:26px; height:24px; padding:0 5px; border-radius:6px; cursor:pointer; line-height:1;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-3);
+  font-family:var(--mono); font-size:.74rem; font-weight:600; font-variant-numeric:tabular-nums;
+}
+.dot:hover{background:var(--surface); border-color:var(--accent); color:var(--accent-ink);}
+.dot[aria-current="true"]{background:var(--accent); border-color:var(--accent); color:var(--ground);}
+.navbtn.edge{padding:7px 10px; font-family:var(--mono);}
+.navbtn{
+  appearance:none; cursor:pointer; font-family:var(--body); font-weight:600; font-size:.85rem;
+  padding:7px 15px; border-radius:8px; border:1px solid var(--line-strong);
+  background:var(--surface); color:var(--ink);
+}
+.navbtn:hover{border-color:var(--accent); color:var(--accent-ink);}
+.navbtn:disabled{opacity:.35; cursor:default;}
+.counter{font-family:var(--mono); font-size:.8rem; font-variant-numeric:tabular-nums; color:var(--ink-3); white-space:nowrap;}
+
+/* ─── 문서형 페인(실습·과제) ───────────────────────── */
+.doc{max-width:840px; margin:0 auto; padding:clamp(28px,5vw,60px) clamp(18px,5vw,40px) 100px; display:flex; flex-direction:column; gap:clamp(26px,3.5vw,38px);}
+.doc-head{display:flex; flex-direction:column; gap:12px;}
+.doc-head h2{font-size:clamp(1.75rem,3.4vw,2.4rem);}
+.doc-head p{color:var(--ink-2); max-width:62ch;}
+
+.step{display:flex; flex-direction:column; gap:14px; padding-top:26px; border-top:1px solid var(--line);}
+.step-head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;}
+.step-no{font-family:var(--mono); font-size:.72rem; font-weight:600; letter-spacing:.08em; color:var(--accent-ink); padding:3px 9px; background:var(--accent-soft); border-radius:20px; white-space:nowrap;}
+.step-head h3{font-size:1.22rem; flex:1; min-width:200px;}
+.budget{font-family:var(--mono); font-size:.78rem; color:var(--ink-3); font-variant-numeric:tabular-nums; white-space:nowrap;}
+.goal{font-size:.95rem; color:var(--ink-2);}
+.step ol{margin:0; padding-left:1.3em; display:flex; flex-direction:column; gap:.5em; font-size:.96rem;}
+.step ol li::marker{font-family:var(--mono); font-weight:600; color:var(--accent);}
+.step ol ul{margin:.35em 0 0; padding-left:1.1em; font-size:.92rem; color:var(--ink-2); display:flex; flex-direction:column; gap:.25em;}
+
+.check{display:flex; align-items:flex-start; gap:11px; padding:11px 15px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; cursor:pointer;}
+.check input{margin:0; width:17px; height:17px; accent-color:var(--accent); flex-shrink:0; margin-top:2px; cursor:pointer;}
+.check span{font-size:.93rem; font-weight:500;}
+.check:has(input:checked){background:var(--accent-soft); border-color:var(--accent-line);}
+.check:has(input:checked) span{color:var(--ink-2); text-decoration:line-through; text-decoration-color:var(--accent-line);}
+
+.progress{
+  position:sticky; top:calc(var(--topbar) + 10px); z-index:30;
+  display:flex; align-items:center; gap:14px; padding:12px 18px;
+  background:var(--surface); border:1px solid var(--line); border-radius:11px; box-shadow:var(--shadow);
+}
+.progress b{font-family:var(--mono); font-size:.9rem; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.bar{flex:1; height:7px; background:var(--sunken); border-radius:4px; overflow:hidden;}
+.bar i{display:block; height:100%; width:0; background:var(--accent); border-radius:4px; transition:width .3s ease;}
+@media (prefers-reduced-motion: reduce){ .bar i{transition:none;} }
+.reset{appearance:none; border:1px solid var(--line-strong); background:transparent; color:var(--ink-3); font-family:var(--body); font-size:.76rem; padding:4px 10px; border-radius:6px; cursor:pointer;}
+.reset:hover{color:var(--ink); border-color:var(--accent);}
+
+.ladder{display:flex; flex-direction:column; counter-reset:l;}
+.rung{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px dashed var(--line);}
+.rung:last-child{border-bottom:0;}
+.rung::before{counter-increment:l; content:counter(l); font-family:var(--mono); font-size:.75rem; font-weight:600; color:var(--ground); background:var(--accent); width:22px; height:22px; border-radius:50%; display:grid; place-items:center;}
+.rung b{font-weight:600;}
+.rung span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+pre{background:var(--sunken); border:1px solid var(--line); border-radius:9px; padding:14px 16px; overflow-x:auto; margin:0;}
+pre code{background:none; border:0; padding:0; font-size:.85rem; line-height:1.6;}
+
+.rubric{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+.rubric .card b{font-family:var(--body); font-size:.95rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink);}
+
+.foot{border-top:1px solid var(--line); padding:22px clamp(18px,5vw,40px); text-align:center;}
+.foot p{font-size:.8rem; color:var(--ink-3);}
+
+/* ─── 인쇄 ─────────────────────────────────────────── */
+@media print{
+  .topbar,.slidenav,.progress{display:none !important;}
+  .pane[hidden]{display:block !important;}
+  .slide[hidden]{display:flex !important;}
+  .stage{display:block; min-height:0; padding:0;}
+  .slide{max-width:none; break-after:page; page-break-after:always; padding:8mm 0;}
+  .slide:last-child{break-after:auto; page-break-after:auto;}
+  body{background:#fff; color:#000; font-size:11pt;}
+  .card,.callout,.check,.step,.track,.tl-item{break-inside:avoid;}
+}
+
+/* ─── 8장: diff 표시 ───────────────────────────────── */
+pre.diff .add{color:var(--accent-ink); font-weight:600;}
+pre.diff .del{color:var(--warn);}
+.card pre code{font-size:.8rem;}
+pre.term code{font-family:"Cascadia Mono","Consolas",monospace; line-height:1.2;}
+
+/* ─── 그림 (OSS 5장 .dg 양식, 토큰 색) ─────────────── */
+.dg{--bad:#C0392B; --bad-soft:#FBE9E7;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .dg{--bad:#FF7A6B; --bad-soft:#3A1A16;} }
+:root[data-theme="dark"] .dg{--bad:#FF7A6B; --bad-soft:#3A1A16;}
+.dg svg{display:block; width:100%; height:auto;}
+.dg text{font-family:var(--body); fill:var(--ink-2);}
+.dg .mono{font-family:var(--mono); font-weight:600;}
+.dg .t-ink{fill:var(--ink);} .dg .t-acc{fill:var(--accent-ink);} .dg .t-mut{fill:var(--ink-3);} .dg .t-bad{fill:var(--bad);} .dg .t-on{fill:var(--surface);}
+.dg .s-acc{stroke:var(--accent);} .dg .s-line{stroke:var(--line-strong);} .dg .s-bad{stroke:var(--bad);}
+.dg .f-acc{fill:var(--accent);} .dg .f-soft{fill:var(--accent-soft);} .dg .f-surf{fill:var(--surface);} .dg .f-s2{fill:var(--surface-2);} .dg .f-bad{fill:var(--bad);} .dg .f-badsoft{fill:var(--bad-soft);} .dg .f-line{fill:var(--line-strong);}
+.dg .s-al{stroke:var(--accent-line);} .dg .f-ground{fill:var(--ground);}
+.dg{width:100%; margin:0 auto;}
+.places-cap{font-size:clamp(.98rem,1.6vw,1.15rem) !important; color:var(--ink) !important; font-weight:500; margin-top:-6px !important;}
+
+/* ─── 8장: 실습 단계 4줄 (Do · Copy · You should see · If not) ─── */
+.legend{display:flex; flex-wrap:wrap; gap:6px 18px; font-size:.88rem; color:var(--ink-2);}
+.legend b{color:var(--accent-ink); margin-right:3px;}
+.s4{display:grid; grid-template-columns:8.4em minmax(0,1fr); gap:10px 14px; align-items:start; padding:14px 16px; background:var(--surface); border:1px solid var(--line); border-radius:10px;}
+.s4 h4{grid-column:1/-1; font-family:var(--body); font-weight:700; font-size:1.03rem; display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;}
+.s4 > .k{font-size:.8rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink); padding-top:2px;}
+.s4 > .k.see{color:var(--ink);}
+.s4 > .k.ifnot{color:var(--warn);}
+.s4 > .v{font-size:.95rem; min-width:0;}
+.s4 > .v ul{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em;}
+.s4 pre{margin:6px 0;}
+.s4 .why{font-size:.88rem; color:var(--ink-2); margin-top:6px;}
+pre[data-kind]::before{display:block; font-family:var(--body); font-size:.7rem; font-weight:600; letter-spacing:.02em; color:var(--ink-3); margin-bottom:4px;}
+pre[data-kind="cmd"]::before{content:"Type in cmd";}
+pre[data-kind="out"]::before{content:"Output";}
+pre[data-kind="file"]::before{content:"In the file";}
+pre[data-kind="url"]::before{content:"Open in the browser";}
+@media (max-width:620px){ .s4{grid-template-columns:1fr; gap:4px;} }
+@media print{ .s4{break-inside:avoid;} }
+
+/* 그림 슬라이드: 1280x720 한 화면 */
+.slide.dgs{gap:12px;}
+.slide.dgs h2{font-size:clamp(1.5rem,3vw,2.15rem);}
+.slide.dgs .lead{font-size:clamp(1.05rem,1.7vw,1.28rem);}
+.slide.dgs p{font-size:clamp(1rem,1.6vw,1.2rem);}
+.slide.dgs ul{font-size:clamp(1rem,1.6vw,1.2rem); gap:.3em;}
+.slide.dgs .callout{padding:10px 16px;}
+.s4 .lbl{font-size:.84rem; font-weight:700; color:var(--ink-2); margin-top:8px;}
+.stage:has(> .slide.dgs:not([hidden])){padding-top:18px; padding-bottom:18px;}
+
+/* role-based code: commands to type = dark chip/block, names and output = quiet */
+:root{--cmd-bg:#17211D; --cmd-ink:#F2F6F4; --cmd-mark:#7FD9BA;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--cmd-bg:#000000; --cmd-ink:#F2F6F4; --cmd-mark:#7FD9BA;} }
+:root[data-theme="dark"]{--cmd-bg:#000000; --cmd-ink:#F2F6F4; --cmd-mark:#7FD9BA;}
+code,kbd{border-color:var(--line-strong);}
+code.cmd{background:var(--cmd-bg); color:var(--cmd-ink); border-color:var(--cmd-bg); font-weight:500; white-space:nowrap;}
+code.cmd::before{content:"\25B8\00A0"; color:var(--cmd-mark); font-weight:700;}
+td code.cmd, li code.cmd{white-space:normal;}
+code.cmd::before{font-family:var(--body);}
+.r8{display:grid; grid-template-columns:4.8rem minmax(0,1.15fr) minmax(0,1fr); column-gap:0; border-top:2px solid var(--line-strong);}
+.r8 > div{padding:12px 16px 12px 0; border-bottom:1px solid var(--line); min-width:0;}
+.r8 > div:nth-child(3n){padding-right:0;}
+.r8 > .hd{padding:8px 0; font-size:.78rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3);}
+.r8 > .lb{font-family:var(--mono); font-weight:700; font-size:1rem; color:var(--accent-ink); padding-top:22px;}
+.r8 pre{margin:0;}
+.r8 .cap{font-size:.92rem !important; line-height:1.5; color:var(--ink-3) !important; margin:8px 0 0;}
+.card ul.checks4{font-size:1.03rem; line-height:1.5; color:var(--ink-2); gap:.35em; margin-top:2px;}
+.r8-imp{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; align-items:center;}
+.r8-imp pre{margin:0;}
+.r8-imp ul.r8-notes{margin:0; padding-left:1.1em; gap:.3em; font-size:.92rem; line-height:1.5; color:var(--ink-2);}
+.r8-imp .cap{font-size:.92rem !important; line-height:1.5; color:var(--ink-3) !important; margin:0;}
+@media (max-width:720px){ .r8-imp{grid-template-columns:1fr;} }
+@media (max-width:720px){ .r8{grid-template-columns:1fr;} .r8 > .hd{display:none;} .r8 > div{border-bottom:0; padding:6px 0;} .r8 > .lb{padding-top:16px; border-top:1px solid var(--line);} }
+@media print{ .r8 > div{break-inside:avoid;} .r8{grid-template-columns:4.6rem minmax(0,1.35fr) minmax(0,1fr);} .r8 > .lb{font-size:.88rem; white-space:nowrap;} .r8 pre{overflow:visible; padding:10px 12px;} .r8 pre code{font-size:.72rem !important; white-space:pre-wrap; overflow-wrap:anywhere;} }
+pre[data-kind="cmd"]{background:var(--cmd-bg); border-color:var(--cmd-bg);}
+pre[data-kind="cmd"] code{color:var(--cmd-ink);}
+pre[data-kind="cmd"]::before{color:var(--cmd-mark);}
+a{font-weight:600; border-bottom:2px solid var(--accent);}
+a::after{content:" \2197"; font-size:.85em;}
+
+/* ─── B: role zones, high contrast (11-05) ─────────── */
+:root{
+  --ground:#F3F5F4; --line:#C5D0CB; --line-strong:#8FA39B;
+  --ink-2:#3A4944; --ink-3:#5B6B65;
+  --out-soft:#FFF8E6; --err:#B3261E; --err-soft:#FDECEA;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --line:#34463E; --line-strong:#5E776C; --out-soft:#2E2412; --err:#FF7A6B; --err-soft:#3A1A16; } }
+:root[data-theme="dark"]{ --line:#34463E; --line-strong:#5E776C; --out-soft:#2E2412; --err:#FF7A6B; --err-soft:#3A1A16; }
+
+.topbar{border-bottom:1.5px solid var(--line-strong);}
+.eyebrow{color:var(--accent-ink); font-weight:700; font-size:.82rem; letter-spacing:.07em; text-transform:uppercase;}
+.card{border:1.5px solid var(--line-strong); border-top:4px solid var(--accent);}
+.track{border:1.5px solid var(--line-strong); border-left:5px solid var(--accent);}
+.callout{border:1.5px solid var(--accent-line); border-left:5px solid var(--accent); align-items:flex-start;}
+.callout .mk{background:var(--accent); color:var(--surface); padding:3px 11px; border-radius:20px; font-size:.8rem;}
+.callout.warn{border-left-color:var(--warn);}
+.callout.warn .mk{background:var(--warn); color:var(--surface);}
+th{border-bottom:2px solid var(--line-strong); color:var(--ink-2);}
+.dot{border-color:var(--line-strong);}
+
+/* code boxes: border always visible, label = filled tag */
+pre{border:1.5px solid var(--line-strong);}
+pre[data-kind="out"]{background:var(--surface);}
+pre[data-kind]::before{display:table; padding:1px 8px; border-radius:4px; font-size:.72rem; font-weight:700; letter-spacing:.03em; margin-bottom:8px; color:var(--surface); background:var(--ink-2);}
+pre[data-kind="cmd"]::before{background:var(--cmd-mark); color:var(--cmd-bg);}
+pre[data-kind="out"]::before{background:var(--warn); color:var(--surface);}
+pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--accent); color:var(--surface);}
+
+/* Lab steps: Do · Copy · You should see · If not */
+.s4{border:1.5px solid var(--line-strong); border-left:5px solid var(--accent); box-shadow:var(--shadow);}
+.s4 > .k{justify-self:start; white-space:nowrap; font-size:.76rem; font-weight:700; letter-spacing:.02em; padding:3px 10px; border-radius:20px; margin-top:3px; color:var(--surface); background:var(--accent);}
+.s4 > .v + .k:not(.see):not(.ifnot){background:var(--cmd-bg); color:var(--cmd-ink);}
+.s4 > .k.see{background:var(--warn); color:var(--surface);}
+.s4 > .k.ifnot{background:var(--err); color:var(--surface);}
+.s4 > .k.see + .v{background:var(--out-soft); border-left:4px solid var(--warn); padding:8px 12px; border-radius:0 8px 8px 0;}
+.s4 > .k.ifnot + .v{background:var(--err-soft); border-left:4px solid var(--err); padding:8px 12px; border-radius:0 8px 8px 0;}
+.legend b{display:inline-block; padding:1px 9px; border-radius:20px; color:var(--surface); background:var(--accent); margin-right:5px;}
+.legend span:nth-child(2) b{background:var(--cmd-bg); color:var(--cmd-ink);}
+.legend span:nth-child(3) b{background:var(--warn);}
+.legend span:nth-child(4) b{background:var(--err);}
+
+/* slide 8 table: "You see" column = output colour */
+.r8 > div:nth-child(3n) pre{background:var(--out-soft); border-left:4px solid var(--warn);}
+.r8 > .hd:nth-child(3){color:var(--warn);}
+.r8 > .hd:nth-child(2){color:var(--accent-ink);}
+/* checks, progress, step headers */
+.done{margin:0; padding:10px 14px; border:2px solid var(--accent); border-radius:9px; background:var(--accent-soft); color:var(--ink); font-size:.95rem; font-weight:600;}
+.done b{display:inline-block; background:var(--accent); color:var(--surface); padding:1px 10px; border-radius:20px; margin-right:8px; font-size:.78rem;}
+
+.check{background:var(--surface); border:2px solid var(--line-strong);}
+.check span{color:var(--ink); font-weight:600;}
+.check:has(input:checked){background:var(--accent); border-color:var(--accent);}
+.check:has(input:checked) span{color:var(--surface); text-decoration-color:var(--surface);}
+.progress{border:1.5px solid var(--line-strong);}
+.bar{background:var(--line);}
+.step{border-top:2px solid var(--line-strong);}
+.step-no{background:var(--accent); color:var(--surface);}
+@media print{ .s4,.card,.track,.progress{box-shadow:none !important;} pre{overflow:visible;} pre code{white-space:pre-wrap; overflow-wrap:anywhere;} .check:has(input:checked){background:var(--surface); border-color:var(--accent);} .check:has(input:checked) span{color:var(--ink);} }
+
+/* ─── 10장: 그림 + 목록 나란히 (슬라이드 9) ─────────── */
+.g-fig{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:16px; align-items:start;}
+.slide.dgs .g-fig .rung{padding:7px 0;}
+.slide.dgs .g-fig .rung span{font-size:.95rem; line-height:1.45;}
+@media (max-width:760px){ .g-fig{grid-template-columns:minmax(0,1fr);} }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <b>Is My Open Source Safe?</b>
+    <span>Open Source Software · Chapter 10 · Fall 2026</span>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Class blocks">
+    <button class="tab" role="tab" id="tab-lecture" aria-controls="pane-lecture" aria-selected="true">Lecture <span class="min">60 min</span></button>
+    <button class="tab" role="tab" id="tab-lab" aria-controls="pane-lab" aria-selected="false">Lab <span class="min">85 min</span></button>
+    <button class="tab" role="tab" id="tab-task" aria-controls="pane-task" aria-selected="false">Assignment <span class="min">35 min</span></button>
+  </div>
+</header>
+
+<!-- ══════════ Lecture ══════════ -->
+<section class="pane" id="pane-lecture" role="tabpanel" aria-labelledby="tab-lecture">
+  <div class="stage">
+
+    <article class="slide cover">
+      <p class="eyebrow">Chapter 10 · 2026 Fall</p>
+      <h1>Is My Open Source<br>Safe?</h1>
+      <p class="sub">When you use someone else's code, its security holes become your holes too.<br>Today you learn how to check for them.</p>
+      <dl>
+        <div><dt>Course</dt><dd>Open Source Software</dd></div>
+        <div><dt>New tools</dt><dd><code style="white-space:nowrap">pip-audit</code> · <code>osv.dev</code> · <code>python-dotenv</code></dd></div>
+        <div><dt>Today</dt><dd>60 min lecture · 85 min lab · 35 min assignment</dd></div>
+      </dl>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Where we stopped</p>
+      <h2>You install other people's code.<br>Who checks it?</h2>
+      <div class="rule"></div>
+      <p class="lead">In Chapters 8 and 9 you typed <code class="cmd">pip install</code> and used <code>rich</code>, <code>pandas</code> and <code>openpyxl</code>. You did not read one line of their code. Nobody does. So how do you know that code is safe?</p>
+      <ul>
+        <li><b>Say what a dependency is</b>, and why its problems are your problems.</li>
+        <li><b>Run <code style="white-space:nowrap">pip-audit</code></b> on a <code>requirements.txt</code> and read every column of the output.</li>
+        <li><b>Compare two libraries</b> that do the same job, using five checks on GitHub.</li>
+        <li><b>Keep a secret out of your code</b> with a <code>.env</code> file and <code>.gitignore</code>.</li>
+        <li><b>Write down your team's project plan</b> &mdash; topic, libraries, track, roles.</li>
+      </ul>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">The idea</p>
+      <h2>A dependency is someone else's code<br>that your code trusts</h2>
+      <div class="rule"></div>
+      <p class="lead">Every line in <code>requirements.txt</code> is a dependency (a library your program needs in order to run). It runs with the same rights as your own code.</p>
+      <div class="dg" role="img" aria-label="One big box: your program. Everything in it runs with your rights. Left: your code, app.py, with import requests and import yaml. Middle, direct dependencies, you import them: requests 2.19.1 (line 1 of requirements.txt) and PyYAML 5.3 (line 2). Right, indirect dependencies, requests needs them: urllib3 1.23 (line 3 of requirements.txt) and idna 2.7, which is not in requirements.txt. Arrows go from app.py to requests and PyYAML, and from requests to urllib3 and idna." style="max-width:820px;">
+        <svg viewBox="0 0 720 214" aria-hidden="true">
+          <defs><marker id="ah10a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-s2 s-line" x="4" y="4" width="712" height="206" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="18" y="28" font-size="15" font-weight="700">Your program</text><text class="t-mut" x="126" y="28" font-size="12.5" font-weight="600">Everything in this box runs with your rights.</text>
+          <text class="t-ink" x="18" y="58" font-size="12.5" font-weight="700">Your code</text>
+          <text class="t-acc" x="200" y="58" font-size="12.5" font-weight="700">Direct · you import it</text>
+          <text class="t-ink" x="470" y="58" font-size="12.5" font-weight="700">Indirect · requests needs it</text>
+          <rect class="f-surf s-acc" x="18" y="86" width="150" height="80" rx="10" stroke-width="2"/>
+          <text class="mono t-acc" x="32" y="112" font-size="15">app.py</text>
+          <text class="mono t-ink" x="32" y="134" font-size="11.5">import requests</text><text class="mono t-ink" x="32" y="152" font-size="11.5">import yaml</text>
+          <rect class="f-soft s-acc" x="200" y="70" width="190" height="56" rx="10" stroke-width="2"/>
+          <text class="mono t-acc" x="214" y="94" font-size="14">requests 2.19.1</text><text class="t-mut" x="214" y="114" font-size="11.5">line 1 of requirements.txt</text>
+          <rect class="f-soft s-acc" x="200" y="142" width="190" height="56" rx="10" stroke-width="2"/>
+          <text class="mono t-acc" x="214" y="166" font-size="14">PyYAML 5.3</text><text class="t-mut" x="214" y="186" font-size="11.5">line 2 of requirements.txt</text>
+          <rect class="f-surf s-line" x="470" y="70" width="234" height="56" rx="10" stroke-width="1.5"/>
+          <text class="mono t-ink" x="484" y="94" font-size="14">urllib3 1.23</text><text class="t-mut" x="484" y="114" font-size="11.5">line 3 of requirements.txt</text>
+          <rect class="f-badsoft s-bad" x="470" y="142" width="234" height="56" rx="10" stroke-width="1.5"/>
+          <text class="mono t-bad" x="484" y="166" font-size="14" font-weight="700">idna 2.7</text><text class="t-bad" x="484" y="186" font-size="11.5" font-weight="700">not in requirements.txt</text>
+          <line class="s-acc" x1="170" y1="114" x2="194" y2="100" stroke-width="2.5" marker-end="url(#ah10a)"/>
+          <line class="s-acc" x1="170" y1="140" x2="194" y2="162" stroke-width="2.5" marker-end="url(#ah10a)"/>
+          <line class="s-acc" x1="392" y1="98" x2="464" y2="98" stroke-width="2.5" marker-end="url(#ah10a)"/>
+          <line class="s-acc" x1="392" y1="112" x2="464" y2="160" stroke-width="2.5" marker-end="url(#ah10a)"/>
+          <text class="t-mut" x="428" y="90" font-size="11.5" font-weight="600" text-anchor="middle">uses</text>
+        </svg>
+      </div>
+      <p class="places-cap">Direct: you import it. Indirect: your library needs it. <code>requests</code> sends web requests through <code>urllib3</code>. You never import <code>urllib3</code> or <code>idna</code>, but they run anyway.</p>
+      <div class="callout warn">
+        <span class="mk">The price</span>
+        <p>Using someone else's code is free. The price is that <b>their security holes are now inside your program</b>. You cannot take the features and leave the holes behind.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">How a problem becomes known</p>
+      <h2>From one bug to a warning<br>on your screen</h2>
+      <div class="rule"></div>
+      <div class="timeline">
+        <div class="tl-item"><span class="yr">1</span><p><b>Someone finds it.</b> For example, a researcher sees that a library can leak a password.</p></div>
+        <div class="tl-item"><span class="yr">2</span><p><b>They report it privately</b> to the maintainers, in the way <code>SECURITY.md</code> says.</p></div>
+        <div class="tl-item"><span class="yr">3</span><p><b>A fixed version comes out.</b> For example 5.3 &rarr; 5.3.1.</p></div>
+        <div class="tl-item"><span class="yr">4</span><p><b>An advisory is published</b> (a public notice: which versions are affected, which version fixes it).</p></div>
+        <div class="tl-item"><span class="yr">5</span><p><b>Databases collect it.</b> Tools like <code style="white-space:nowrap">pip-audit</code> and Dependabot read those databases.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">Why step 2 is private</span>
+        <p>If the bug is posted in a public issue first, attackers read it before a fix exists. That is why a good project tells you <b>where to report a security problem</b> &mdash; in a file called <code>SECURITY.md</code>.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Reading the names</p>
+      <h2>One problem, three names</h2>
+      <div class="rule"></div>
+      <p class="lead">The same advisory is stored in several databases, and each database gives it its own ID. They are not three different problems.</p>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th>ID</th><th>Who gives it</th><th>Where you see it</th></tr></thead>
+          <tbody>
+            <tr><td><code>CVE-2020-1747</code></td><td>CVE, the world-wide list of known vulnerabilities</td><td>News and every database</td></tr>
+            <tr><td><code>GHSA-6757-jp84-gxfx</code></td><td>GitHub Advisory Database</td><td>Dependabot alerts on GitHub</td></tr>
+            <tr><td><code>PYSEC-2020-96</code></td><td>Python Packaging Advisory Database</td><td><code style="white-space:nowrap">pip-audit</code> output</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>All three rows are the same problem in <b>PyYAML 5.3</b>: loading an untrusted YAML file with the full loader can run code hidden inside it. <b>Fixed in 5.3.1.</b></p>
+      <div class="callout">
+        <span class="mk">OSV</span>
+        <p><a href="https://osv.dev" target="_blank" rel="noopener">osv.dev</a> (Open Source Vulnerabilities) brings these databases together. Open any ID there, and the <b>Aliases</b> line lists its other names.</p>
+      </div>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">The robot on GitHub</p>
+      <h2>What Dependabot does</h2>
+      <div class="rule"></div>
+      <p class="lead">Dependabot is a GitHub feature. It reads the dependency files in a repository, such as <code>requirements.txt</code>. It compares every version with the GitHub Advisory Database.</p>
+      <div class="dg" role="img" aria-label="Three parts. Left: GitHub, seen on the instructor's screen. requirements.txt, then Dependabot, then alerts in the Security and quality tab and a pull request. Middle: advisory databases, GHSA IDs from GitHub and PYSEC IDs from Python. The same kind of data goes to both sides. Right: your PC, you run it. requirements.txt, then pip-audit, then rows in the cmd terminal. Nothing is installed." style="max-width:820px;">
+        <svg viewBox="0 0 720 244" aria-hidden="true">
+          <defs><marker id="ah10b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-s2 s-line" x="4" y="4" width="232" height="236" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="18" y="28" font-size="15" font-weight="700">GitHub</text><text class="t-bad" x="18" y="48" font-size="12" font-weight="700">seen on the instructor's screen</text>
+          <rect class="f-surf s-line" x="18" y="60" width="204" height="34" rx="8" stroke-width="1.5"/><text class="mono t-ink" x="30" y="82" font-size="12.5">requirements.txt</text>
+          <line class="s-acc" x1="120" y1="96" x2="120" y2="108" stroke-width="2.5" marker-end="url(#ah10b)"/>
+          <rect class="f-soft s-acc" x="18" y="112" width="204" height="34" rx="8" stroke-width="2"/><text class="mono t-acc" x="30" y="134" font-size="13">Dependabot</text>
+          <line class="s-acc" x1="120" y1="148" x2="120" y2="160" stroke-width="2.5" marker-end="url(#ah10b)"/>
+          <rect class="f-surf s-acc" x="18" y="164" width="204" height="64" rx="8" stroke-width="1.5"/><text class="t-ink" x="30" y="183" font-size="12.5">Alerts in the tab</text><text class="t-ink" x="30" y="201" font-size="12.5" font-weight="700">Security and quality</text><text class="t-mut" x="30" y="219" font-size="12">+ a pull request</text>
+          <rect class="f-surf s-line" x="262" y="96" width="196" height="84" rx="10" stroke-width="1.5"/>
+          <text class="t-ink" x="360" y="118" font-size="13" font-weight="700" text-anchor="middle">Advisory databases</text>
+          <text class="mono t-ink" x="276" y="142" font-size="12">GHSA-…</text><text class="t-mut" x="350" y="142" font-size="12">GitHub</text>
+          <text class="mono t-ink" x="276" y="164" font-size="12">PYSEC-…</text><text class="t-mut" x="350" y="164" font-size="12">Python</text>
+          <text class="t-acc" x="360" y="84" font-size="12.5" font-weight="700" text-anchor="middle">the same kind of data</text>
+          <line class="s-acc" x1="260" y1="129" x2="228" y2="129" stroke-width="2.5" marker-end="url(#ah10b)"/>
+          <line class="s-acc" x1="460" y1="129" x2="492" y2="129" stroke-width="2.5" marker-end="url(#ah10b)"/>
+          <rect class="f-s2 s-line" x="484" y="4" width="232" height="236" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="498" y="28" font-size="15" font-weight="700">Your PC</text><text class="t-acc" x="498" y="48" font-size="12" font-weight="700">you run it</text>
+          <rect class="f-surf s-line" x="498" y="60" width="204" height="34" rx="8" stroke-width="1.5"/><text class="mono t-ink" x="510" y="82" font-size="12.5">requirements.txt</text>
+          <line class="s-acc" x1="600" y1="96" x2="600" y2="108" stroke-width="2.5" marker-end="url(#ah10b)"/>
+          <rect class="f-soft s-acc" x="498" y="112" width="204" height="34" rx="8" stroke-width="2"/><text class="mono t-acc" x="510" y="134" font-size="13">pip-audit</text>
+          <line class="s-acc" x1="600" y1="148" x2="600" y2="160" stroke-width="2.5" marker-end="url(#ah10b)"/>
+          <rect class="f-surf s-acc" x="498" y="164" width="204" height="64" rx="8" stroke-width="1.5"/><text class="t-ink" x="510" y="184" font-size="12.5">Rows in the cmd terminal</text><text class="t-mut" x="510" y="202" font-size="12">nothing is installed</text>
+        </svg>
+      </div>
+      <p class="places-cap">Same kind of databases, same warnings. Dependabot runs on GitHub. <code style="white-space:nowrap">pip-audit</code> runs on your PC.</p>
+      <ul>
+        <li><b>Job 1 · Alerts.</b> When a version you use has an advisory, an alert appears in the repository's <b>Security and quality</b> tab: which package, how serious, which version fixes it.</li>
+        <li><b>Job 2 · A fix as a pull request.</b> It can open a pull request that changes the version line. A person still reads the PR, runs the tests, and decides to merge (Chapter 5).</li>
+      </ul>
+      <div class="callout warn">
+        <span class="mk">Why I show it on my screen</span>
+        <p>Dependabot alerts are shown only to people who manage the repository. With your permission in the course organization, you cannot see them. So you use <code style="white-space:nowrap">pip-audit</code> on your own PC, and I show Dependabot on my screen.</p>
+      </div>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">The tool on your PC</p>
+      <h2>Reading pip-audit output</h2>
+      <div class="rule"></div>
+      <p class="lead"><code style="white-space:nowrap">pip-audit</code> reads a <code>requirements.txt</code> and finds every library those lines would bring in. It asks a vulnerability database about each one. It plans the install in a temporary place and throws it away. Nothing goes into your box.</p>
+      <div class="codex">
+      <pre data-kind="cmd"><code>pip-audit -r requirements.txt</code></pre>
+      <ul class="cx-notes">
+        <li><code>Name</code>The package.</li>
+        <li><code>Version</code>The version you have.</li>
+        <li><code>ID</code>The advisory (one known problem).</li>
+        <li><code>Fix Versions</code>The first version where this problem is fixed.</li>
+        <li><code>PYSEC-2018-28</code>Printed twice. The database keeps two records of most problems. <b>Count each ID once:</b> 41 rows are 21 problems.</li>
+        <li><code>idna</code>Not in the file. <code style="display:inline">requests</code> brings it in (slide 3).</li>
+      </ul>
+      <pre data-kind="out"><code>Found 41 known vulnerabilities in 4 packages
+Name     Version ID              Fix Versions
+-------- ------- --------------- -------------
+requests 2.19.1  PYSEC-2018-28   2.20.0
+requests 2.19.1  PYSEC-2018-28   2.20.0
+...
+urllib3  1.23    PYSEC-2019-133  1.24.2
+...
+pyyaml   5.3     PYSEC-2020-96   5.3.1
+...
+idna     2.7     PYSEC-2024-60   3.7
+...</code></pre>
+      </div>
+      <p>Some rows from the demo repository, <code>vulnerable-demo</code>. The <code>...</code> lines are rows left out here. Read one row from left to right.</p>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">What to do about it</p>
+      <h2>The fix: raise the version,<br>then test again</h2>
+      <div class="rule"></div>
+      <p class="lead">For each package, find the highest number in its <b>Fix Versions</b> column. Move to that version or a newer one. Then run the program and the tests again, because a new version can change how a function works.</p>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">The trap</span><h4>You cannot always fix one line</h4><p><code>urllib3</code> needs 2.8.0 to fix every row, and <code>idna</code> needs 3.15. But <code>requests 2.19.1</code> only works with a <code>urllib3</code> older than 1.24 and an <code>idna</code> older than 2.8. So you have to raise <code>requests</code> too. Old versions block each other.</p></div>
+        <div class="card"><span class="tagline">The good news</span><h4>The course versions pass</h4><p>The whitelist versions <code>requests==2.34.2</code> and <code>PyYAML==6.0.3</code>, together with <code>urllib3==2.8.0</code>, get this answer from the same tool:<br><code>No known vulnerabilities found</code></p></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Pinned is not the same as safe</span>
+        <p>In Chapter 3 you learned to pin versions (write the exact version, like <code>==2.34.2</code>), so that the box is the same tomorrow. That is still right. But a pinned version gets old, and new advisories keep arriving. <b>Check again before every release.</b></p>
+      </div>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">Before you add a library</p>
+      <h2>Five checks for choosing a library</h2>
+      <div class="rule"></div>
+      <p class="lead">Advisories tell you about problems that are already known. These five checks tell you whether someone will fix the <i>next</i> one. Each takes about a minute on the GitHub page.</p>
+      <div class="g-fig">
+        <div class="dg" role="img" aria-label="A simplified GitHub repository page for psf/requests, with five numbered marks. 1: the line above the file list, Latest commit, 3 days ago. 2: Contributors on the right side. 3: the Security and quality tab at the top. 4: the license name on the right side, Apache-2.0 license. 5: the Issues tab at the top.">
+          <svg viewBox="0 0 440 290" aria-hidden="true">
+            <rect class="f-surf s-line" x="4" y="4" width="432" height="282" rx="10" stroke-width="1.5"/>
+            <text class="mono t-ink" x="16" y="28" font-size="13" font-weight="700">psf / requests</text>
+            <text class="t-acc" x="16" y="54" font-size="13" font-weight="700">Code</text><rect class="f-acc" x="14" y="60" width="36" height="3"/>
+            <text class="t-ink" x="66" y="54" font-size="13">Issues</text>
+            <text class="t-ink" x="136" y="54" font-size="13">Pull requests</text>
+            <text class="t-ink" x="236" y="54" font-size="13">Security and quality</text>
+            <line class="s-line" x1="4" y1="68" x2="436" y2="68" stroke-width="1.5"/>
+            <rect class="f-s2 s-line" x="14" y="80" width="262" height="28" rx="5" stroke-width="1.2"/>
+            <text class="t-ink" x="24" y="98" font-size="12">Latest commit · 3 days ago</text>
+            <rect class="f-surf s-line" x="14" y="108" width="262" height="164" stroke-width="1.2"/>
+            <g class="mono t-mut" font-size="11.5"><text x="26" y="130">.github</text><text x="26" y="154">docs</text><text x="26" y="178">src/requests</text><text x="26" y="202">tests</text><text x="26" y="226">LICENSE</text><text x="26" y="250">README.md</text></g>
+            <text class="t-ink" x="292" y="96" font-size="12.5" font-weight="700">About</text>
+            <text class="t-ink" x="312" y="138" font-size="11.5">Apache-2.0 license</text>
+            <text class="t-ink" x="312" y="184" font-size="12" font-weight="700">Contributors</text>
+            <g class="f-line"><circle cx="318" cy="206" r="7"/><circle cx="336" cy="206" r="7"/><circle cx="354" cy="206" r="7"/><circle cx="372" cy="206" r="7"/><circle cx="390" cy="206" r="7"/></g>
+            <g font-size="11" font-weight="700" text-anchor="middle">
+              <circle class="f-acc" cx="258" cy="94" r="9"/><text class="t-on" x="258" y="98">1</text>
+              <circle class="f-acc" cx="298" cy="180" r="9"/><text class="t-on" x="298" y="184">2</text>
+              <circle class="f-acc" cx="370" cy="50" r="9"/><text class="t-on" x="370" y="54">3</text>
+              <circle class="f-acc" cx="298" cy="134" r="9"/><text class="t-on" x="298" y="138">4</text>
+              <circle class="f-acc" cx="118" cy="50" r="9"/><text class="t-on" x="118" y="54">5</text>
+            </g>
+          </svg>
+        </div>
+        <div class="ladder">
+          <div class="rung"><div><b>Recent commit</b><span>When did the code last change? Look at the line above the file list. Years without a change is a warning sign.</span></div></div>
+          <div class="rung"><div><b>People</b><span>The <b>Contributors</b> number on the right side of the page. If only one person keeps working on it, it stops when that person stops.</span></div></div>
+          <div class="rung"><div><b>SECURITY.md</b><span>Open the <b>Security and quality</b> tab. Is there a security policy, or does it say <i>No security policy detected</i>?</span></div></div>
+          <div class="rung"><div><b>License</b><span>The license name on the right side of the page. From Chapter 7: is it permissive (MIT, BSD, Apache)?</span></div></div>
+          <div class="rung"><div><b>Issue response</b><span>Open the three newest issues. Did anyone other than the writer answer?</span></div></div>
+        </div>
+      </div>
+      <p class="places-cap">A GitHub repository page, simplified. The numbers on the page match the numbers of the list.</p>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">A secret is not code</p>
+      <h2>Keep secrets out of your code</h2>
+      <div class="rule"></div>
+      <p class="lead">An API key (a password that lets a program use a service) written inside a <code>.py</code> file goes to GitHub with your next push. On a public repository, anyone can copy it.</p>
+      <div class="dg" role="img" aria-label="Left: your PC, a project folder. The file .env holds API_KEY=fake-key-12345 and stays on the PC. Arrow: secret_demo.py reads it when the program starts, with load_dotenv() and os.getenv(&quot;API_KEY&quot;). The file .gitignore has the line .env on line 2, so Git never adds .env. Middle: git push. Right: GitHub gets secret_demo.py and .gitignore. .env is never there." style="max-width:820px;">
+        <svg viewBox="0 0 720 214" aria-hidden="true">
+          <defs><marker id="ah10c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-s2 s-line" x="4" y="4" width="420" height="206" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="18" y="28" font-size="15" font-weight="700">Your PC</text><text class="t-mut" x="90" y="28" font-size="12.5">a project folder</text>
+          <rect class="f-badsoft s-bad" x="18" y="42" width="196" height="56" rx="9" stroke-width="1.8"/>
+          <text class="mono t-bad" x="30" y="64" font-size="14" font-weight="700">.env</text><text class="t-bad" x="78" y="64" font-size="11.5" font-weight="700">stays here</text>
+          <text class="mono t-ink" x="30" y="86" font-size="11.5">API_KEY=fake-key-12345</text>
+          <line class="s-acc" x1="116" y1="100" x2="116" y2="124" stroke-width="2.5" marker-end="url(#ah10c)"/>
+          <text class="t-mut" x="126" y="117" font-size="11" font-weight="600">read when the program starts</text>
+          <rect class="f-surf s-acc" x="18" y="128" width="196" height="70" rx="9" stroke-width="2"/>
+          <text class="mono t-acc" x="30" y="150" font-size="13.5">secret_demo.py</text>
+          <text class="mono t-ink" x="30" y="170" font-size="11.5">load_dotenv()</text><text class="mono t-ink" x="30" y="188" font-size="11.5">os.getenv("API_KEY")</text>
+          <rect class="f-surf s-line" x="232" y="42" width="178" height="56" rx="9" stroke-width="1.5"/>
+          <text class="mono t-ink" x="244" y="64" font-size="13.5">.gitignore</text>
+          <text class="mono t-acc" x="244" y="86" font-size="12.5" font-weight="700">.env</text><text class="t-mut" x="284" y="86" font-size="11.5">line 2</text>
+          <text class="t-ink" x="244" y="150" font-size="12.5">Because of this line,</text>
+          <text class="t-bad" x="244" y="170" font-size="12.5" font-weight="700">Git never adds .env.</text>
+          <line class="s-acc" x1="428" y1="108" x2="512" y2="108" stroke-width="2.5" marker-end="url(#ah10c)"/>
+          <text class="mono t-acc" x="470" y="98" font-size="12.5" font-weight="700" text-anchor="middle">git push</text>
+          <rect class="f-s2 s-line" x="520" y="4" width="196" height="206" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="534" y="28" font-size="15" font-weight="700">GitHub</text>
+          <rect class="f-surf s-acc" x="534" y="42" width="168" height="34" rx="8" stroke-width="1.5"/><text class="mono t-ink" x="546" y="64" font-size="12.5">secret_demo.py</text>
+          <rect class="f-surf s-acc" x="534" y="86" width="168" height="34" rx="8" stroke-width="1.5"/><text class="mono t-ink" x="546" y="108" font-size="12.5">.gitignore</text>
+          <rect class="f-badsoft s-bad" x="534" y="134" width="168" height="56" rx="8" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <text class="mono t-bad" x="546" y="156" font-size="13.5" font-weight="700">.env</text><line class="s-bad" x1="544" y1="152" x2="584" y2="152" stroke-width="2"/>
+          <text class="t-bad" x="546" y="178" font-size="12" font-weight="700">never here</text>
+        </svg>
+      </div>
+      <p class="places-cap"><code>.env</code> stays on your PC. The code asks for the key by name. GitHub gets the code, never the key.</p>
+      <div class="codex">
+      <pre data-kind="file"><code>import os
+from dotenv import load_dotenv
+
+load_dotenv()
+key = os.getenv("API_KEY")</code></pre>
+      <ul class="cx-notes">
+        <li><code>from dotenv import load_dotenv</code>The library <code style="display:inline">python-dotenv</code>. In code its name is <code style="display:inline">dotenv</code>.</li>
+        <li><code>load_dotenv()</code>Read <code style="display:inline">.env</code> (one secret per line, like <code style="display:inline">API_KEY=...</code>).</li>
+        <li><code>os.getenv("API_KEY")</code>Ask for the value by name. The value itself is never in the code.</li>
+      </ul>
+      </div>
+      <div class="callout warn">
+        <span class="mk">If a key was pushed once</span>
+        <p>Deleting the file in the next commit is not enough &mdash; the old commit still holds it. <b>Treat that key as stolen: cancel it and make a new one.</b></p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Your team, today</p>
+      <h2>The team plan becomes<br>one issue</h2>
+      <div class="rule"></div>
+      <p class="lead">In the next chapter your team starts building. Before that, the plan has to be written down in one place that all of you can see. Today each team opens <b>one</b> issue in <code>practice-pr</code>.</p>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">What</span><h4>Topic and libraries</h4><p>One topic. Libraries only from the course whitelist &mdash; and today you learned how to check them.</p></div>
+        <div class="card"><span class="tagline">Shape</span><h4>Input &rarr; process &rarr; output</h4><p>One line each: what the tool reads, the one thing it decides or calculates, and what the user gets back.</p></div>
+        <div class="card"><span class="tagline">Who</span><h4>Track and roles</h4><p>Track A (every team) or A + B (challenge). Four roles: PM, developer, documentation, reviewer. In a team of three, one person takes two roles.</p></div>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Before you switch tabs</p>
+      <h2>Checklist to close</h2>
+      <div class="rule"></div>
+      <div class="grid g2">
+        <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Explain what a dependency is. Read one row of <code style="white-space:nowrap">pip-audit</code> output. Say why one problem has three IDs. Name the five checks for a library, and say where a secret goes instead of the code.</p></div>
+        <div class="card"><span class="tagline">85 min · Lab</span><h4>What's next</h4><p>Activate your box in cmd. Install <code style="white-space:nowrap">pip-audit</code>. Check the demo repository and fill a worksheet. Watch Dependabot on my screen. Compare two libraries with the five checks. Load a fake key from <code>.env</code>.</p></div>
+      </div>
+      <p class="lead">Open the <b>Lab</b> tab above. PART 0 is the first box.</p>
+    </article>
+
+  </div>
+
+  <nav class="slidenav" aria-label="Slide navigation">
+    <button class="navbtn edge" id="first" type="button" title="First slide (Home)" aria-label="First slide">⇤</button>
+    <button class="navbtn" id="prev" type="button">← Prev</button>
+    <button class="navbtn" id="next" type="button">Next →</button>
+    <button class="navbtn edge" id="last" type="button" title="Last slide (End)" aria-label="Last slide">⇥</button>
+    <div class="dots" id="dots"></div>
+    <span class="counter" id="counter">1 / 12</span>
+  </nav>
+</section>
+
+<!-- ══════════ Lab ══════════ -->
+<section class="pane" id="pane-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Lab · 85 min · Step by step</p>
+      <h2>Check old code, compare two libraries, hide one secret</h2>
+      <p>Do the parts in order. Each part ends with a <b>Done when</b> line. Check it before you go on. Every output below comes from a real run with the same versions. Some numbers can be higher on your screen: new advisories come out every week. That is expected.</p>
+      <div class="legend">
+        <span><b>Do</b> what to do</span>
+        <span><b>Copy</b> type or paste this</span>
+        <span><b>You should see</b> the result</span>
+        <span><b>If not</b> how to fix it</span>
+      </div>
+      <div class="callout">
+        <span class="mk">AI, same as always</span>
+        <p>1. <b>Paste the error exactly.</b> 2. Add one line: what you wanted. 3. <b>Ask why</b> the fix works. 4. Explain the fixed code yourself. Use AI to understand. Do not let it write your work. <b>If you cannot explain it, it does not count.</b></p>
+      </div>
+    </div>
+
+    <!-- PART 0 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 0</span><h3>Shared PC: start routine</h3><span class="budget">5 min</span></div>
+      <p class="goal">Everybody uses one Windows account on this PC. These checks make sure your work goes out under your name. Work only in <code>D:\oss\&lt;your ID&gt;\</code>.</p>
+
+      <div class="s4">
+        <h4>1. Sign in to GitHub</h4>
+        <span class="k">Do</span><div class="v">Open GitHub in the browser. Sign in with your own account.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Your own picture (avatar) in the top-right corner.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>It is another person's avatar? Click it. Click <b>Sign out</b>. Then sign in again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Open your folder and a cmd terminal</h4>
+        <span class="k">Do</span><div class="v">In VS Code: <b>File &rsaquo; Open Folder…</b> &rarr; <code>D:\oss\&lt;your ID&gt;</code> &rarr; <b>Select Folder</b>. Then <b>Terminal &rsaquo; New Terminal</b>.</div>
+        <span class="k">Copy</span><div class="v">Nothing to type.</div>
+        <span class="k see">You should see</span><div class="v">A terminal at the bottom of VS Code. The prompt ends with <code style="white-space:nowrap">D:\oss\&lt;your ID&gt;&gt;</code>. There is no <code>PS</code> at the start of the prompt.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The prompt starts with <code>PS</code>? This is PowerShell. Type <code class="cmd">cmd</code> and press Enter.</li>
+          <li>There is no folder <code>D:\oss\&lt;your ID&gt;</code>? Read <b>Missed a chapter?</b> below.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. No saved Git login from another person</h4>
+        <span class="k">Do</span><div class="v">In the cmd terminal, find a saved GitHub login.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cmdkey /list | findstr github</code></pre></div>
+        <span class="k see">You should see</span><div class="v">No lines. The prompt appears again.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>You see a line like <code>Target: LegacyGeneric:target=git:https://github.com</code>? Another person's login is saved. Delete it:
+<pre data-kind="cmd"><code>cmdkey /delete:git:https://github.com</code></pre></li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. No sign-in inside VS Code</h4>
+        <span class="k">Do</span><div class="v">Close any chat panel on the right side of VS Code.</div>
+        <span class="k">Copy</span><div class="v">Nothing to type.</div>
+        <span class="k see">You should see</span><div class="v">No chat panel. No sign-in window.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>VS Code asks you to sign in? Close the window. A sign-in in VS Code stays on this shared PC.</li>
+        </ul></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Missed a chapter?</span>
+        <p>Today you need only two things: the folder <code>D:\oss\&lt;your ID&gt;</code> and your box <code>.venv</code> in it. The code from Chapters 8 and 9 is not used today. Your own <code>requirements.txt</code> is not checked today. You check your team's list in the project. No folder? Type <code class="cmd" style="white-space:nowrap">mkdir D:\oss\&lt;your ID&gt;</code>. Then open it in VS Code (step 2). No <code>.venv</code> in the folder? Type <code class="cmd">python -m venv .venv</code> in <code>D:\oss\&lt;your ID&gt;</code>. It takes about 20 seconds. Then go to PART 1. Do you not know your project team yet? Ask the instructor now. You need it in the Assignment block.</p>
+      </div>
+      <p class="done"><b>Done when</b> my own avatar · cmd terminal in D:\oss\&lt;my ID&gt; · cmdkey shows no github line · no sign-in in VS Code</p>
+    </div>
+
+    <!-- PART 1 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 1</span><h3>Read the warnings in an old project</h3><span class="budget">25 min</span></div>
+      <p class="goal">Run <code style="white-space:nowrap">pip-audit</code> on a repository that is out of date on purpose. Turn its output into a small worksheet. At the end, watch the same warnings on GitHub on the instructor's screen.</p>
+      <div class="dg" role="img" aria-label="Your PC, the folder D:\oss\your ID. Left: the box .venv with pip-audit and python-dotenv, plus your libraries from Chapters 8 and 9. Middle: vulnerable-demo, the clone for PART 1 and PART 3. It holds requirements.txt, .gitignore and app.py. PART 3 adds .env and secret_demo.py. Right: ch10-notes.md, your worksheet, next to vulnerable-demo. Below it: oss-practice, not used today." style="max-width:780px;">
+        <svg viewBox="0 0 720 172" aria-hidden="true">
+          <rect class="f-s2 s-line" x="4" y="4" width="712" height="164" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="18" y="28" font-size="14" font-weight="700">Your PC</text><text class="mono t-ink" x="84" y="28" font-size="12.5">D:\oss\&lt;your ID&gt;\</text>
+          <rect class="f-soft s-acc" x="18" y="42" width="168" height="112" rx="10" stroke-width="1.5"/>
+          <text class="mono t-acc" x="30" y="64" font-size="15">.venv</text><text class="t-mut" x="86" y="64" font-size="12" font-weight="600">your box</text>
+          <text class="mono t-ink" x="30" y="90" font-size="12.5">pip-audit</text><text class="mono t-ink" x="30" y="112" font-size="12.5">python-dotenv</text>
+          <text class="t-mut" x="30" y="136" font-size="11.5">+ your Ch 8–9 libraries</text>
+          <rect class="f-surf s-acc" x="204" y="42" width="276" height="112" rx="10" stroke-width="1.5"/>
+          <text class="mono t-ink" x="216" y="62" font-size="13">vulnerable-demo\</text><text class="t-mut" x="346" y="62" font-size="11.5">the clone · PART 1, 3</text>
+          <g class="mono t-ink" font-size="12"><text x="216" y="90">requirements.txt</text><text x="216" y="112">.gitignore</text><text x="216" y="134">app.py</text></g>
+          <text class="t-mut" x="356" y="90" font-size="11.5" font-weight="600">PART 3 adds:</text>
+          <text class="mono t-bad" x="356" y="112" font-size="12" font-weight="700">.env</text><text class="mono t-ink" x="356" y="134" font-size="12">secret_demo.py</text>
+          <rect class="f-soft s-acc" x="498" y="42" width="204" height="52" rx="10" stroke-width="2"/>
+          <text class="mono t-acc" x="510" y="64" font-size="13" font-weight="700">ch10-notes.md</text><text class="t-ink" x="510" y="84" font-size="11.5">your worksheet · PART 1, 2</text>
+          <rect class="f-surf s-line" x="498" y="102" width="204" height="52" rx="10" stroke-width="1.2" stroke-dasharray="5 4"/>
+          <text class="mono t-mut" x="510" y="124" font-size="12.5">oss-practice\</text><text class="t-mut" x="510" y="144" font-size="11.5">not used today</text>
+        </svg>
+      </div>
+      <p class="places-cap"><code>ch10-notes.md</code> is next to <code>vulnerable-demo</code>, not inside it.</p>
+
+      <div class="s4">
+        <h4>1. Activate the box</h4>
+        <span class="k">Do</span><div class="v">In the terminal from PART 0, activate your box. Do this in every new terminal. A new terminal starts with the box not active.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>.venv\Scripts\activate</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The prompt now starts with <code>(.venv)</code>:<pre data-kind="out"><code style="white-space:nowrap">(.venv) D:\oss\&lt;your ID&gt;&gt;</code></pre>Was <code>(.venv)</code> already there? Then nothing changes. That is fine.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The prompt starts with <code>PS</code>? Type <code class="cmd">cmd</code> and press Enter. Then type this command again.</li>
+          <li><code>The system cannot find the path specified.</code>? There is no box in this folder. Read <b>Missed a chapter?</b> in PART 0.</li>
+          <li>VS Code runs your file with another Python (not the one in <code>.venv</code>)? Press <kbd>Ctrl + Shift + P</kbd> &rarr; <b>Python: Select Interpreter</b> &rarr; the one inside <code>.venv</code>. Then open a new terminal and type this command again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Install the checking tool</h4>
+        <span class="k">Do</span><div class="v">Install <code style="white-space:nowrap">pip-audit</code>, with its version. First check the prompt: it starts with <code>(.venv)</code>. The folder does not matter for this command. It takes about 20 seconds.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip install pip-audit==2.10.1</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Many <code>Collecting</code> lines. Your box already has <code>rich</code> from Chapter 8. Then you see, for example:
+<pre data-kind="out"><code>Requirement already satisfied: rich&gt;=12.4 in ...</code></pre>
+          At the end, one long line:
+<pre data-kind="out"><code>Successfully installed CacheControl-0.15.0 boolean.py-5.0 certifi-2026.10.23 ...</code></pre>
+          <code>pip-audit-2.10.1</code> must be in that line. You may also see a notice about a new pip. You can ignore it.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>No <code>(.venv)</code> at the start of the prompt? Do step 1. Then install again.</li>
+          <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? The box is not active. pip put the library outside the box. Do step 1. Then install again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Get the demo repository</h4>
+        <span class="k">Do</span><div class="v">Check the prompt: it ends with <code style="white-space:nowrap">D:\oss\&lt;your ID&gt;&gt;</code>. Download the demo. Then go into its folder. Type or paste the three lines. Press Enter after each line.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>set ORG=https://github.com/OSS-202602-ISS
+git clone %ORG%/vulnerable-demo.git
+cd vulnerable-demo</code></pre>
+          <p class="why">Why two lines for one address: the address is long. Line 1 keeps its first part under the name <code>ORG</code>. Line 2 uses it as <code>%ORG%</code>.</p></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'vulnerable-demo'...</code></pre>and a few more lines. Then the prompt ends with <code>\vulnerable-demo&gt;</code>. The repository is public, so no login is needed.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>fatal: repository '%ORG%/vulnerable-demo.git' does not exist</code>? You skipped line 1, or the prompt starts with <code>PS</code>. If it starts with <code>PS</code>, type <code class="cmd">cmd</code> first. Then type all three lines again.</li>
+          <li><code>fatal: destination path 'vulnerable-demo' already exists and is not an empty directory.</code>? You cloned it before. Type <code class="cmd">cd vulnerable-demo</code>. Then type <code class="cmd">git pull --no-edit</code>. It prints <code>Already up to date.</code> <code>--no-edit</code> stops Git from opening an editor.</li>
+          <li><code>fatal: Need to specify how to reconcile divergent branches.</code>? Type <code class="cmd">git config pull.rebase false</code> (no <code>--global</code>). Then type <code class="cmd">git pull --no-edit</code> again.</li>
+          <li>The prompt starts with <code>PS</code>? Type <code class="cmd">cmd</code> first. Then type the three lines again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Read the list. Do not install it.</h4>
+        <span class="k">Do</span><div class="v">Show the list of libraries in <code>vulnerable-demo</code>. <b>Do not run <code>pip install -r requirements.txt</code> here.</b></div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>type requirements.txt</code></pre>
+          <p class="why">Why not install: these versions are unsafe on purpose. You only check them. Then they never go into your box.</p></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>requests==2.19.1
+PyYAML==5.3
+urllib3==1.23</code></pre>Three old versions, pinned (slide 3).</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>The system cannot find the file specified.</code>? You are not in <code>vulnerable-demo</code>. Type <code class="cmd">cd vulnerable-demo</code>.</li>
+          <li>You installed it by mistake? Tell the instructor. Your box may now hold the unsafe versions.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>5. Check the list with <code style="white-space:nowrap">pip-audit</code></h4>
+        <span class="k">Do</span><div class="v">Run the check in <code>vulnerable-demo</code>. <b>It takes one or two minutes. It may look stuck. Wait.</b> While you wait, open the two GitHub pages for PART 2 in new tabs.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip-audit -r requirements.txt</code></pre>
+          <p class="why">Why it is slow: it finds every library these three lines would bring in. It does this in a temporary place. Nothing is installed into your box.</p></div>
+        <span class="k see">You should see</span><div class="v">The top of the output:<pre data-kind="out"><code>Found 41 known vulnerabilities in 4 packages
+Name     Version ID              Fix Versions
+-------- ------- --------------- -------------
+requests 2.19.1  PYSEC-2018-28   2.20.0
+requests 2.19.1  PYSEC-2018-28   2.20.0
+requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
+          and more rows, 41 in total. Four package names: <code>requests</code>, <code>urllib3</code>, <code>pyyaml</code>, <code>idna</code>. <code style="white-space:nowrap">pip-audit</code> prints names in small letters: <code>PyYAML</code> is <code>pyyaml</code>. The order of the rows can be different. Your number can be higher than 41: a new advisory came out.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>'pip-audit' is not recognized as an internal or external command,</code>? The box is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then run the check again.</li>
+          <li><code>ERROR:pip_audit._cli:invalid requirements input: requirement.txt</code>? A typo, or the wrong folder. The name is <code>requirements.txt</code>, with an <b>s</b>. The prompt ends with <code>\vulnerable-demo&gt;</code>.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>6. Fill the worksheet in <code>ch10-notes.md</code></h4>
+        <span class="k">Do</span><div class="v">Make the file <code>ch10-notes.md</code> in <code>D:\oss\&lt;your ID&gt;</code>. In the Explorer (the file list on the left), right-click the empty space below the files &rarr; <b>New File…</b> &rarr; type <code>ch10-notes.md</code>. Paste the table below. Fill it from your <code style="white-space:nowrap">pip-audit</code> output. Save with <kbd>Ctrl + S</kbd>.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>| Package  | My version | Different IDs | Highest fix version |
+|----------|------------|---------------|---------------------|
+| requests |            |               |                     |
+| pyyaml   |            |               |                     |
+| urllib3  |            |               |                     |
+| idna     |            |               |                     |</code></pre>
+          <p class="why"><b>Count each ID only once.</b> Most IDs are printed twice (slide 7). <b>Highest fix version</b> = the biggest number in the <b>Fix Versions</b> column for that package. Compare part by part, not as decimals: <code>3.15</code> is newer than <code>3.7</code>, because 15 is bigger than 7.</p></div>
+        <span class="k see">You should see</span><div class="v">Four rows. Every cell is filled. For each package, <b>Different IDs</b> is smaller than its number of rows in the output.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>ch10-notes.md</code> is inside <code>vulnerable-demo</code>? In the Explorer, drag it onto the empty space below the files. It must be next to <code>vulnerable-demo</code> (see the picture above).</li>
+          <li>You see two numbers in one cell, like <code>1.26.17,2.0.6</code>? There are two fixed versions. Use the bigger one.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>7. Check one ID on osv.dev</h4>
+        <span class="k">Do</span><div class="v">Pick any ID from your output. Open its page on osv.dev. The example below is the PyYAML ID from slide 5. For another ID, change the end of the address. Find the <b>Aliases</b> line and the <b>Fixed</b> version. Write both under your worksheet in <code>ch10-notes.md</code>. Save.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://osv.dev/vulnerability/PYSEC-2020-96</code></pre></div>
+        <span class="k see">You should see</span><div class="v">For <code>PYSEC-2020-96</code>: <b>Aliases</b> lists <code>CVE-2020-1747</code> and <code>GHSA-6757-jp84-gxfx</code>. Lower on the page: <b>Introduced</b> <code>5.1</code> and <b>Fixed</b> <code>5.3.1</code>. The fixed version is the same as in the <b>Fix Versions</b> column.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The page does not show your ID at the top? Copy the ID again from your output. One wrong letter or number gives another page.</li>
+          <li>osv.dev does not open? Watch the instructor's screen. Fill the worksheet only.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>8. Instructor's screen: Dependabot (5 min)</h4>
+        <span class="k">Do</span><div class="v">Watch the same repository on GitHub, as Dependabot sees it. Look for the <code>GHSA-</code> IDs. Compare them with the <b>Aliases</b> you found in step 7.</div>
+        <span class="k">Copy</span><div class="v">Nothing to type.</div>
+        <span class="k see">You should see</span><div class="v">The <b>Security and quality</b> tab of <code>vulnerable-demo</code>, with a list of Dependabot alerts. Each alert names a package and a <code>GHSA-</code> ID. One of them is in your <b>Aliases</b> line from step 7. If you used <code>PYSEC-2020-96</code> in step 7, look for <code>GHSA-6757-jp84-gxfx</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The screen is too small to read? Open your osv.dev page from step 7 again. The <code>GHSA-</code> ID in <b>Aliases</b> is the one on the screen.</li>
+        </ul></div>
+      </div>
+      <div class="callout">
+        <span class="mk">A name you did not write</span>
+        <p><code>idna</code> is not in <code>requirements.txt</code>. It is there because <code>requests 2.19.1</code> needs it &mdash; an indirect dependency (slide 3). Its holes are in your program too.</p>
+      </div>
+      <p class="done"><b>Done when</b> (.venv) in the prompt · pip-audit installed · vulnerable-demo cloned, not installed · worksheet filled in ch10-notes.md · one ID checked on osv.dev</p>
+    </div>
+
+    <!-- PART 2 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 2</span><h3>Compare two libraries with five checks</h3><span class="budget">25 min</span></div>
+      <p class="goal">One library from our whitelist, and one other library that does the same job. You look at both on GitHub and write down what you see. Your row number decides your pair, so that every pair is covered.</p>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th>Pair</th><th>Rows</th><th>Whitelist library</th><th>Other library</th><th>Both of them…</th></tr></thead>
+          <tbody>
+            <tr><td class="num">1</td><td>1, 4, 7, 10</td><td><a href="https://github.com/psf/requests" target="_blank" rel="noopener">psf/requests</a></td><td><a href="https://github.com/encode/httpx" target="_blank" rel="noopener">encode/httpx</a></td><td>send HTTP requests</td></tr>
+            <tr><td class="num">2</td><td>2, 5, 8</td><td><a href="https://github.com/theskumar/python-dotenv" target="_blank" rel="noopener">theskumar/python-dotenv</a></td><td><a href="https://github.com/HBNetwork/python-decouple" target="_blank" rel="noopener">HBNetwork/python-decouple</a></td><td>read settings from a <code>.env</code> file</td></tr>
+            <tr><td class="num">3</td><td>3, 6, 9</td><td><a href="https://github.com/astanin/python-tabulate" target="_blank" rel="noopener">astanin/python-tabulate</a></td><td><a href="https://github.com/prettytable/prettytable" target="_blank" rel="noopener">prettytable/prettytable</a></td><td>print a table as text</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="s4">
+        <h4>1. Open the two pages of your pair</h4>
+        <span class="k">Do</span><div class="v">Find your row in the table above. Open its two links. Each link opens in a new tab.</div>
+        <span class="k">Copy</span><div class="v">Nothing to type. Click the two links.</div>
+        <span class="k see">You should see</span><div class="v">Two GitHub repository pages, for example <code>psf/requests</code> and <code>encode/httpx</code>. Each page has a file list, tabs at the top, and an <b>About</b> part on the right.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Not sure of your row number? Ask the student next to you. Then ask the instructor.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Do the five checks. Write them in <code>ch10-notes.md</code></h4>
+        <span class="k">Do</span><div class="v">For each library, check the five items in this order (slide 9 shows where they are on the page):
+          <ul>
+            <li><b>Recent commit</b> &mdash; the time on the line above the file list (for example <i>3 days ago</i>).</li>
+            <li><b>People</b> &mdash; the <b>Contributors</b> number on the right side.</li>
+            <li><b>SECURITY.md</b> &mdash; open the <b>Security and quality</b> tab. Write <b>Yes</b> if there is a security policy, <b>No</b> if it says <i>No security policy detected</i>.</li>
+            <li><b>License</b> &mdash; the license name on the right side.</li>
+            <li><b>Issue response</b> &mdash; open the <b>Issues</b> tab and the three newest issues. How many of the three got an answer from someone other than the writer?</li>
+          </ul>
+          Add the table below at the end of <code>ch10-notes.md</code>, under your worksheet. Put your two library names in the first line. Fill it. Save.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>| Check            | &lt;whitelist library&gt; | &lt;other library&gt; |
+|------------------|---------------------|-----------------|
+| Recent commit    |                     |                 |
+| People           |                     |                 |
+| SECURITY.md      |                     |                 |
+| License          |                     |                 |
+| Issue response   |                     |                 |</code></pre>
+          <p class="why">Why write what the page shows: the numbers change every day. What you saw today is the right answer.</p></div>
+        <span class="k see">You should see</span><div class="v">Ten cells filled in <code>ch10-notes.md</code>, for example <code>3 days ago</code>, <code>Yes</code>, <code>2 of 3</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>GitHub shows <b>Other</b> as the license? Open the <code>LICENSE</code> file in the file list. Read its first lines. Write the license name you find there.</li>
+          <li>Your numbers are different from your partner's? That is fine. Write what you see.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Write two sentences</h4>
+        <span class="k">Do</span><div class="v">Under the table in <code>ch10-notes.md</code>, write <b>two sentences in your own words</b>: which library you would choose for a team project, and which check decided it. Save.</div>
+        <span class="k">Copy</span><div class="v">Nothing to copy. Write them yourself.</div>
+        <span class="k see">You should see</span><div class="v">Two sentences. One names a library. One names a check.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>AI wrote the sentences? Then it is Partial (see the <b>Assignment</b> tab). Write your own, even if the English is simple.</li>
+        </ul></div>
+      </div>
+      <div class="callout">
+        <span class="mk">No wrong answer</span>
+        <p>The whitelist library does not win every row. That is fine &mdash; the point is that you <b>looked</b> before you chose. This table goes into your assignment.</p>
+      </div>
+      <p class="done"><b>Done when</b> both pages checked · ten cells filled in ch10-notes.md · two sentences written</p>
+    </div>
+
+    <!-- PART 3 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 3</span><h3>Load a fake secret from .env</h3><span class="budget">15 min</span></div>
+      <p class="goal">Watch it once on the instructor's screen (5 min). Then do it yourself (10 min). Stay in the <code>vulnerable-demo</code> folder. Its <code>.gitignore</code> already has the line <code>.env</code>. Slide 10 shows where each file goes.</p>
+
+      <div class="s4">
+        <h4>1. Install <code>python-dotenv</code></h4>
+        <span class="k">Do</span><div class="v">Check the prompt: it starts with <code>(.venv)</code> and ends with <code>\vulnerable-demo&gt;</code>. Install the library into your box.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip install python-dotenv==1.2.3</code></pre></div>
+        <span class="k see">You should see</span><div class="v">At the end:<pre data-kind="out"><code>Successfully installed python-dotenv-1.2.3</code></pre>You may also see a notice about a new pip. You can ignore it.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>No <code>(.venv)</code> at the start of the prompt? Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
+          <li>The first line is <code>Defaulting to user installation because normal site-packages is not writeable</code>? The box is not active. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then install again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Make the file <code>.env</code></h4>
+        <span class="k">Do</span><div class="v">In the Explorer, right-click the <code>vulnerable-demo</code> folder &rarr; <b>New File…</b> &rarr; type <code>.env</code> (a dot, then env). The file opens. Paste the one line below. Save with <kbd>Ctrl + S</kbd>.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>API_KEY=fake-key-12345</code></pre>
+          <p class="why"><b>This key is fake. Never put a real key in a practice file.</b></p></div>
+        <span class="k see">You should see</span><div class="v">In the Explorer: <code>vulnerable-demo</code> &rsaquo; <code>.env</code>, next to <code>.gitignore</code> and <code>requirements.txt</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>.env</code> is not inside <code>vulnerable-demo</code>? In the Explorer, drag it onto <code>vulnerable-demo</code>.</li>
+          <li>The name is <code>.env.txt</code> or <code>env</code>? Right-click it &rarr; <b>Rename…</b> &rarr; type <code>.env</code>.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Make <code>secret_demo.py</code></h4>
+        <span class="k">Do</span><div class="v">In the Explorer, right-click <code>vulnerable-demo</code> &rarr; <b>New File…</b> &rarr; type <code>secret_demo.py</code>. Copy the lines below into it. Save.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>import os
+from dotenv import load_dotenv
+
+load_dotenv()
+key = os.getenv("API_KEY")
+if key:
+    print("Key found. First 4 letters:", key[:4])
+else:
+    print("No key. Check the .env file.")</code></pre>
+          <p class="why">Why only 4 letters: a program should never print the whole key. <code>key[:4]</code> means the first 4 letters.</p></div>
+        <span class="k see">You should see</span><div class="v">In the Explorer: <code>vulnerable-demo</code> &rsaquo; <code>secret_demo.py</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The file is not inside <code>vulnerable-demo</code>? In the Explorer, drag it onto <code>vulnerable-demo</code>.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Run <code>secret_demo.py</code></h4>
+        <span class="k">Do</span><div class="v">Run it from the <code>vulnerable-demo</code> folder.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python secret_demo.py</code></pre></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Key found. First 4 letters: fake</code></pre>The key came from the file <code>.env</code>, not from the code.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>No key. Check the .env file.</code>? Check three things: <code>.env</code> is in <code>vulnerable-demo</code>, its name is exactly <code>.env</code>, and the line starts with <code>API_KEY=</code> (capital letters). Save <code>.env</code>. Run again.</li>
+          <li><code>ModuleNotFoundError: No module named 'dotenv'</code>? The box is not active, or you skipped step 1. Type <code class="cmd">..\.venv\Scripts\activate</code>. Then do step 1 again.</li>
+          <li><code>can't open file ... secret_demo.py': [Errno 2] No such file or directory</code>? You are not in <code>vulnerable-demo</code>, or the file is somewhere else. Type <code class="cmd" style="white-space:nowrap">cd D:\oss\&lt;your ID&gt;\vulnerable-demo</code>. Then run again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>5. Ask Git about <code>.env</code></h4>
+        <span class="k">Do</span><div class="v">Ask Git whether it would ever add the secret file. Then look at the list of new files.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git check-ignore -v .env
+git status</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The first command names the rule that protects <code>.env</code> (line 2 of <code>.gitignore</code>):<pre data-kind="out"><code>.gitignore:2:.env	.env</code></pre>Then <code class="cmd">git status</code>:<pre data-kind="out"><code>On branch main
+Your branch is up to date with 'origin/main'.
+
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+	secret_demo.py
+
+nothing added to commit but untracked files present (use "git add" to track)</code></pre>
+          <code>secret_demo.py</code> is listed. <code>.env</code> is not listed at all.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The first command prints nothing? You are in another repository, for example <code>oss-practice</code>. Type <code class="cmd" style="white-space:nowrap">cd D:\oss\&lt;your ID&gt;\vulnerable-demo</code>. Then type both lines again.</li>
+          <li><code>fatal: not a git repository (or any of the parent directories): .git</code>? You are not in <code>vulnerable-demo</code>. Type <code class="cmd">cd vulnerable-demo</code>. Then type both lines again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>6. Find the line that reads <code>.env</code></h4>
+        <span class="k">Do</span><div class="v">In <code>secret_demo.py</code>, make one change. Save. Run <code class="cmd">python secret_demo.py</code>. Then change the line back. Save. Run again. To find the line, press <kbd>Ctrl + F</kbd> and paste it.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">Find this line:</p>
+<pre data-kind="code"><code>load_dotenv()</code></pre>
+<p class="lbl">Change it to (a <code>#</code> in front):</p>
+<pre data-kind="code"><code># load_dotenv()</code></pre>
+          <p class="why">Why: <code>#</code> turns the line into a comment. Python skips it. Now you see which line reads the file.</p></div>
+        <span class="k see">You should see</span><div class="v">With the <code>#</code>:<pre data-kind="out"><code>No key. Check the .env file.</code></pre>Without the <code>#</code> again:<pre data-kind="out"><code>Key found. First 4 letters: fake</code></pre></div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Still <code>Key found</code> with the <code>#</code>? You did not save. Press <kbd>Ctrl + S</kbd>. Run again.</li>
+        </ul></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Do not commit here</span>
+        <p>This clone is only for practice. Do not commit or push anything in <code>vulnerable-demo</code>. In your team project the rule is the same: <code>.env</code> stays on your PC. Only <code>env.example</code> (names, no values) goes to GitHub.</p>
+      </div>
+      <p class="goal">Next: open the <b>Assignment</b> tab.</p>
+      <p class="done"><b>Done when</b> python-dotenv installed · fake key loaded · git check-ignore shows the .gitignore rule · load_dotenv() line tested and changed back</p>
+    </div>
+
+    <!-- PART 4 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 4</span><h3>Shared PC: end routine</h3><span class="budget">5 min</span></div>
+      <p class="goal">Do this <b>after</b> you open your assignment issue. If you sign out first, you cannot open the issue.</p>
+
+      <div class="s4">
+        <h4>1. Your two issues are open</h4>
+        <span class="k">Do</span><div class="v">Open the issue list of <code>practice-pr</code>.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com/OSS-202602-ISS/practice-pr/issues</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Your <code>[Ch10]</code> issue, and your team's <code>[Team plan]</code> issue (see the <b>Assignment</b> tab).</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>An issue is missing? Do that part of the <b>Assignment</b> tab again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Sign out everywhere</h4>
+        <span class="k">Do</span><div class="v">Sign out of GitHub. Sign out of every site you used today (ChatGPT, Google, Claude).</div>
+        <span class="k">Copy</span><div class="v">Nothing to type. In the browser: avatar &rarr; <b>Sign out</b>.</div>
+        <span class="k see">You should see</span><div class="v">Each site shows a <b>Sign in</b> button.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Still signed in? Open the site again and sign out.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Delete the saved Git login</h4>
+        <span class="k">Do</span><div class="v">In a cmd terminal, delete the saved GitHub login. Then check again.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cmdkey /delete:git:https://github.com
+cmdkey /list | findstr github</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The second command shows no lines.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The first command says <code>CMDKEY: Element not found.</code>? Nothing was saved. That is fine.</li>
+          <li>The prompt starts with <code>PS</code>? Type <code class="cmd">cmd</code> first.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Close VS Code</h4>
+        <span class="k">Do</span><div class="v">Close VS Code.</div>
+        <span class="k">Copy</span><div class="v">Nothing to type.</div>
+        <span class="k see">You should see</span><div class="v">No VS Code window.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>VS Code asks to save a file? Click <b>Save</b>.</li>
+        </ul></div>
+      </div>
+      <p class="done"><b>Done when</b> both issues open · signed out of every site · Git login deleted · VS Code closed</p>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Stuck?</span><h3>Prompts you can copy and paste</h3></div>
+      <p class="goal">Try AI first, then your row, then the instructor. Replace the parts in &lt; &gt; with what is on your own screen.</p>
+      <pre><code>I ran "pip-audit -r requirements.txt" in the folder vulnerable-demo.
+Here is one row of the output:
+&lt;paste one row&gt;
+Explain each column in simple English. What should I change in
+requirements.txt, and what should I test after the change?
+
+I opened &lt;osv.dev link&gt;. What do "Aliases", "Introduced" and "Fixed"
+mean on this page? Answer in three short sentences.
+
+My file secret_demo.py prints "No key. Check the .env file."
+Here is secret_demo.py:
+&lt;paste the whole file&gt;
+The .env file is in &lt;folder&gt;. What should I check?
+</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ Assignment ══════════ -->
+<section class="pane" id="pane-task" role="tabpanel" aria-labelledby="tab-task" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Mini Assignment #10 · 35 min</p>
+      <h2>One team plan, one comparison checklist</h2>
+      <p>First your team writes its plan together (20 min). Then each of you submits your own comparison checklist, with a link to that plan (15 min).</p>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Team</span><h3>Team plan &mdash; one issue per team</h3><span class="budget">20 min</span></div>
+      <ol>
+        <li>Sit with your project team. <b>The PM opens the issue</b>; everyone else talks and checks.</li>
+        <li>Open it with the team plan template &mdash; <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=team-plan.md" target="_blank" rel="noopener"><b>click here to open it with the template ready</b></a> (sign in first).</li>
+        <li>Title: <code>[Team plan] Team &lt;number&gt;</code> &mdash; for example <code>[Team plan] Team 03</code>.</li>
+        <li>Fill every heading:
+          <ul>
+            <li><b>Topic</b> &mdash; one sentence: what the tool does, and for whom.</li>
+            <li><b>Libraries</b> &mdash; only from the course whitelist. The whole list is inside the template, so you do not need to search for it. Two or three is enough.</li>
+            <li><b>Input / Process / Output</b> &mdash; one line each.</li>
+            <li><b>Track</b> &mdash; A only, or A + B (challenge). Every team does A.</li>
+            <li><b>Roles</b> &mdash; PM, developer, documentation, reviewer. Write GitHub usernames. In a team of three, one person takes two roles.</li>
+          </ul>
+        </li>
+        <li>Every other member leaves one comment on the issue: <i>"Agreed"</i>, or a real question.</li>
+      </ol>
+      <div class="callout">
+        <span class="mk">Keep it small</span>
+        <p>The goal for the project is <b>one run command, one input, one output</b>. If your input/process/output lines need more than one line each, the plan is too big.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Assignment</span><h3>Your comparison checklist</h3><span class="budget">15 min</span></div>
+      <ol>
+        <li>Open an issue in <code>practice-pr</code> using the Chapter 10 template &mdash; <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch10.md" target="_blank" rel="noopener"><b>click here to open it with the template ready</b></a>.</li>
+        <li>Title: <code>[Ch10] StudentID Name</code> &mdash; for example <code>[Ch10] 20261234 Gildong Hong</code>.</li>
+        <li>Under <code>## My pair</code>: keep the line of your pair. Delete the other two.</li>
+        <li>Under <code>## Comparison checklist</code>: delete the empty table. Paste your table from <code>ch10-notes.md</code> (Lab PART 2, step 2). Under <code>## My choice and why</code>: paste your two sentences (PART 2, step 3).</li>
+        <li>Paste the link to your team's <code>[Team plan]</code> issue.</li>
+      </ol>
+      <pre><code>Title: [Ch10] 20261234 Gildong Hong
+
+## My pair
+Pair 1: requests vs httpx
+
+## Comparison checklist
+| Check          | requests | httpx |
+|----------------|----------|-------|
+| Recent commit  |          |       |
+| People         |          |       |
+| SECURITY.md    |          |       |
+| License        |          |       |
+| Issue response |          |       |
+
+## My choice and why
+
+## My team plan issue
+</code></pre>
+      <div class="callout warn">
+        <span class="mk">Use the template</span>
+        <p>Did you click <b>New issue</b> yourself? Then choose <b>Chapter 10 submission</b>. <b>Write under each heading. Do not delete the headings.</b></p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Grading</span><h3>How it's graded</h3></div>
+      <p class="goal">We look at <b>whether you looked, and whether you can explain what you saw</b>.</p>
+      <div class="rubric">
+        <div class="card"><b>Complete</b><p>All ten cells show what the GitHub pages really say, the two sentences are your own words, and the team plan link opens your team's issue.</p></div>
+        <div class="card"><b>Partial</b><p>Cells are empty or guessed, the reason is copied from AI, or the team plan link is missing. If two submissions are the same text, both are Partial.</p></div>
+        <div class="card"><b>Not submitted</b><p>No issue by the deadline. Late work still gets partial credit.</p></div>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Deadline</span>
+        <p><b>11:59 PM the night before the next class — the exact date is in the ecampus notice.</b> The same deadline is for the team plan issue. Your team starts building from it in the next class.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Next</span><h3>Preview of Chapter 11</h3></div>
+      <p class="goal"><b>Project Kickoff</b> &mdash; your team forks the template skeleton, writes the plan into the repository, and opens its first three issues. Today's team plan is where you start.</p>
+      <ul style="margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em; font-size:.95rem;">
+        <li>Sit with your project team next time.</li>
+        <li>Keep <code>ch10-notes.md</code>. Your library choice may change, and the table is your reason.</li>
+        <li>Before you add any library to your project, run <code class="cmd">pip-audit -r requirements.txt</code> on your <code>requirements.txt</code>.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>Open Source Software · Fall 2026 · Chapter 10 course material — based on the official syllabus</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── Tabs ── */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var pane = document.getElementById(t.getAttribute('aria-controls'));
+      var on = (t === tab);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      pane.hidden = !on;
+    });
+    window.scrollTo(0, 0);
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ selectTab(t); });
+    t.addEventListener('keydown', function(e){
+      var i = tabs.indexOf(t), n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowLeft')  n = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (n){ e.preventDefault(); n.focus(); selectTab(n); }
+    });
+  });
+
+  /* ── Slides ── */
+  var slides  = Array.prototype.slice.call(document.querySelectorAll('#pane-lecture .slide'));
+  var dotsBox = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var firstBtn = document.getElementById('first');
+  var lastBtn = document.getElementById('last');
+  var cur = 0;
+
+  slides.forEach(function(s, i){
+    var h = s.querySelector('h1, h2');
+    var t = h ? h.textContent.replace(/\s+/g, ' ').trim() : '';
+    var d = document.createElement('button');
+    d.type = 'button';
+    d.className = 'dot';
+    d.textContent = (i + 1);
+    d.title = (i + 1) + (t ? '. ' + t : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1) + (t ? ': ' + t : ''));
+    d.addEventListener('click', function(){ go(i); });
+    dotsBox.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function go(i){
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function(s, n){ s.hidden = (n !== cur); });
+    dots.forEach(function(d, n){ d.setAttribute('aria-current', n === cur ? 'true' : 'false'); });
+    counter.textContent = (cur + 1) + ' / ' + slides.length;
+    prevBtn.disabled = firstBtn.disabled = (cur === 0);
+    nextBtn.disabled = lastBtn.disabled = (cur === slides.length - 1);
+    window.scrollTo(0, 0);
+  }
+  prevBtn.addEventListener('click', function(){ go(cur - 1); });
+  nextBtn.addEventListener('click', function(){ go(cur + 1); });
+  firstBtn.addEventListener('click', function(){ go(0); });
+  lastBtn.addEventListener('click', function(){ go(slides.length - 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (document.getElementById('pane-lecture').hidden) return;
+    var t = e.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp'){   e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home'){ e.preventDefault(); go(0); }
+    if (e.key === 'End'){  e.preventDefault(); go(slides.length - 1); }
+  });
+  go(0);
+
+})();
+</script>
+</body>
+</html>
