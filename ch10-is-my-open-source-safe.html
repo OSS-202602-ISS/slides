@@ -731,7 +731,7 @@ key = os.getenv("API_KEY")</code></pre>
       <div class="grid g3">
         <div class="card"><span class="tagline">What</span><h4>Topic and libraries</h4><p>One topic. Libraries only from the course whitelist &mdash; and today you learned how to check them.</p></div>
         <div class="card"><span class="tagline">Shape</span><h4>Input &rarr; process &rarr; output</h4><p>One line each: what the tool reads, the one thing it decides or calculates, and what the user gets back.</p></div>
-        <div class="card"><span class="tagline">Who</span><h4>Track and roles</h4><p>Track A (every team) or A + B (challenge). Four roles: PM, developer, documentation, reviewer. In a team of three, one person takes two roles.</p></div>
+        <div class="card"><span class="tagline">Who</span><h4>Track and roles</h4><p>Track A (every team): a tool built with whitelist libraries. A + B (challenge): also change a small open source project. Roles: PM (project manager), developer, documentation, reviewer.</p></div>
       </div>
     </article>
 
@@ -825,7 +825,11 @@ key = os.getenv("API_KEY")</code></pre>
       </div>
       <div class="callout warn">
         <span class="mk">Missed a chapter?</span>
-        <p>Today you need only two things: the folder <code>D:\oss\&lt;your ID&gt;</code> and your box <code>.venv</code> in it. The code from Chapters 8 and 9 is not used today. Your own <code>requirements.txt</code> is not checked today. You check your team's list in the project. No folder? Type <code class="cmd" style="white-space:nowrap">mkdir D:\oss\&lt;your ID&gt;</code>. Then open it in VS Code (step 2). No <code>.venv</code> in the folder? Type <code class="cmd">python -m venv .venv</code> in <code>D:\oss\&lt;your ID&gt;</code>. It takes about 20 seconds. Then go to PART 1. Do you not know your project team yet? Ask the instructor now. You need it in the Assignment block.</p>
+        <p>Today you need only two things: the folder <code>D:\oss\&lt;your ID&gt;</code> and your box <code>.venv</code> in it.<br>
+        <b>No folder?</b> Type <code class="cmd" style="white-space:nowrap">mkdir D:\oss\&lt;your ID&gt;</code>. Then open it in VS Code (step 2).<br>
+        <b>No <code>.venv</code> in the folder?</b> Type <code class="cmd">python -m venv .venv</code> in <code>D:\oss\&lt;your ID&gt;</code>. It takes about 20 seconds.<br>
+        <b>Chapters 8 and 9:</b> their code is not used today. Your own <code>requirements.txt</code> is not checked today. You check your team's list in the project.<br>
+        <b>Your project team</b> is your row. Not sure? Ask the instructor now. You need your team in the Assignment block.</p>
       </div>
       <p class="done"><b>Done when</b> my own avatar · cmd terminal in D:\oss\&lt;my ID&gt; · cmdkey shows no github line · no sign-in in VS Code</p>
     </div>
@@ -894,7 +898,7 @@ cd vulnerable-demo</code></pre>
           <li><code>fatal: repository '%ORG%/vulnerable-demo.git' does not exist</code>? You skipped line 1, or the prompt starts with <code>PS</code>. If it starts with <code>PS</code>, type <code class="cmd">cmd</code> first. Then type all three lines again.</li>
           <li><code>fatal: destination path 'vulnerable-demo' already exists and is not an empty directory.</code>? You cloned it before. Type <code class="cmd">cd vulnerable-demo</code>. Then type <code class="cmd">git pull --no-edit</code>. It prints <code>Already up to date.</code> <code>--no-edit</code> stops Git from opening an editor.</li>
           <li><code>fatal: Need to specify how to reconcile divergent branches.</code>? Type <code class="cmd">git config pull.rebase false</code> (no <code>--global</code>). Then type <code class="cmd">git pull --no-edit</code> again.</li>
-          <li>The prompt starts with <code>PS</code>? Type <code class="cmd">cmd</code> first. Then type the three lines again.</li>
+          <li>A window asks about pasting 3 lines? Click <b>Paste</b>.</li>
         </ul></div>
       </div>
 
@@ -914,7 +918,7 @@ urllib3==1.23</code></pre>Three old versions, pinned (slide 3).</div>
 
       <div class="s4">
         <h4>5. Check the list with <code style="white-space:nowrap">pip-audit</code></h4>
-        <span class="k">Do</span><div class="v">Run the check in <code>vulnerable-demo</code>. <b>It takes one or two minutes. It may look stuck. Wait.</b> While you wait, open the two GitHub pages for PART 2 in new tabs.</div>
+        <span class="k">Do</span><div class="v">Run the check in <code>vulnerable-demo</code>. <b>It takes one or two minutes. It may look stuck. Wait.</b> While you wait, start step 6: make the file <code>ch10-notes.md</code>.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip-audit -r requirements.txt</code></pre>
           <p class="why">Why it is slow: it finds every library these three lines would bring in. It does this in a temporary place. Nothing is installed into your box.</p></div>
         <span class="k see">You should see</span><div class="v">The top of the output:<pre data-kind="out"><code>Found 41 known vulnerabilities in 4 packages
@@ -932,18 +936,18 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
 
       <div class="s4">
         <h4>6. Fill the worksheet in <code>ch10-notes.md</code></h4>
-        <span class="k">Do</span><div class="v">Make the file <code>ch10-notes.md</code> in <code>D:\oss\&lt;your ID&gt;</code>. In the Explorer (the file list on the left), right-click the empty space below the files &rarr; <b>New File…</b> &rarr; type <code>ch10-notes.md</code>. Paste the table below. Fill it from your <code style="white-space:nowrap">pip-audit</code> output. Save with <kbd>Ctrl + S</kbd>.</div>
+        <span class="k">Do</span><div class="v">Make the file <code>ch10-notes.md</code> in <code>D:\oss\&lt;your ID&gt;</code>. In the Explorer (the file list on the left), right-click the empty space below the files &rarr; <b>New File…</b> &rarr; type <code>ch10-notes.md</code>. Paste the table below. The <code>requests</code> row is filled as an example. Fill the <code>pyyaml</code> row and the <code>idna</code> row from your <code style="white-space:nowrap">pip-audit</code> output. Save with <kbd>Ctrl + S</kbd>.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="file"><code>| Package  | My version | Different IDs | Highest fix version |
 |----------|------------|---------------|---------------------|
-| requests |            |               |                     |
+| requests | 2.19.1     | 5             | 2.33.0              |
 | pyyaml   |            |               |                     |
-| urllib3  |            |               |                     |
 | idna     |            |               |                     |</code></pre>
+          <p class="why"><b>How the example row was made:</b> <code>requests</code> has 10 rows in the output. Five IDs are printed twice, so there are 5 different IDs. The biggest number in its <b>Fix Versions</b> column is <code>2.33.0</code>.</p>
           <p class="why"><b>Count each ID only once.</b> Most IDs are printed twice (slide 7). <b>Highest fix version</b> = the biggest number in the <b>Fix Versions</b> column for that package. Compare part by part, not as decimals: <code>3.15</code> is newer than <code>3.7</code>, because 15 is bigger than 7.</p></div>
-        <span class="k see">You should see</span><div class="v">Four rows. Every cell is filled. For each package, <b>Different IDs</b> is smaller than its number of rows in the output.</div>
+        <span class="k see">You should see</span><div class="v">Three rows. Every cell is filled. For <code>pyyaml</code> and <code>idna</code>, <b>Different IDs</b> is smaller than the number of rows in the output.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li><code>ch10-notes.md</code> is inside <code>vulnerable-demo</code>? In the Explorer, drag it onto the empty space below the files. It must be next to <code>vulnerable-demo</code> (see the picture above).</li>
-          <li>You see two numbers in one cell, like <code>1.26.17,2.0.6</code>? There are two fixed versions. Use the bigger one.</li>
+          <li>Finished early? Add a row for <code>urllib3</code>. It has more than 20 rows. Some cells show two numbers, like <code>1.26.17,2.0.6</code>: two fixed versions. Use the bigger one.</li>
         </ul></div>
       </div>
 
@@ -977,14 +981,14 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
     <!-- PART 2 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 2</span><h3>Compare two libraries with five checks</h3><span class="budget">25 min</span></div>
-      <p class="goal">One library from our whitelist, and one other library that does the same job. You look at both on GitHub and write down what you see. Your row number decides your pair, so that every pair is covered.</p>
+      <p class="goal">One library from our whitelist, and one other library that does the same job. You look at both on GitHub and write down what you see. Your row letter (A to J) decides your pair, so that every pair is covered.</p>
       <div class="scroll-x">
         <table>
           <thead><tr><th>Pair</th><th>Rows</th><th>Whitelist library</th><th>Other library</th><th>Both of them…</th></tr></thead>
           <tbody>
-            <tr><td class="num">1</td><td>1, 4, 7, 10</td><td><a href="https://github.com/psf/requests" target="_blank" rel="noopener">psf/requests</a></td><td><a href="https://github.com/encode/httpx" target="_blank" rel="noopener">encode/httpx</a></td><td>send HTTP requests</td></tr>
-            <tr><td class="num">2</td><td>2, 5, 8</td><td><a href="https://github.com/theskumar/python-dotenv" target="_blank" rel="noopener">theskumar/python-dotenv</a></td><td><a href="https://github.com/HBNetwork/python-decouple" target="_blank" rel="noopener">HBNetwork/python-decouple</a></td><td>read settings from a <code>.env</code> file</td></tr>
-            <tr><td class="num">3</td><td>3, 6, 9</td><td><a href="https://github.com/astanin/python-tabulate" target="_blank" rel="noopener">astanin/python-tabulate</a></td><td><a href="https://github.com/prettytable/prettytable" target="_blank" rel="noopener">prettytable/prettytable</a></td><td>print a table as text</td></tr>
+            <tr><td class="num">1</td><td>A, D, G, J</td><td><a href="https://github.com/psf/requests" target="_blank" rel="noopener">psf/requests</a></td><td><a href="https://github.com/encode/httpx" target="_blank" rel="noopener">encode/httpx</a></td><td>send HTTP requests</td></tr>
+            <tr><td class="num">2</td><td>B, E, H</td><td><a href="https://github.com/theskumar/python-dotenv" target="_blank" rel="noopener">theskumar/python-dotenv</a></td><td><a href="https://github.com/HBNetwork/python-decouple" target="_blank" rel="noopener">HBNetwork/python-decouple</a></td><td>read settings from a <code>.env</code> file</td></tr>
+            <tr><td class="num">3</td><td>C, F, I</td><td><a href="https://github.com/astanin/python-tabulate" target="_blank" rel="noopener">astanin/python-tabulate</a></td><td><a href="https://github.com/prettytable/prettytable" target="_blank" rel="noopener">prettytable/prettytable</a></td><td>print a table as text</td></tr>
           </tbody>
         </table>
       </div>
@@ -995,7 +999,7 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
         <span class="k">Copy</span><div class="v">Nothing to type. Click the two links.</div>
         <span class="k see">You should see</span><div class="v">Two GitHub repository pages, for example <code>psf/requests</code> and <code>encode/httpx</code>. Each page has a file list, tabs at the top, and an <b>About</b> part on the right.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>Not sure of your row number? Ask the student next to you. Then ask the instructor.</li>
+          <li>Not sure of your row letter? Ask the student next to you. Then ask the instructor.</li>
         </ul></div>
       </div>
 
@@ -1223,9 +1227,9 @@ The .env file is in &lt;folder&gt;. What should I check?
     <div class="step">
       <div class="step-head"><span class="step-no">Team</span><h3>Team plan &mdash; one issue per team</h3><span class="budget">20 min</span></div>
       <ol>
-        <li>Sit with your project team. <b>The PM opens the issue</b>; everyone else talks and checks.</li>
+        <li>Sit with your project team. First choose your PM (project manager). <b>The PM opens the issue</b>. Everyone else talks and checks.</li>
         <li>Open it with the team plan template &mdash; <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=team-plan.md" target="_blank" rel="noopener"><b>click here to open it with the template ready</b></a> (sign in first).</li>
-        <li>Title: <code>[Team plan] Team &lt;number&gt;</code> &mdash; for example <code>[Team plan] Team 03</code>.</li>
+        <li>Title: <code>[Team plan] Row &lt;letter&gt;</code> &mdash; for example <code>[Team plan] Row C</code>. Your team is your row.</li>
         <li>Fill every heading:
           <ul>
             <li><b>Topic</b> &mdash; one sentence: what the tool does, and for whom.</li>
@@ -1250,7 +1254,7 @@ The .env file is in &lt;folder&gt;. What should I check?
         <li>Title: <code>[Ch10] StudentID Name</code> &mdash; for example <code>[Ch10] 20261234 Gildong Hong</code>.</li>
         <li>Under <code>## My pair</code>: keep the line of your pair. Delete the other two.</li>
         <li>Under <code>## Comparison checklist</code>: delete the empty table. Paste your table from <code>ch10-notes.md</code> (Lab PART 2, step 2). Under <code>## My choice and why</code>: paste your two sentences (PART 2, step 3).</li>
-        <li>Paste the link to your team's <code>[Team plan]</code> issue.</li>
+        <li>Under <code>## My team plan issue</code>: paste the link to your team's <code>[Team plan]</code> issue. Open that issue and copy the address from the address bar.</li>
       </ol>
       <pre><code>Title: [Ch10] 20261234 Gildong Hong
 
