@@ -619,14 +619,19 @@ idna     2.7     PYSEC-2024-60   3.7
       <p class="eyebrow">What to do about it</p>
       <h2>The fix: use a newer version,<br>then test again</h2>
       <div class="rule"></div>
-      <p class="lead">For each package, find the highest number in its <b>Fix Versions</b> column. Then change to that version or a newer one. After the change, run the program and the tests again. Why: a new version can change how a function works. The two cards show what happens in the demo repository:</p>
-      <div class="grid g2">
-        <div class="card"><span class="tagline">The hard part</span><h4>You cannot always change only one line</h4><p>Slide 7 shows only a few rows. In all rows, the highest fix version of <code>urllib3</code> is 2.8.0, and the highest fix version of <code>idna</code> is 3.15. But <code>requests 2.19.1</code> works only with a <code>urllib3</code> older than 1.24 and an <code>idna</code> older than 2.8. Slide 7 shows that <code>urllib3 1.23</code> is fixed in 1.24.2. Even 1.24.2 is too new for <code>requests 2.19.1</code>. So you must change <code>requests</code> to a newer version too. This means one old version can stop you from updating another.</p></div>
-        <div class="card"><span class="tagline">The good news</span><h4>The course versions pass</h4><p>So change all three lines. The whitelist (the course list of allowed libraries) has <code>requests==2.34.2</code> and <code>PyYAML==6.0.3</code>. These versions are newer than the highest fix versions, 2.33.0 and 5.4. Write these two lines and <code>urllib3==2.8.0</code> in <code>requirements.txt</code>. <code>requests 2.34.2</code> also brings a new <code>idna</code>. Then run the command from slide 7 again. Now <code style="white-space:nowrap">pip-audit</code> prints:<br><code>No known vulnerabilities found</code></p></div>
+      <p class="lead">pip-audit showed old versions with known problems. You fix each package in three steps:</p>
+      <div class="grid g3">
+        <div class="card"><span class="tagline">Step 1</span><h4>Find</h4><p>Look at all rows of the package. Find the highest number in the <b>Fix Versions</b> column.</p></div>
+        <div class="card"><span class="tagline">Step 2</span><h4>Change</h4><p>In <code>requirements.txt</code>, write that version or a newer one.</p></div>
+        <div class="card"><span class="tagline">Step 3</span><h4>Test</h4><p>Run <code style="white-space:nowrap">pip-audit</code> again. Then run your program and the tests, because a new version can work a little differently.</p></div>
+      </div>
+      <div class="callout">
+        <span class="mk">One change is not always enough</span>
+        <p>Slide 7 shows that <code>urllib3 1.23</code> is fixed in 1.24.2. But <code>requests 2.19.1</code> works only with a <code>urllib3</code> older than 1.24. So you must also change <code>requests</code> to a newer version.</p>
       </div>
       <div class="callout warn">
         <span class="mk">Pinned is not the same as safe</span>
-        <p>In Chapter 3 you learned to pin versions (write the exact version, like <code>==2.34.2</code>). Pinning keeps your <code>.venv</code> the same tomorrow, so pinning is still right. But a pinned version gets old, and new advisories come out often. So <b>check again before every release</b> (every new version of your program).</p>
+        <p>Today, every version on the course whitelist passes <code style="white-space:nowrap">pip-audit</code>. But a pinned version (Chapter 3) gets old, and new advisories come out often. So <b>run pip-audit again before every release</b> (every new version of your program).</p>
       </div>
     </article>
 
