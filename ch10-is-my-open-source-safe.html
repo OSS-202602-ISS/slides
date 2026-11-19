@@ -547,11 +547,11 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
       <h2>What Dependabot does</h2>
       <div class="rule"></div>
       <p class="lead">Dependabot is a GitHub feature. First, Dependabot reads the dependency files in a repository, such as <code>requirements.txt</code>. Then Dependabot compares every version with the GitHub Advisory Database.</p>
-      <div class="dg" role="img" aria-label="Three parts. Left: GitHub, seen on the instructor's screen. requirements.txt, then Dependabot, then alerts in the Security and quality tab and a pull request. Middle: advisory databases, GHSA IDs from GitHub and PYSEC IDs from Python. The same kind of data goes to both sides. Right: your PC, you run it. requirements.txt, then pip-audit, then rows in the cmd terminal. Nothing is installed." style="max-width:820px;">
+      <div class="dg" role="img" aria-label="Three parts. Left: GitHub, where only repository managers see alerts. requirements.txt, then Dependabot, then alerts in the Security and quality tab and a pull request. Middle: advisory databases, GHSA IDs from GitHub and PYSEC IDs from Python. The same kind of data goes to both sides. Right: your PC, you run it. requirements.txt, then pip-audit, then rows in the cmd terminal. Nothing is installed." style="max-width:820px;">
         <svg viewBox="0 0 720 244" aria-hidden="true">
           <defs><marker id="ah10b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
           <rect class="f-s2 s-line" x="4" y="4" width="232" height="236" rx="12" stroke-width="1.5"/>
-          <text class="t-ink" x="18" y="28" font-size="15" font-weight="700">GitHub</text><text class="t-bad" x="18" y="48" font-size="12" font-weight="700">seen on the instructor's screen</text>
+          <text class="t-ink" x="18" y="28" font-size="15" font-weight="700">GitHub</text><text class="t-bad" x="18" y="48" font-size="12" font-weight="700">only managers see alerts</text>
           <rect class="f-surf s-line" x="18" y="60" width="204" height="34" rx="8" stroke-width="1.5"/><text class="mono t-ink" x="30" y="82" font-size="12.5">requirements.txt</text>
           <line class="s-acc" x1="120" y1="96" x2="120" y2="108" stroke-width="2.5" marker-end="url(#ah10b)"/>
           <rect class="f-soft s-acc" x="18" y="112" width="204" height="34" rx="8" stroke-width="2"/><text class="mono t-acc" x="30" y="134" font-size="13">Dependabot</text>
@@ -580,7 +580,7 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
       </ul>
       <div class="callout warn">
         <span class="mk">Why I show it on my screen</span>
-        <p>GitHub shows Dependabot alerts only to people who manage the repository. Your account in the course organization does not have this permission. So you use <code style="white-space:nowrap">pip-audit</code> on your own PC, and the instructor shows Dependabot on the screen.</p>
+        <p>GitHub shows Dependabot alerts only to people who manage the repository. Your account in the course organization does not have this permission. So in this class you use <code style="white-space:nowrap">pip-audit</code> on your own PC.</p>
       </div>
     </article>
 
@@ -755,7 +755,7 @@ key = os.getenv("API_KEY")</code></pre>
       <div class="rule"></div>
       <div class="grid g2">
         <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Explain what a dependency is. Read one row of <code style="white-space:nowrap">pip-audit</code> output. Explain why one problem has three IDs. Name the five checks for a library. Explain where to keep a secret, so that it is not in the code.</p></div>
-        <div class="card"><span class="tagline">85 min · Lab</span><h4>What's next</h4><p>Activate your <code>.venv</code> in cmd. Install <code style="white-space:nowrap">pip-audit</code>. Check the demo repository and fill a worksheet. Watch Dependabot on the instructor's screen. Compare two libraries with the five checks. Load a fake key from <code>.env</code>.</p></div>
+        <div class="card"><span class="tagline">85 min · Lab</span><h4>What's next</h4><p>Activate your <code>.venv</code> in cmd. Install <code style="white-space:nowrap">pip-audit</code>. Check the demo repository and fill a worksheet. Compare two libraries with the five checks. Load a fake key from <code>.env</code>.</p></div>
       </div>
       <p class="lead">Now open the <b>Lab</b> tab above. Start with PART 0.</p>
     </article>
@@ -851,7 +851,7 @@ key = os.getenv("API_KEY")</code></pre>
     <!-- PART 1 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 1</span><h3>Read the warnings in an old project</h3><span class="budget">25 min</span></div>
-      <p class="goal">The demo repository has old versions on purpose. First, run <code style="white-space:nowrap">pip-audit</code> on this repository. Next, write the output in a small worksheet. Last, watch the same warnings on GitHub, on the instructor's screen.</p>
+      <p class="goal">The demo repository has old versions on purpose. First, run <code style="white-space:nowrap">pip-audit</code> on this repository. Next, write the output in a small worksheet. Last, check one ID on osv.dev.</p>
       <div class="dg" role="img" aria-label="Your PC, the folder D:\oss\your ID. Left: the virtual environment .venv with pip-audit and python-dotenv, plus your libraries from Chapters 8 and 9. Middle: vulnerable-demo, the clone for PART 1 and PART 3. It holds requirements.txt, .gitignore and app.py. PART 3 adds .env and secret_demo.py. Right: ch10-notes.md, your worksheet, next to vulnerable-demo. Below it: oss-practice, not used today." style="max-width:780px;">
         <svg viewBox="0 0 720 172" aria-hidden="true">
           <rect class="f-s2 s-line" x="4" y="4" width="712" height="164" rx="12" stroke-width="1.5"/>
@@ -972,19 +972,10 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
         <span class="k see">You should see</span><div class="v">For <code>PYSEC-2020-96</code>: <b>Aliases</b> lists <code>CVE-2020-1747</code> and <code>GHSA-6757-jp84-gxfx</code>. Lower on the page: <b>Introduced</b> <code>5.1</code> and <b>Fixed</b> <code>5.3.1</code>. The fixed version is the same as in the <b>Fix Versions</b> column.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>The page does not show your ID at the top? Copy the ID again from your output, because one wrong letter or number opens a different page.</li>
-          <li>osv.dev does not open? Watch the instructor's screen. Fill the worksheet only.</li>
+          <li>osv.dev does not open? Skip this step. Fill the worksheet only.</li>
         </ul></div>
       </div>
 
-      <div class="s4">
-        <h4>8. Instructor's screen: Dependabot (5 min)</h4>
-        <span class="k">Do</span><div class="v">Watch the same repository on GitHub, with its Dependabot alerts. Look for the <code>GHSA-</code> IDs. Compare them with the <b>Aliases</b> you found in step 7.</div>
-        <span class="k">Copy</span><div class="v">Nothing to type.</div>
-        <span class="k see">You should see</span><div class="v">The <b>Security and quality</b> tab of <code>vulnerable-demo</code>, with a list of Dependabot alerts. Each alert names a package and a <code>GHSA-</code> ID. One of them is in your <b>Aliases</b> line from step 7. If you used <code>PYSEC-2020-96</code> in step 7, look for <code>GHSA-6757-jp84-gxfx</code>.</div>
-        <span class="k ifnot">If not</span><div class="v"><ul>
-          <li>You cannot read the instructor's screen? Open your osv.dev page from step 7 again. The <code>GHSA-</code> ID in <b>Aliases</b> is the same ID as on the instructor's screen.</li>
-        </ul></div>
-      </div>
       <div class="callout">
         <span class="mk">A name you did not write</span>
         <p><code>idna</code> is not in <code>requirements.txt</code>. But <code>requests 2.19.1</code> needs this library. So this library is an indirect dependency (slide 3). This means the security problems of this library are in your program too.</p>
