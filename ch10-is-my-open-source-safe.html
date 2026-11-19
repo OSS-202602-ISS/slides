@@ -467,7 +467,7 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
 
     <article class="slide dgs" hidden>
       <p class="eyebrow">The idea</p>
-      <h2>A dependency is other people's code<br>inside your program</h2>
+      <h2>A dependency is other people's code inside your program</h2>
       <div class="rule"></div>
       <p class="lead">Every line in <code>requirements.txt</code> is a dependency (a library that your program needs to run). A dependency runs with the same rights as your own code. This means a dependency can do anything your code can do.</p>
       <div class="dg" role="img" aria-label="One big rectangle: your program. Everything in it runs with your rights. Left: your code, app.py, with import requests and import yaml. Middle, direct dependencies, you import them: requests 2.19.1 (line 1 of requirements.txt) and PyYAML 5.3 (line 2). Right, indirect dependencies, requests needs them: urllib3 1.23 (line 3 of requirements.txt) and idna 2.7, which is not in requirements.txt. Arrows go from app.py to requests and PyYAML, and from requests to urllib3 and idna." style="max-width:820px;">
@@ -505,7 +505,7 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
 
     <article class="slide" hidden>
       <p class="eyebrow">How a problem becomes known</p>
-      <h2>From one bug to a warning<br>on your screen</h2>
+      <h2>From one bug to a warning on your screen</h2>
       <div class="rule"></div>
       <div class="timeline">
         <div class="tl-item"><span class="yr">1</span><p><b>Someone finds a bug.</b> For example, a researcher sees that a library can show a password to other people.</p></div>
@@ -617,7 +617,7 @@ idna     2.7     PYSEC-2024-60   3.7
 
     <article class="slide" hidden>
       <p class="eyebrow">What to do about it</p>
-      <h2>The fix: use a newer version,<br>then test again</h2>
+      <h2>The fix: use a newer version, then test again</h2>
       <div class="rule"></div>
       <p class="lead">pip-audit showed old versions with known problems. You fix each package in three steps:</p>
       <div class="grid g3">
@@ -732,7 +732,7 @@ key = os.getenv("API_KEY")</code></pre>
 
     <article class="slide" hidden>
       <p class="eyebrow">Your team, today</p>
-      <h2>Today your team writes<br>one plan</h2>
+      <h2>Today your team writes one plan</h2>
       <div class="rule"></div>
       <p class="lead">Next class, your team starts to build from this plan. Sit with your team (your row). Then, in the Assignment tab:</p>
       <ol class="todo">
