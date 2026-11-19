@@ -627,7 +627,7 @@ idna     2.7     <a href="https://osv.dev/vulnerability/PYSEC-2024-60" target="_
       </div>
       <div class="callout">
         <span class="mk">One change is not always enough</span>
-        <p>Slide 7 shows that <code>urllib3 1.23</code> is fixed in 1.24.2. But <code>requests 2.19.1</code> works only with a <code>urllib3</code> older than 1.24. So you must also change <code>requests</code> to a newer version.</p>
+        <p>Slide 7 shows one <code>urllib3 1.23</code> row with the fix version 1.24.2. But <code>requests 2.19.1</code> works only with a <code>urllib3</code> older than 1.24. So you cannot change only <code>urllib3</code>. You must also change <code>requests</code> to a newer version.</p>
       </div>
       <div class="callout warn">
         <span class="mk">Pinned is not the same as safe</span>
@@ -734,7 +734,7 @@ key = os.getenv("API_KEY")</code></pre>
       <p class="eyebrow">Your team, today</p>
       <h2>Today your team writes one plan</h2>
       <div class="rule"></div>
-      <p class="lead">Next class, your team starts to build from this plan. So you write it <b>first</b>: right after Lab PART 0 (20 min), in the Assignment tab:</p>
+      <p class="lead">Next class, your team starts to build from this plan. So you write it <b>first</b>. Do Lab PART 0. Then open the Assignment tab and write the plan (20 min):</p>
       <ol class="todo">
         <li>Choose your PM (project manager).</li>
         <li>The PM opens <b>one</b> issue in <code>practice-pr</code>. Title: <code>[Team plan] Team C</code>. Change C to your team letter (A to J). Your team letter is in <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/pod-chart.md" target="_blank" rel="noopener">pod-chart.md</a> in <code>course-notice</code>.</li>
@@ -855,7 +855,7 @@ key = os.getenv("API_KEY")</code></pre>
 
     <!-- PART 1 -->
     <div class="step">
-      <div class="step-head"><span class="step-no">PART 1</span><h3>Read the warnings in an old project</h3><span class="budget">25 min</span></div>
+      <div class="step-head" id="part1"><span class="step-no">PART 1</span><h3>Read the warnings in an old project</h3><span class="budget">25 min</span></div>
       <p class="goal">The demo repository has old versions on purpose. First, run <code style="white-space:nowrap">pip-audit</code> on this repository. Next, write the output in a small worksheet. Last, check one ID on osv.dev.</p>
       <div class="dg" role="img" aria-label="Your PC, the folder D:\oss\your ID. Left: the virtual environment .venv with pip-audit and python-dotenv, plus your libraries from Chapters 8 and 9. Middle: vulnerable-demo, the clone for PART 1 and PART 3. It holds requirements.txt, .gitignore and app.py. PART 3 adds .env and secret_demo.py. Right: ch10-notes.md, your worksheet, next to vulnerable-demo. Below it: oss-practice, not used today." style="max-width:780px;">
         <svg viewBox="0 0 720 172" aria-hidden="true">
@@ -937,7 +937,7 @@ urllib3==1.23</code></pre>Three old versions. Each line has an exact version (pi
 
       <div class="s4">
         <h4>5. Check the list with <code style="white-space:nowrap">pip-audit</code></h4>
-        <span class="k">Do</span><div class="v">Run the check in <code>vulnerable-demo</code>. <b>The check takes one or two minutes. During this time, the screen may not change. Wait.</b> While you wait, start step 6: make the file <code>ch10-notes.md</code>.</div>
+        <span class="k">Do</span><div class="v">Run the check in <code>vulnerable-demo</code>. <b>The check takes one to five minutes. During this time, the screen may not change. Wait.</b> While you wait, start step 6: make the file <code>ch10-notes.md</code>.</div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>pip-audit -r requirements.txt</code></pre>
           <p class="why">Why it is slow: pip-audit finds every library that these three lines need. pip-audit does this work in a temporary place. So pip-audit installs nothing into your <code>.venv</code>.</p></div>
         <span class="k see">You should see</span><div class="v">The top of the output:<pre data-kind="out"><code>Found 41 known vulnerabilities in 4 packages
@@ -1050,7 +1050,7 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
       </div>
       <div class="callout">
         <span class="mk">No wrong answer</span>
-        <p>The whitelist library is not better in every row. That is fine, because the important thing is this: you <b>looked</b> before you chose. Next, you paste this table into your assignment.</p>
+        <p>The whitelist library is not better in every row. That is fine, because the important thing is this: you <b>looked</b> before you chose. After PART 3, you paste this table into your assignment issue.</p>
       </div>
       <p class="done"><b>Done when</b> both pages checked · ten cells filled in ch10-notes.md · two sentences written</p>
     </div>
@@ -1157,7 +1157,7 @@ nothing added to commit but untracked files present (use "git add" to track)</co
 
     <!-- PART 4 -->
     <div class="step">
-      <div class="step-head"><span class="step-no">PART 4</span><h3>Shared PC: end routine</h3><span class="budget">5 min</span></div>
+      <div class="step-head" id="part4"><span class="step-no">PART 4</span><h3>Shared PC: end routine</h3><span class="budget">5 min</span></div>
       <p class="goal">Do this <b>after</b> you open your assignment issue. Why: after you sign out, you cannot open the issue.</p>
 
       <div class="s4">
@@ -1232,30 +1232,34 @@ The .env file is in &lt;folder&gt;. What should I check?
       <p class="eyebrow">Mini Assignment #10 · 35 min</p>
       <h2>One team plan, one comparison checklist</h2>
       <p>This assignment has two parts. First, right after Lab PART 0, your team writes its plan together (20 min). At the end of the class, each student submits a comparison checklist with a link to the team plan (15 min).</p>
+      <div class="callout">
+        <span class="mk">Not in class today?</span>
+        <p>Do Lab PART 2 on any PC with a browser. PART 2 needs no install. Find your team letter in <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/pod-chart.md" target="_blank" rel="noopener">pod-chart.md</a>. Find your team's <code>[Team plan]</code> issue in the <a href="https://github.com/OSS-202602-ISS/practice-pr/issues" target="_blank" rel="noopener">issue list of <code>practice-pr</code></a>, and write your comment there. Then open your <code>[Ch10]</code> issue.</p>
+      </div>
     </div>
 
     <div class="step">
       <div class="step-head"><span class="step-no">Team</span><h3>Team plan: one issue per team</h3><span class="budget">20 min</span></div>
       <ol>
         <li>Sit with your project team. First, choose your PM (project manager). <b>The PM opens the issue</b>. The other members talk and check.</li>
-        <li>The PM signs in to GitHub first. Then the PM uses this link to open the team plan template: <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=team-plan.md" target="_blank" rel="noopener"><b>click here to open a new issue with the template</b></a>.</li>
+        <li>The PM signs in to GitHub first. Then the PM uses this link to open the team plan template: <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=team-plan.md" target="_blank" rel="noopener"><b>click here to open a new issue with the template</b></a>. Did you click <b>New issue</b> yourself? Then choose <b>Team project plan</b>.</li>
         <li>Title: <code>[Team plan] Team &lt;letter&gt;</code>. For example: <code>[Team plan] Team C</code>. Your team letter (A to J) is in <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/pod-chart.md" target="_blank" rel="noopener">pod-chart.md</a>.</li>
         <li>Write something under every heading:
           <ul>
-            <li><b>Topic:</b> one sentence. What does the tool do, and for whom? A good topic: the tool reads one file, chooses or counts rows, and prints a table. Ideas: the 12 example projects in <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/project-library-whitelist.md" target="_blank" rel="noopener">project-library-whitelist.md</a>. The same example as another team? Then use different data and a different rule.</li>
-            <li><b>Libraries:</b> only from the course whitelist. The template lists their names. What each library does: the same file. Two or three libraries are enough.</li>
+            <li><b>Topic:</b> one sentence. What does the tool do, and for whom? A good topic: the tool reads one file, chooses or counts rows, and prints a table. Ideas: the 12 example projects in <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/project-library-whitelist.md" target="_blank" rel="noopener">project-library-whitelist.md</a>. Choose an example with <b>yes</b> in the last column. The examples with <b>needs extra work</b> are harder. The same example as another team? Then use different data and a different rule.</li>
+            <li><b>Libraries:</b> only from the course whitelist. The template lists their names. What each library does: project-library-whitelist.md (the link in the Topic line). Two or three libraries are enough.</li>
             <li><b>Input / Process / Output:</b> one line each. For example: Input: <code>servers.csv</code> (name, cpu, status). Process: keep the servers with status <code>warn</code>. Output: a table on the screen and <code>result.xlsx</code>.</li>
             <li><b>Track:</b> A only, or A + B. A = a small tool with whitelist libraries (every team). B = A plus one extension of your tool (challenge, optional).</li>
-            <li><b>Roles:</b> PM, developer, documentation, reviewer. Write GitHub usernames (ask your teammates). In a team of three, one person takes two roles.</li>
+            <li><b>Roles:</b> PM, developer, documentation, reviewer. Write GitHub usernames (ask your teammates). In a team of two or three, one person can take two roles.</li>
           </ul>
         </li>
-        <li>Last, every other member writes one comment on the issue: <i>"Agreed"</i>, or a real question.</li>
+        <li>Last, every other member opens the <a href="https://github.com/OSS-202602-ISS/practice-pr/issues" target="_blank" rel="noopener">issue list of <code>practice-pr</code></a> on their own PC and clicks <code>[Team plan] Team &lt;letter&gt;</code>. Then each member writes one comment: <i>"Agreed"</i>, or a real question.</li>
       </ol>
       <div class="callout">
         <span class="mk">Keep it small</span>
         <p>The goal for the project is <b>one run command, one input, one output</b>. So check your input, process and output lines. Does one of them need more than one line? Then the plan is too big.</p>
       </div>
-      <p class="done"><b>Team plan done?</b> <a href="#" onclick="document.getElementById('tab-lab').click();return false;">Go back to the Lab tab</a> and start PART 1. You do the comparison checklist below at the end of the class.</p>
+      <p class="done"><b>Team plan done?</b> <a href="#" onclick="document.getElementById('tab-lab').click();document.getElementById('part1').scrollIntoView();return false;">Go back to the Lab tab</a> and start PART 1. You do the comparison checklist below at the end of the class.</p>
     </div>
 
     <div class="step">
@@ -1265,7 +1269,7 @@ The .env file is in &lt;folder&gt;. What should I check?
         <li>Title: <code>[Ch10] StudentID Name</code>. For example: <code>[Ch10] 20261234 Gildong Hong</code>.</li>
         <li>Under <code>## My pair</code>: keep the line of your pair. Delete the other two lines.</li>
         <li>Under <code>## Comparison checklist</code>: delete the empty table. Paste your table from <code>ch10-notes.md</code> (Lab PART 2, step 2). Under <code>## My choice and why</code>: paste your two sentences (PART 2, step 3).</li>
-        <li>Under <code>## My team plan issue</code>: paste the link to your team's <code>[Team plan]</code> issue. To get the link, open that issue and copy the address from the address bar.</li>
+        <li>Under <code>## My team plan issue</code>: paste the link to your team's <code>[Team plan]</code> issue. To get the link, open the <a href="https://github.com/OSS-202602-ISS/practice-pr/issues" target="_blank" rel="noopener">issue list of <code>practice-pr</code></a>, click your team's <code>[Team plan]</code> issue, and copy the address from the address bar.</li>
       </ol>
       <pre><code>Title: [Ch10] 20261234 Gildong Hong
 
@@ -1289,6 +1293,7 @@ Pair 1: requests vs httpx
         <span class="mk">Use the template</span>
         <p>Did you click <b>New issue</b> yourself? Then choose <b>Chapter 10 submission</b>. <b>Write under each heading. Do not delete the headings.</b></p>
       </div>
+      <p class="done"><b>Issue submitted?</b> <a href="#" onclick="document.getElementById('tab-lab').click();document.getElementById('part4').scrollIntoView();return false;">Go back to the Lab tab</a> and do PART 4. PART 4 signs you out of this shared PC.</p>
     </div>
 
     <div class="step">
