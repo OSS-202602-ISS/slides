@@ -579,7 +579,7 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
         <li><b>Job 2 · A fix as a pull request.</b> Dependabot can open a pull request (PR) that changes the version line. But a person still reads the PR and runs the tests. Then this person decides to merge or not (Chapter 5).</li>
       </ul>
       <div class="callout warn">
-        <span class="mk">Why I show it on my screen</span>
+        <span class="mk">Why you do not see the alerts</span>
         <p>GitHub shows Dependabot alerts only to people who manage the repository. Your account in the course organization does not have this permission. So in this class you use <code style="white-space:nowrap">pip-audit</code> on your own PC.</p>
       </div>
     </article>
@@ -631,7 +631,7 @@ idna     2.7     <a href="https://osv.dev/vulnerability/PYSEC-2024-60" target="_
       </div>
       <div class="callout warn">
         <span class="mk">Pinned is not the same as safe</span>
-        <p>Today, every version on the course whitelist passes <code style="white-space:nowrap">pip-audit</code>. But a pinned version (Chapter 3) gets old, and new advisories come out often. So <b>run pip-audit again before every release</b> (every new version of your program).</p>
+        <p>Today, every version on the course whitelist passes <code style="white-space:nowrap">pip-audit</code>. But a pinned version (an exact version like <code>==2.34.2</code>, Chapter 3) gets old, and new advisories come out often. So <b>run pip-audit again before every release</b> (every new version of your program).</p>
       </div>
     </article>
 
@@ -743,9 +743,9 @@ key = os.getenv("API_KEY")</code></pre>
       </ol>
       <p><b>Due:</b> 11:59 PM the night before the next class.</p>
       <div class="grid g3">
-        <div class="card"><span class="tagline">What</span><h4>Topic and libraries</h4><p>One topic. Libraries only from the course whitelist. What each library does, and 12 example projects: <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/project-library-whitelist.md" target="_blank" rel="noopener">project-library-whitelist.md</a> in <code>course-notice</code>.</p></div>
+        <div class="card"><span class="tagline">What</span><h4>Topic and libraries</h4><p>One topic. A good topic: the tool reads one file, chooses or counts rows, and prints a table.<br>Libraries only from the course whitelist.<br>12 example projects, and what each library does: <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/project-library-whitelist.md" target="_blank" rel="noopener">project-library-whitelist.md</a>.<br>The same example as another team? Then use different data and a different rule.</p></div>
         <div class="card"><span class="tagline">Shape</span><h4>Input &rarr; process &rarr; output</h4><p><b>Input:</b> what the tool reads.<br><b>Process:</b> what the tool decides or calculates.<br><b>Output:</b> what the user sees.</p></div>
-        <div class="card"><span class="tagline">Who</span><h4>Track and roles</h4><p><b>Track A</b> (every team): build a small tool with whitelist libraries.<br><b>Track B</b> (challenge, optional): also change one small open source project.<br><b>Roles:</b> PM (project manager), developer, documentation, reviewer.</p></div>
+        <div class="card"><span class="tagline">Who</span><h4>Track and roles</h4><p><b>Track A</b> (every team): build a small tool with whitelist libraries.<br><b>Track B</b> (challenge, optional): Track A plus one extension of your tool. For example: a second output, or one more whitelist library.<br><b>Roles:</b> PM (project manager), developer, documentation, reviewer.</p></div>
       </div>
     </article>
 
@@ -1030,7 +1030,7 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
         <span class="k see">You should see</span><div class="v">Ten cells filled in <code>ch10-notes.md</code>, for example <code>3 days ago</code>, <code>Yes</code>, <code>2 of 3</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>GitHub shows <b>Other</b> as the license? Open the <code>LICENSE</code> file in the file list. Read the first lines of this file. Then write the license name you find there.</li>
-          <li>Your numbers are different from your partner's? That is fine. Write what you see.</li>
+          <li>Your numbers are different from your teammates' numbers? That is fine. Write what you see.</li>
         </ul></div>
       </div>
 
@@ -1237,10 +1237,10 @@ The .env file is in &lt;folder&gt;. What should I check?
         <li>Title: <code>[Team plan] Team &lt;letter&gt;</code>. For example: <code>[Team plan] Team C</code>. Your team letter (A to J) is in <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/pod-chart.md" target="_blank" rel="noopener">pod-chart.md</a>.</li>
         <li>Write something under every heading:
           <ul>
-            <li><b>Topic:</b> one sentence. What does the tool do, and for whom? Ideas: the 12 example projects in <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/project-library-whitelist.md" target="_blank" rel="noopener">project-library-whitelist.md</a>.</li>
+            <li><b>Topic:</b> one sentence. What does the tool do, and for whom? A good topic: the tool reads one file, chooses or counts rows, and prints a table. Ideas: the 12 example projects in <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/project-library-whitelist.md" target="_blank" rel="noopener">project-library-whitelist.md</a>. The same example as another team? Then use different data and a different rule.</li>
             <li><b>Libraries:</b> only from the course whitelist. The template lists their names. What each library does: the same file. Two or three libraries are enough.</li>
             <li><b>Input / Process / Output:</b> one line each.</li>
-            <li><b>Track:</b> A only, or A + B (challenge). Every team does A.</li>
+            <li><b>Track:</b> A only, or A + B. A = a small tool with whitelist libraries (every team). B = A plus one extension of your tool (challenge, optional).</li>
             <li><b>Roles:</b> PM, developer, documentation, reviewer. Write GitHub usernames. In a team of three, one person takes two roles.</li>
           </ul>
         </li>
@@ -1301,7 +1301,7 @@ Pair 1: requests vs httpx
 
     <div class="step">
       <div class="step-head"><span class="step-no">Next</span><h3>Preview of Chapter 11</h3></div>
-      <p class="goal"><b>Project Kickoff:</b> first, your team forks the template repository (the starting files). Next, your team writes the plan into this repository. Last, your team opens its first three issues. So today's team plan is where you start.</p>
+      <p class="goal"><b>Project Kickoff:</b> first, your team gets its project repository. This repository starts from the course template (the starting files). Next, your team writes the plan into this repository. Last, your team opens its first three issues. So today's team plan is where you start.</p>
       <ul style="margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em; font-size:.95rem;">
         <li>In the next class, sit with your project team.</li>
         <li>Keep <code>ch10-notes.md</code>. Your library choice may change later, and the table shows the reason for your choice.</li>
