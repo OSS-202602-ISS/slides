@@ -524,14 +524,14 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
       <p class="eyebrow">Reading the names</p>
       <h2>One problem, three names</h2>
       <div class="rule"></div>
-      <p class="lead">Several databases store the same advisory. Each database gives the advisory its own ID. So the three IDs in this table are not three different problems:</p>
+      <p class="lead">Several databases store the same advisory. Each database gives the advisory its own ID. So the three IDs in this table are not three different problems. Click an ID to open its page.</p>
       <div class="scroll-x">
         <table>
           <thead><tr><th>ID</th><th>Who gives it</th><th>Where you see it</th></tr></thead>
           <tbody>
-            <tr><td><code>CVE-2020-1747</code></td><td>CVE, the world-wide list of known vulnerabilities (security problems)</td><td>News and every database</td></tr>
-            <tr><td><code>GHSA-6757-jp84-gxfx</code></td><td>GitHub Advisory Database</td><td>Dependabot alerts on GitHub</td></tr>
-            <tr><td><code>PYSEC-2020-96</code></td><td>Python Packaging Advisory Database</td><td><code style="white-space:nowrap">pip-audit</code> output</td></tr>
+            <tr><td><code style="white-space:nowrap"><a href="https://www.cve.org/CVERecord?id=CVE-2020-1747" target="_blank" rel="noopener">CVE-2020-1747</a></code></td><td>CVE, the world-wide list of known vulnerabilities (security problems)</td><td>News and every database</td></tr>
+            <tr><td><code style="white-space:nowrap"><a href="https://github.com/advisories/GHSA-6757-jp84-gxfx" target="_blank" rel="noopener">GHSA-6757-jp84-gxfx</a></code></td><td>GitHub Advisory Database</td><td>Dependabot alerts on GitHub</td></tr>
+            <tr><td><code style="white-space:nowrap"><a href="https://osv.dev/vulnerability/PYSEC-2020-96" target="_blank" rel="noopener">PYSEC-2020-96</a></code></td><td>Python Packaging Advisory Database</td><td><code style="white-space:nowrap">pip-audit</code> output</td></tr>
           </tbody>
         </table>
       </div>
@@ -602,17 +602,17 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
       <pre data-kind="out"><code>Found 41 known vulnerabilities in 4 packages
 Name     Version ID              Fix Versions
 -------- ------- --------------- -------------
-requests 2.19.1  PYSEC-2018-28   2.20.0
-requests 2.19.1  PYSEC-2018-28   2.20.0
+requests 2.19.1  <a href="https://osv.dev/vulnerability/PYSEC-2018-28" target="_blank" rel="noopener">PYSEC-2018-28</a>   2.20.0
+requests 2.19.1  <a href="https://osv.dev/vulnerability/PYSEC-2018-28" target="_blank" rel="noopener">PYSEC-2018-28</a>   2.20.0
 ...
-urllib3  1.23    PYSEC-2019-133  1.24.2
+urllib3  1.23    <a href="https://osv.dev/vulnerability/PYSEC-2019-133" target="_blank" rel="noopener">PYSEC-2019-133</a>  1.24.2
 ...
-pyyaml   5.3     PYSEC-2020-96   5.3.1
+pyyaml   5.3     <a href="https://osv.dev/vulnerability/PYSEC-2020-96" target="_blank" rel="noopener">PYSEC-2020-96</a>   5.3.1
 ...
-idna     2.7     PYSEC-2024-60   3.7
+idna     2.7     <a href="https://osv.dev/vulnerability/PYSEC-2024-60" target="_blank" rel="noopener">PYSEC-2024-60</a>   3.7
 ...</code></pre>
       </div>
-      <p>These are some rows from the demo repository, <code>vulnerable-demo</code>. Each <code>...</code> line means: more rows, not shown here. Now read one row from left to right.</p>
+      <p>These are some rows from the demo repository, <code>vulnerable-demo</code>. Each <code>...</code> line means: more rows, not shown here. Click an ID to open its osv.dev page. Now read one row from left to right.</p>
     </article>
 
     <article class="slide" hidden>
