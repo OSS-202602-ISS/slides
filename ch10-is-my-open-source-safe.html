@@ -505,7 +505,6 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
       <p class="eyebrow">How a problem becomes known</p>
       <h2>From one bug to a warning<br>on your screen</h2>
       <div class="rule"></div>
-      <p class="lead">A security problem goes through five steps before you see a warning:</p>
       <div class="timeline">
         <div class="tl-item"><span class="yr">1</span><p><b>Someone finds a bug.</b> For example, a researcher sees that a library can show a password to other people.</p></div>
         <div class="tl-item"><span class="yr">2</span><p><b>The researcher tells the maintainers</b> (the project owners) privately. The file <code>SECURITY.md</code> says how.</p></div>
@@ -573,7 +572,6 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
         </svg>
       </div>
       <p class="places-cap">Both tools use the same kind of databases, so they give the same warnings. But Dependabot runs on GitHub, and <code style="white-space:nowrap">pip-audit</code> runs on your PC.</p>
-      <p>Dependabot does two jobs:</p>
       <ul>
         <li><b>Job 1 · Alerts.</b> If a version you use has an advisory, an alert appears in the <b>Security and quality</b> tab. The alert shows the package, how serious the problem is, and the fix version.</li>
         <li><b>Job 2 · A fix as a pull request.</b> Dependabot can open a pull request (PR) that changes the version line. But a person still reads the PR and runs the tests. Then this person decides to merge or not (Chapter 5).</li>
@@ -588,7 +586,7 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
       <p class="eyebrow">The tool on your PC</p>
       <h2>Reading pip-audit output</h2>
       <div class="rule"></div>
-      <p class="lead">First, <code style="white-space:nowrap">pip-audit</code> reads a <code>requirements.txt</code> and finds every library that these lines need. Next, pip-audit asks a vulnerability database about each library. pip-audit does this work in a temporary place and then deletes that place. So pip-audit installs nothing into your <code>.venv</code> (the folder that holds your project's libraries, Chapter 3). The notes on the right explain each part of the output:</p>
+      <p class="lead">First, <code style="white-space:nowrap">pip-audit</code> reads a <code>requirements.txt</code> and finds every library that these lines need. Next, pip-audit asks a vulnerability database about each library. pip-audit does this work in a temporary place and then deletes that place. So pip-audit installs nothing into your <code>.venv</code> (the folder that holds your project's libraries, Chapter 3).</p>
       <div class="codex">
       <pre data-kind="cmd"><code>pip-audit -r requirements.txt</code></pre>
       <ul class="cx-notes">
@@ -711,7 +709,7 @@ idna     2.7     PYSEC-2024-60   3.7
           <text class="t-bad" x="546" y="178" font-size="12" font-weight="700">never here</text>
         </svg>
       </div>
-      <p class="places-cap"><code>.env</code> stays on your PC. The code asks for the key by name. GitHub gets the code, never the key. The code below asks for the key. The notes explain each line:</p>
+      <p class="places-cap"><code>.env</code> stays on your PC. The code asks for the key by name. GitHub gets the code, never the key.</p>
       <div class="codex">
       <pre data-kind="file"><code>import os
 from dotenv import load_dotenv
@@ -734,7 +732,7 @@ key = os.getenv("API_KEY")</code></pre>
       <p class="eyebrow">Your team, today</p>
       <h2>Write the team plan<br>in one issue</h2>
       <div class="rule"></div>
-      <p class="lead">In the next chapter, your team starts to build the project. So before that, your team writes the plan in one place that all members can see. Today each team opens <b>one</b> issue in <code>practice-pr</code>. The plan answers three questions:</p>
+      <p class="lead">In the next chapter, your team starts to build the project. So before that, your team writes the plan in one place that all members can see. Today each team opens <b>one</b> issue in <code>practice-pr</code>.</p>
       <div class="grid g3">
         <div class="card"><span class="tagline">What</span><h4>Topic and libraries</h4><p>Choose one topic. Then use libraries only from the course whitelist. Today you learned how to check these libraries.</p></div>
         <div class="card"><span class="tagline">Shape</span><h4>Input &rarr; process &rarr; output</h4><p>Write one line for each part. Input: what the tool reads. Process: the one thing the tool decides or calculates. Output: what the user gets back.</p></div>
@@ -746,7 +744,6 @@ key = os.getenv("API_KEY")</code></pre>
       <p class="eyebrow">Before you switch tabs</p>
       <h2>Lecture checklist</h2>
       <div class="rule"></div>
-      <p>Check the two cards below. The first card lists what you learned. The second card lists what you do next in the Lab.</p>
       <div class="grid g2">
         <div class="card"><span class="tagline">60 min · Lecture</span><h4>What you can do now</h4><p>Explain what a dependency is. Read one row of <code style="white-space:nowrap">pip-audit</code> output. Explain why one problem has three IDs. Name the five checks for a library. Explain where to keep a secret, so that it is not in the code.</p></div>
         <div class="card"><span class="tagline">85 min · Lab</span><h4>What's next</h4><p>Activate your <code>.venv</code> in cmd. Install <code style="white-space:nowrap">pip-audit</code>. Check the demo repository and fill a worksheet. Watch Dependabot on the instructor's screen. Compare two libraries with the five checks. Load a fake key from <code>.env</code>.</p></div>
@@ -773,7 +770,6 @@ key = os.getenv("API_KEY")</code></pre>
       <p class="eyebrow">Lab · 85 min · Step by step</p>
       <h2>Check old code, compare two libraries, hide one secret</h2>
       <p>Do the parts in order. Each part ends with a <b>Done when</b> line. Check that line before you go on. Every output below comes from a real run with the same versions. But some numbers on your screen can be higher, because new advisories come out every week. That is normal.</p>
-      <p>Each step below uses these four labels:</p>
       <div class="legend">
         <span><b>Do</b> what to do</span>
         <span><b>Copy</b> type or paste this</span>
@@ -789,7 +785,7 @@ key = os.getenv("API_KEY")</code></pre>
     <!-- PART 0 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 0</span><h3>Shared PC: start routine</h3><span class="budget">5 min</span></div>
-      <p class="goal">All students use the same Windows account on this PC. So these checks make sure that GitHub shows your work under your name. Work only in <code>D:\oss\&lt;your ID&gt;\</code>. Do the four steps below:</p>
+      <p class="goal">All students use the same Windows account on this PC. So these checks make sure that GitHub shows your work under your name. Work only in <code>D:\oss\&lt;your ID&gt;\</code>.</p>
 
       <div class="s4">
         <h4>1. Sign in to GitHub</h4>
@@ -846,7 +842,7 @@ key = os.getenv("API_KEY")</code></pre>
     <!-- PART 1 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 1</span><h3>Read the warnings in an old project</h3><span class="budget">25 min</span></div>
-      <p class="goal">The demo repository has old versions on purpose. First, run <code style="white-space:nowrap">pip-audit</code> on this repository. Next, write the output in a small worksheet. Last, watch the same warnings on GitHub, on the instructor's screen. The picture shows where each file is. Then do the eight steps below.</p>
+      <p class="goal">The demo repository has old versions on purpose. First, run <code style="white-space:nowrap">pip-audit</code> on this repository. Next, write the output in a small worksheet. Last, watch the same warnings on GitHub, on the instructor's screen.</p>
       <div class="dg" role="img" aria-label="Your PC, the folder D:\oss\your ID. Left: the virtual environment .venv with pip-audit and python-dotenv, plus your libraries from Chapters 8 and 9. Middle: vulnerable-demo, the clone for PART 1 and PART 3. It holds requirements.txt, .gitignore and app.py. PART 3 adds .env and secret_demo.py. Right: ch10-notes.md, your worksheet, next to vulnerable-demo. Below it: oss-practice, not used today." style="max-width:780px;">
         <svg viewBox="0 0 720 172" aria-hidden="true">
           <rect class="f-s2 s-line" x="4" y="4" width="712" height="164" rx="12" stroke-width="1.5"/>
@@ -990,7 +986,7 @@ requests 2.19.1  PYSEC-2023-74   2.31.0</code></pre>
     <!-- PART 2 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 2</span><h3>Compare two libraries with five checks</h3><span class="budget">25 min</span></div>
-      <p class="goal">You compare two libraries that do the same job. One library is from our whitelist, and the other library is not. You look at both libraries on GitHub and write down what you see. Your row letter (A to J) decides your pair. So three or four rows check each pair. The table shows the three pairs. Find your pair in the table, then do the three steps below it.</p>
+      <p class="goal">You compare two libraries that do the same job. One library is from our whitelist, and the other library is not. You look at both libraries on GitHub and write down what you see. Your row letter (A to J) decides your pair. So three or four rows check each pair.</p>
       <div class="scroll-x">
         <table>
           <thead><tr><th>Pair</th><th>Rows</th><th>Whitelist library</th><th>Other library</th><th>Both of them…</th></tr></thead>
@@ -1157,7 +1153,7 @@ nothing added to commit but untracked files present (use "git add" to track)</co
     <!-- PART 4 -->
     <div class="step">
       <div class="step-head"><span class="step-no">PART 4</span><h3>Shared PC: end routine</h3><span class="budget">5 min</span></div>
-      <p class="goal">Do this <b>after</b> you open your assignment issue. Why: after you sign out, you cannot open the issue. Do the four steps below:</p>
+      <p class="goal">Do this <b>after</b> you open your assignment issue. Why: after you sign out, you cannot open the issue.</p>
 
       <div class="s4">
         <h4>1. Your two issues are open</h4>
@@ -1205,7 +1201,7 @@ cmdkey /list | findstr github</code></pre></div>
 
     <div class="step">
       <div class="step-head"><span class="step-no">Stuck?</span><h3>Prompts you can copy and paste</h3></div>
-      <p class="goal">First ask AI. Next ask the students in your row. Last, ask the instructor. Below are three prompts for AI. Replace the parts in &lt; &gt; with what is on your own screen.</p>
+      <p class="goal">First ask AI. Next ask the students in your row. Last, ask the instructor. Replace the parts in &lt; &gt; with what is on your own screen.</p>
       <pre><code>I ran "pip-audit -r requirements.txt" in the folder vulnerable-demo.
 Here is one row of the output:
 &lt;paste one row&gt;
@@ -1235,7 +1231,6 @@ The .env file is in &lt;folder&gt;. What should I check?
 
     <div class="step">
       <div class="step-head"><span class="step-no">Team</span><h3>Team plan: one issue per team</h3><span class="budget">20 min</span></div>
-      <p class="goal">Your team writes one plan in one issue. Do these five steps together:</p>
       <ol>
         <li>Sit with your project team. First, choose your PM (project manager). <b>The PM opens the issue</b>. The other members talk and check.</li>
         <li>The PM signs in to GitHub first. Then the PM uses this link to open the team plan template: <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=team-plan.md" target="_blank" rel="noopener"><b>click here to open a new issue with the template</b></a>.</li>
@@ -1259,7 +1254,6 @@ The .env file is in &lt;folder&gt;. What should I check?
 
     <div class="step">
       <div class="step-head"><span class="step-no">Assignment</span><h3>Your comparison checklist</h3><span class="budget">15 min</span></div>
-      <p class="goal">Each student opens one issue alone. Do these five steps:</p>
       <ol>
         <li>Open an issue in <code>practice-pr</code> with the Chapter 10 template. Use this link: <a href="https://github.com/OSS-202602-ISS/practice-pr/issues/new?template=submission-ch10.md" target="_blank" rel="noopener"><b>click here to open a new issue with the template</b></a>.</li>
         <li>Title: <code>[Ch10] StudentID Name</code>. For example: <code>[Ch10] 20261234 Gildong Hong</code>.</li>
@@ -1267,7 +1261,6 @@ The .env file is in &lt;folder&gt;. What should I check?
         <li>Under <code>## Comparison checklist</code>: delete the empty table. Paste your table from <code>ch10-notes.md</code> (Lab PART 2, step 2). Under <code>## My choice and why</code>: paste your two sentences (PART 2, step 3).</li>
         <li>Under <code>## My team plan issue</code>: paste the link to your team's <code>[Team plan]</code> issue. To get the link, open that issue and copy the address from the address bar.</li>
       </ol>
-      <p class="goal">Your issue has this shape. Your table has your own values:</p>
       <pre><code>Title: [Ch10] 20261234 Gildong Hong
 
 ## My pair
@@ -1294,7 +1287,7 @@ Pair 1: requests vs httpx
 
     <div class="step">
       <div class="step-head"><span class="step-no">Grading</span><h3>How it's graded</h3></div>
-      <p class="goal">We check two things: <b>did you really look at the pages, and can you explain what you saw?</b> There are three grades:</p>
+      <p class="goal">We check two things: <b>did you really look at the pages, and can you explain what you saw?</b></p>
       <div class="rubric">
         <div class="card"><b>Complete</b><p>All ten cells show what the GitHub pages really say. The two sentences are in your own words. The team plan link opens your team's issue.</p></div>
         <div class="card"><b>Partial</b><p>Some cells are empty or guessed. Or the reason is copied from AI. Or the team plan link is missing. Also, if two submissions have the same text, both are Partial.</p></div>
@@ -1308,7 +1301,7 @@ Pair 1: requests vs httpx
 
     <div class="step">
       <div class="step-head"><span class="step-no">Next</span><h3>Preview of Chapter 11</h3></div>
-      <p class="goal"><b>Project Kickoff:</b> first, your team forks the template repository (the starting files). Next, your team writes the plan into this repository. Last, your team opens its first three issues. So today's team plan is where you start. Remember three things:</p>
+      <p class="goal"><b>Project Kickoff:</b> first, your team forks the template repository (the starting files). Next, your team writes the plan into this repository. Last, your team opens its first three issues. So today's team plan is where you start.</p>
       <ul style="margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em; font-size:.95rem;">
         <li>In the next class, sit with your project team.</li>
         <li>Keep <code>ch10-notes.md</code>. Your library choice may change later, and the table shows the reason for your choice.</li>
