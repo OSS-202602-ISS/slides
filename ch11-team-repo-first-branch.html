@@ -1,0 +1,1275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 11 · Project Kickoff: Your Team Repository</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── 토큰 ─────────────────────────────────────────── */
+:root{
+  --ground:#F6F8F6; --surface:#FFFFFF; --surface-2:#ECF1EE; --sunken:#E3EAE6;
+  --line:#D6DEDA; --line-strong:#B9C5BF;
+  --ink:#141E1A; --ink-2:#4B5B56; --ink-3:#78887F;
+  --code-bg:#EAF3FC; --code-line:#9DBCE0; --code-edge:#2F6DB5;
+  --accent:#0B6E55; --accent-ink:#095643; --accent-soft:#E1F0EA; --accent-line:#9FCDBD;
+  --warn:#8F5410; --warn-soft:#F8EEDD; --warn-line:#E0C79A;
+  --shadow:0 1px 2px rgba(20,30,26,.05), 0 8px 24px -12px rgba(20,30,26,.18);
+  --display:"Gowun Batang","Batang","Malgun Gothic",serif;
+  --body:"IBM Plex Sans KR","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  --mono:"IBM Plex Mono","Consolas","D2Coding",monospace;
+  --topbar:64px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+    --line:#28382F; --line-strong:#3A4E45;
+    --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+    --code-bg:#132131; --code-line:#2C4864; --code-edge:#6AA6E8;
+    --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+    --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1512; --surface:#151F1B; --surface-2:#1C2A25; --sunken:#101916;
+  --line:#28382F; --line-strong:#3A4E45;
+  --ink:#E7EEEA; --ink-2:#A8B7B1; --ink-3:#7C8C85;
+  --code-bg:#132131; --code-line:#2C4864; --code-edge:#6AA6E8;
+  --accent:#4CC59D; --accent-ink:#7FD9BA; --accent-soft:#123329; --accent-line:#2B6D57;
+  --warn:#E3A961; --warn-soft:#2E2412; --warn-line:#5C4520;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+
+/* ─── 기본 ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-weight:400; font-size:16px; line-height:1.68;
+  word-break:keep-all; overflow-wrap:break-word;
+}
+h1,h2,h3,h4{font-family:var(--display); font-weight:700; line-height:1.28; text-wrap:balance; margin:0;}
+p{margin:0;}
+a{color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent-line);}
+a:hover{border-bottom-color:var(--accent);}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:3px; border-radius:3px;}
+code,kbd{font-family:var(--mono); font-size:.88em; background:var(--surface-2); padding:.12em .38em; border-radius:4px; border:1px solid var(--line);}
+kbd{font-size:.8em; box-shadow:0 1px 0 var(--line-strong);}
+.eyebrow{font-family:var(--body); font-size:.95rem; font-weight:600; letter-spacing:.01em; color:var(--ink-2);}
+
+/* ─── 상단바 ───────────────────────────────────────── */
+.topbar{
+  position:sticky; top:0; z-index:50; height:var(--topbar);
+  display:flex; align-items:center; gap:20px;
+  padding:0 clamp(14px,3vw,36px);
+  background:var(--ground);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex; flex-direction:column; gap:1px; min-width:0;}
+.brand b{font-family:var(--display); font-size:1.02rem; font-weight:700; white-space:nowrap;}
+.brand span{font-family:var(--body); font-size:.8rem; letter-spacing:.01em; color:var(--ink-3);}
+.tabs{display:flex; gap:4px; margin-left:auto; background:var(--surface-2); padding:4px; border-radius:10px; border:1px solid var(--line);}
+.tab{
+  appearance:none; border:0; background:transparent; cursor:pointer;
+  font-family:var(--body); font-size:.86rem; font-weight:600; color:var(--ink-2);
+  padding:7px 13px; border-radius:7px; display:flex; align-items:baseline; gap:7px; white-space:nowrap;
+}
+.tab .min{font-family:var(--mono); font-size:.68rem; font-weight:500; color:var(--ink-3);}
+.tab:hover{color:var(--ink);}
+.tab[aria-selected="true"]{background:var(--surface); color:var(--accent-ink); box-shadow:var(--shadow);}
+.tab[aria-selected="true"] .min{color:var(--accent);}
+
+/* ─── 강의: 슬라이드 ───────────────────────────────── */
+.stage{
+  min-height:calc(100vh - var(--topbar) - 62px);
+  display:flex; align-items:center; justify-content:center;
+  padding:clamp(24px,4vw,56px) clamp(16px,5vw,60px);
+}
+.slide{width:100%; max-width:960px; display:flex; flex-direction:column; gap:clamp(16px,2.2vw,26px);}
+.slide h2{font-size:clamp(1.75rem,3.9vw,2.85rem);}
+.slide h3{font-size:clamp(1.1rem,1.9vw,1.35rem); color:var(--accent-ink);}
+.slide p{font-size:clamp(1.05rem,1.8vw,1.38rem); color:var(--ink-2); max-width:62ch;}
+.slide .lead{font-size:clamp(1.2rem,2.2vw,1.62rem); color:var(--ink);}
+.slide ul{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.55em; font-size:clamp(1.05rem,1.7vw,1.34rem);}
+.slide ul li::marker{color:var(--accent);}
+.slide ol.todo{margin:0; padding-left:1.4em; display:flex; flex-direction:column; gap:.5em; font-size:clamp(1.05rem,1.7vw,1.3rem);}
+.slide ol.todo li::marker{color:var(--accent); font-weight:700;}
+.rule{height:3px; width:56px; background:var(--accent); border-radius:2px;}
+
+.cover{gap:clamp(20px,3vw,34px);}
+.cover h1{font-size:clamp(2.3rem,6.2vw,4.4rem); letter-spacing:-.015em;}
+.cover .sub{font-size:clamp(1.15rem,2.1vw,1.58rem); color:var(--ink-2);}
+.cover dl{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:18px; margin:0; padding-top:16px; border-top:1px solid var(--line);}
+.cover dt{font-family:var(--body); font-size:.8rem; font-weight:600; letter-spacing:.01em; color:var(--ink-3); margin-bottom:3px;}
+.cover dd{margin:0; font-size:1.05rem; font-weight:500;}
+
+.grid{display:grid; gap:14px;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.g3{grid-template-columns:repeat(auto-fit,minmax(215px,1fr));}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:18px 20px; display:flex; flex-direction:column; gap:7px; box-shadow:var(--shadow);
+}
+.card h4{font-family:var(--body); font-weight:600; font-size:1.12rem;}
+.card p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+.card .tagline{font-family:var(--body); font-size:.85rem; font-weight:600; letter-spacing:.01em; color:var(--accent);}
+
+.freedoms{display:flex; flex-direction:column; gap:10px; counter-reset:f -1;}
+.freedom{
+  display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:baseline;
+  padding:13px 18px; background:var(--surface); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:0 10px 10px 0;
+}
+.freedom::before{
+  counter-increment:f; content:"Freedom " counter(f);
+  font-family:var(--mono); font-size:.72rem; font-weight:600; color:var(--accent);
+  letter-spacing:.05em; white-space:nowrap;
+}
+.freedom b{font-weight:600;}
+.freedom span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+/* ─── 트랙 비교(필수 A / 선택 B) ───────────────────── */
+.tracks{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(290px,1fr));}
+.track{
+  background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--accent);
+  border-radius:0 12px 12px 0; padding:18px 20px;
+  display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow);
+}
+.track.optional{background:var(--surface-2); border-left-style:dashed; border-left-color:var(--line-strong); box-shadow:none;}
+.track .badge{
+  align-self:flex-start; font-family:var(--body); font-size:.8rem; font-weight:700;
+  padding:3px 11px; border-radius:20px; background:var(--accent-soft); color:var(--accent-ink);
+}
+.track.optional .badge{background:var(--sunken); color:var(--ink-3);}
+.track h4{font-family:var(--body); font-weight:700; font-size:1.18rem;}
+.track p{font-size:1.03rem; line-height:1.62; color:var(--ink-2); max-width:none;}
+
+.timeline{display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); border-top:2px solid var(--line-strong);}
+.tl-item{padding:16px 14px 0 0; position:relative;}
+.tl-item::before{content:""; position:absolute; top:-6px; left:0; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid var(--ground);}
+.tl-item .yr{font-family:var(--mono); font-size:1.18rem; font-weight:600; color:var(--accent-ink); display:block; margin-bottom:3px;}
+.tl-item p{font-size:.98rem; line-height:1.55;}
+
+.callout{
+  display:flex; gap:14px; padding:16px 20px; border-radius:10px;
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+}
+.callout .mk{font-family:var(--body); font-size:.9rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink); padding-top:2px; white-space:nowrap;}
+.callout p{color:var(--ink); max-width:none;}
+.callout.warn{background:var(--warn-soft); border-color:var(--warn-line);}
+.callout.warn .mk{color:var(--warn);}
+
+/* ─── 코드 + 오른쪽 줄별 설명(강의 탭) ───────────────── */
+.codex{display:grid; grid-template-columns:minmax(0,3fr) minmax(0,2fr); gap:12px 14px; align-items:start;}
+.codex>pre{grid-column:1;}
+.codex>.cx-notes{grid-column:2; grid-row:1 / span 2;}
+.codex:not(:has(>pre[data-kind="out"]))>.cx-notes{grid-row:1;}
+@media (max-width:760px){ .codex{grid-template-columns:minmax(0,1fr);} .codex>.cx-notes{grid-column:1; grid-row:auto;} }
+.slide ul.cx-notes, .slide.dgs ul.cx-notes{list-style:none; margin:0; padding:12px 16px; gap:.75em; font-size:1.02rem; line-height:1.45; color:var(--ink); background:var(--surface); border:1.5px solid var(--line-strong); border-left:4px solid var(--accent); border-radius:0 9px 9px 0;}
+.cx-notes li code{display:block; width:fit-content; background:none; border:0; padding:0; margin-bottom:2px; font-size:.95rem; font-weight:600; color:var(--accent-ink);}
+.cx-notes li code[style]{display:inline !important;}
+/* 강의 탭: 투영용 코드 칸(연파랑)·큰 글자 */
+#pane-lecture pre code{font-size:1.02rem; line-height:1.5;}
+#pane-lecture pre[data-kind="file"]{background:var(--code-bg); border:1.5px solid var(--code-line); border-left:5px solid var(--code-edge);}
+#pane-lecture pre[data-kind="out"]{border:1.5px solid var(--line-strong);}
+#pane-lecture .slide:has(.codex) h2{font-size:clamp(1.6rem,3vw,2.2rem);}
+#pane-lecture .slide:has(.codex){gap:14px;}
+@media print{ .codex{break-inside:avoid;} }
+
+table{width:100%; border-collapse:collapse; font-size:1.02rem;}
+th,td{border-bottom:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top;}
+th{font-family:var(--body); font-size:.88rem; letter-spacing:.01em; color:var(--ink-3); font-weight:600; border-bottom:1.5px solid var(--line-strong);}
+td.num{font-variant-numeric:tabular-nums; font-family:var(--mono); white-space:nowrap; color:var(--accent-ink); font-weight:500;}
+.scroll-x{overflow-x:auto;}
+td.where{white-space:normal; font-size:.88em; color:var(--ink-2); width:26%;}
+.where-in{font-size:.9em; color:var(--ink-2); margin-top:8px; padding-top:8px; border-top:1px solid var(--line);}
+@media print{ a[href^="http"]{ text-decoration:underline; text-underline-offset:2px; } }
+
+.slidenav{
+  position:sticky; bottom:0; z-index:40;
+  display:flex; align-items:center; gap:14px;
+  padding:11px clamp(14px,3vw,36px);
+  background:var(--ground); border-top:1px solid var(--line);
+}
+.dots{display:flex; gap:4px; flex:1; flex-wrap:wrap; align-items:center;}
+.dot{
+  min-width:26px; height:24px; padding:0 5px; border-radius:6px; cursor:pointer; line-height:1;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-3);
+  font-family:var(--mono); font-size:.74rem; font-weight:600; font-variant-numeric:tabular-nums;
+}
+.dot:hover{background:var(--surface); border-color:var(--accent); color:var(--accent-ink);}
+.dot[aria-current="true"]{background:var(--accent); border-color:var(--accent); color:var(--ground);}
+.navbtn.edge{padding:7px 10px; font-family:var(--mono);}
+.navbtn{
+  appearance:none; cursor:pointer; font-family:var(--body); font-weight:600; font-size:.85rem;
+  padding:7px 15px; border-radius:8px; border:1px solid var(--line-strong);
+  background:var(--surface); color:var(--ink);
+}
+.navbtn:hover{border-color:var(--accent); color:var(--accent-ink);}
+.navbtn:disabled{opacity:.35; cursor:default;}
+.counter{font-family:var(--mono); font-size:.8rem; font-variant-numeric:tabular-nums; color:var(--ink-3); white-space:nowrap;}
+
+/* ─── 문서형 페인(실습·과제) ───────────────────────── */
+.doc{max-width:840px; margin:0 auto; padding:clamp(28px,5vw,60px) clamp(18px,5vw,40px) 100px; display:flex; flex-direction:column; gap:clamp(26px,3.5vw,38px);}
+.doc-head{display:flex; flex-direction:column; gap:12px;}
+.doc-head h2{font-size:clamp(1.75rem,3.4vw,2.4rem);}
+.doc-head p{color:var(--ink-2); max-width:62ch;}
+
+.step{display:flex; flex-direction:column; gap:14px; padding-top:26px; border-top:1px solid var(--line);}
+.step-head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;}
+.step-no{font-family:var(--mono); font-size:.72rem; font-weight:600; letter-spacing:.08em; color:var(--accent-ink); padding:3px 9px; background:var(--accent-soft); border-radius:20px; white-space:nowrap;}
+.step-head h3{font-size:1.22rem; flex:1; min-width:200px;}
+.budget{font-family:var(--mono); font-size:.78rem; color:var(--ink-3); font-variant-numeric:tabular-nums; white-space:nowrap;}
+.goal{font-size:.95rem; color:var(--ink-2);}
+.step ol{margin:0; padding-left:1.3em; display:flex; flex-direction:column; gap:.5em; font-size:.96rem;}
+.step ol li::marker{font-family:var(--mono); font-weight:600; color:var(--accent);}
+.step ol ul{margin:.35em 0 0; padding-left:1.1em; font-size:.92rem; color:var(--ink-2); display:flex; flex-direction:column; gap:.25em;}
+
+.check{display:flex; align-items:flex-start; gap:11px; padding:11px 15px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; cursor:pointer;}
+.check input{margin:0; width:17px; height:17px; accent-color:var(--accent); flex-shrink:0; margin-top:2px; cursor:pointer;}
+.check span{font-size:.93rem; font-weight:500;}
+.check:has(input:checked){background:var(--accent-soft); border-color:var(--accent-line);}
+.check:has(input:checked) span{color:var(--ink-2); text-decoration:line-through; text-decoration-color:var(--accent-line);}
+
+.progress{
+  position:sticky; top:calc(var(--topbar) + 10px); z-index:30;
+  display:flex; align-items:center; gap:14px; padding:12px 18px;
+  background:var(--surface); border:1px solid var(--line); border-radius:11px; box-shadow:var(--shadow);
+}
+.progress b{font-family:var(--mono); font-size:.9rem; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.bar{flex:1; height:7px; background:var(--sunken); border-radius:4px; overflow:hidden;}
+.bar i{display:block; height:100%; width:0; background:var(--accent); border-radius:4px; transition:width .3s ease;}
+@media (prefers-reduced-motion: reduce){ .bar i{transition:none;} }
+.reset{appearance:none; border:1px solid var(--line-strong); background:transparent; color:var(--ink-3); font-family:var(--body); font-size:.76rem; padding:4px 10px; border-radius:6px; cursor:pointer;}
+.reset:hover{color:var(--ink); border-color:var(--accent);}
+
+.ladder{display:flex; flex-direction:column; counter-reset:l;}
+.rung{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px dashed var(--line);}
+.rung:last-child{border-bottom:0;}
+.rung::before{counter-increment:l; content:counter(l); font-family:var(--mono); font-size:.75rem; font-weight:600; color:var(--ground); background:var(--accent); width:22px; height:22px; border-radius:50%; display:grid; place-items:center;}
+.rung b{font-weight:600;}
+.rung span{display:block; font-size:.99rem; color:var(--ink-2);}
+
+pre{background:var(--sunken); border:1px solid var(--line); border-radius:9px; padding:14px 16px; overflow-x:auto; margin:0;}
+pre code{background:none; border:0; padding:0; font-size:.85rem; line-height:1.6;}
+
+.rubric{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+.rubric .card b{font-family:var(--body); font-size:.95rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink);}
+
+.foot{border-top:1px solid var(--line); padding:22px clamp(18px,5vw,40px); text-align:center;}
+.foot p{font-size:.8rem; color:var(--ink-3);}
+
+/* ─── 인쇄 ─────────────────────────────────────────── */
+@media print{
+  .topbar,.slidenav,.progress{display:none !important;}
+  .pane[hidden]{display:block !important;}
+  .slide[hidden]{display:flex !important;}
+  .stage{display:block; min-height:0; padding:0;}
+  .slide{max-width:none; break-after:page; page-break-after:always; padding:8mm 0;}
+  .slide:last-child{break-after:auto; page-break-after:auto;}
+  body{background:#fff; color:#000; font-size:11pt;}
+  .card,.callout,.check,.step,.track,.tl-item{break-inside:avoid;}
+}
+
+/* ─── 8장: diff 표시 ───────────────────────────────── */
+pre.diff .add{color:var(--accent-ink); font-weight:600;}
+pre.diff .del{color:var(--warn);}
+.card pre code{font-size:.8rem;}
+pre.term code{font-family:"Cascadia Mono","Consolas",monospace; line-height:1.2;}
+
+/* ─── 그림 (OSS 5장 .dg 양식, 토큰 색) ─────────────── */
+.dg{--bad:#C0392B; --bad-soft:#FBE9E7;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .dg{--bad:#FF7A6B; --bad-soft:#3A1A16;} }
+:root[data-theme="dark"] .dg{--bad:#FF7A6B; --bad-soft:#3A1A16;}
+.dg svg{display:block; width:100%; height:auto;}
+.dg text{font-family:var(--body); fill:var(--ink-2);}
+.dg .mono{font-family:var(--mono); font-weight:600;}
+.dg .t-ink{fill:var(--ink);} .dg .t-acc{fill:var(--accent-ink);} .dg .t-mut{fill:var(--ink-3);} .dg .t-bad{fill:var(--bad);} .dg .t-on{fill:var(--surface);}
+.dg .s-acc{stroke:var(--accent);} .dg .s-line{stroke:var(--line-strong);} .dg .s-bad{stroke:var(--bad);}
+.dg .f-acc{fill:var(--accent);} .dg .f-soft{fill:var(--accent-soft);} .dg .f-surf{fill:var(--surface);} .dg .f-s2{fill:var(--surface-2);} .dg .f-bad{fill:var(--bad);} .dg .f-badsoft{fill:var(--bad-soft);} .dg .f-line{fill:var(--line-strong);}
+.dg .s-al{stroke:var(--accent-line);} .dg .f-ground{fill:var(--ground);}
+.dg{width:100%; margin:0 auto;}
+.places-cap{font-size:clamp(.98rem,1.6vw,1.15rem) !important; color:var(--ink) !important; font-weight:500; margin-top:-6px !important;}
+
+/* ─── 8장: 실습 단계 4줄 (Do · Copy · You should see · If not) ─── */
+.legend{display:flex; flex-wrap:wrap; gap:6px 18px; font-size:.88rem; color:var(--ink-2);}
+.legend b{color:var(--accent-ink); margin-right:3px;}
+.s4{display:grid; grid-template-columns:8.4em minmax(0,1fr); gap:10px 14px; align-items:start; padding:14px 16px; background:var(--surface); border:1px solid var(--line); border-radius:10px;}
+.s4 h4{grid-column:1/-1; font-family:var(--body); font-weight:700; font-size:1.03rem; display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;}
+.s4 > .k{font-size:.8rem; font-weight:700; letter-spacing:.01em; color:var(--accent-ink); padding-top:2px;}
+.s4 > .k.see{color:var(--ink);}
+.s4 > .k.ifnot{color:var(--warn);}
+.s4 > .v{font-size:.95rem; min-width:0;}
+.s4 > .v ul{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em;}
+.s4 pre{margin:6px 0;}
+.s4 .why{font-size:.88rem; color:var(--ink-2); margin-top:6px;}
+pre[data-kind]::before{display:block; font-family:var(--body); font-size:.7rem; font-weight:600; letter-spacing:.02em; color:var(--ink-3); margin-bottom:4px;}
+pre[data-kind="cmd"]::before{content:"Type in cmd";}
+pre[data-kind="out"]::before{content:"Output";}
+pre[data-kind="file"]::before{content:"In the file";}
+pre[data-kind="url"]::before{content:"Open in the browser";}
+@media (max-width:620px){ .s4{grid-template-columns:1fr; gap:4px;} }
+@media print{ .s4{break-inside:avoid;} }
+
+/* 그림 슬라이드: 1280x720 한 화면 */
+.slide.dgs{gap:12px;}
+.slide.dgs h2{font-size:clamp(1.5rem,3vw,2.15rem);}
+.slide.dgs .lead{font-size:clamp(1.05rem,1.7vw,1.28rem);}
+.slide.dgs p{font-size:clamp(1rem,1.6vw,1.2rem);}
+.slide.dgs ul{font-size:clamp(1rem,1.6vw,1.2rem); gap:.3em;}
+.slide.dgs .callout{padding:10px 16px;}
+.s4 .lbl{font-size:.84rem; font-weight:700; color:var(--ink-2); margin-top:8px;}
+.stage:has(> .slide.dgs:not([hidden])){padding-top:18px; padding-bottom:18px;}
+
+/* role-based code: commands to type = dark chip/block, names and output = quiet */
+:root{--cmd-bg:#17211D; --cmd-ink:#F2F6F4; --cmd-mark:#7FD9BA;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--cmd-bg:#000000; --cmd-ink:#F2F6F4; --cmd-mark:#7FD9BA;} }
+:root[data-theme="dark"]{--cmd-bg:#000000; --cmd-ink:#F2F6F4; --cmd-mark:#7FD9BA;}
+code,kbd{border-color:var(--line-strong);}
+code.cmd{background:var(--cmd-bg); color:var(--cmd-ink); border-color:var(--cmd-bg); font-weight:500; white-space:nowrap;}
+code.cmd::before{content:"\25B8\00A0"; color:var(--cmd-mark); font-weight:700;}
+td code.cmd, li code.cmd{white-space:normal;}
+code.cmd::before{font-family:var(--body);}
+.r8{display:grid; grid-template-columns:4.8rem minmax(0,1.15fr) minmax(0,1fr); column-gap:0; border-top:2px solid var(--line-strong);}
+.r8 > div{padding:12px 16px 12px 0; border-bottom:1px solid var(--line); min-width:0;}
+.r8 > div:nth-child(3n){padding-right:0;}
+.r8 > .hd{padding:8px 0; font-size:.78rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3);}
+.r8 > .lb{font-family:var(--mono); font-weight:700; font-size:1rem; color:var(--accent-ink); padding-top:22px;}
+.r8 pre{margin:0;}
+.r8 .cap{font-size:.92rem !important; line-height:1.5; color:var(--ink-3) !important; margin:8px 0 0;}
+.card ul.checks4{font-size:1.03rem; line-height:1.5; color:var(--ink-2); gap:.35em; margin-top:2px;}
+.r8-imp{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; align-items:center;}
+.r8-imp pre{margin:0;}
+.r8-imp ul.r8-notes{margin:0; padding-left:1.1em; gap:.3em; font-size:.92rem; line-height:1.5; color:var(--ink-2);}
+.r8-imp .cap{font-size:.92rem !important; line-height:1.5; color:var(--ink-3) !important; margin:0;}
+@media (max-width:720px){ .r8-imp{grid-template-columns:1fr;} }
+@media (max-width:720px){ .r8{grid-template-columns:1fr;} .r8 > .hd{display:none;} .r8 > div{border-bottom:0; padding:6px 0;} .r8 > .lb{padding-top:16px; border-top:1px solid var(--line);} }
+@media print{ .r8 > div{break-inside:avoid;} .r8{grid-template-columns:4.6rem minmax(0,1.35fr) minmax(0,1fr);} .r8 > .lb{font-size:.88rem; white-space:nowrap;} .r8 pre{overflow:visible; padding:10px 12px;} .r8 pre code{font-size:.72rem !important; white-space:pre-wrap; overflow-wrap:anywhere;} }
+pre[data-kind="cmd"]{background:var(--cmd-bg); border-color:var(--cmd-bg);}
+pre[data-kind="cmd"] code{color:var(--cmd-ink);}
+pre[data-kind="cmd"]::before{color:var(--cmd-mark);}
+a{font-weight:600; border-bottom:2px solid var(--accent);}
+a::after{content:" \2197"; font-size:.85em;}
+
+/* ─── B: role zones, high contrast (11-05) ─────────── */
+:root{
+  --ground:#F3F5F4; --line:#C5D0CB; --line-strong:#8FA39B;
+  --ink-2:#3A4944; --ink-3:#5B6B65;
+  --out-soft:#FFF8E6; --err:#B3261E; --err-soft:#FDECEA;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --line:#34463E; --line-strong:#5E776C; --out-soft:#2E2412; --err:#FF7A6B; --err-soft:#3A1A16; } }
+:root[data-theme="dark"]{ --line:#34463E; --line-strong:#5E776C; --out-soft:#2E2412; --err:#FF7A6B; --err-soft:#3A1A16; }
+
+.topbar{border-bottom:1.5px solid var(--line-strong);}
+.eyebrow{color:var(--accent-ink); font-weight:700; font-size:.82rem; letter-spacing:.07em; text-transform:uppercase;}
+.card{border:1.5px solid var(--line-strong); border-top:4px solid var(--accent);}
+.track{border:1.5px solid var(--line-strong); border-left:5px solid var(--accent);}
+.callout{border:1.5px solid var(--accent-line); border-left:5px solid var(--accent); align-items:flex-start;}
+.callout .mk{background:var(--accent); color:var(--surface); padding:3px 11px; border-radius:20px; font-size:.8rem;}
+.callout.warn{border-left-color:var(--warn);}
+.callout.warn .mk{background:var(--warn); color:var(--surface);}
+th{border-bottom:2px solid var(--line-strong); color:var(--ink-2);}
+.dot{border-color:var(--line-strong);}
+
+/* code boxes: border always visible, label = filled tag */
+pre{border:1.5px solid var(--line-strong);}
+pre[data-kind="out"]{background:var(--surface);}
+pre[data-kind]::before{display:table; padding:1px 8px; border-radius:4px; font-size:.72rem; font-weight:700; letter-spacing:.03em; margin-bottom:8px; color:var(--surface); background:var(--ink-2);}
+pre[data-kind="cmd"]::before{background:var(--cmd-mark); color:var(--cmd-bg);}
+pre[data-kind="out"]::before{background:var(--warn); color:var(--surface);}
+pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--accent); color:var(--surface);}
+
+/* Lab steps: Do · Copy · You should see · If not */
+.s4{border:1.5px solid var(--line-strong); border-left:5px solid var(--accent); box-shadow:var(--shadow);}
+.s4 > .k{justify-self:start; white-space:nowrap; font-size:.76rem; font-weight:700; letter-spacing:.02em; padding:3px 10px; border-radius:20px; margin-top:3px; color:var(--surface); background:var(--accent);}
+.s4 > .v + .k:not(.see):not(.ifnot){background:var(--cmd-bg); color:var(--cmd-ink);}
+.s4 > .k.see{background:var(--warn); color:var(--surface);}
+.s4 > .k.ifnot{background:var(--err); color:var(--surface);}
+.s4 > .k.see + .v{background:var(--out-soft); border-left:4px solid var(--warn); padding:8px 12px; border-radius:0 8px 8px 0;}
+.s4 > .k.ifnot + .v{background:var(--err-soft); border-left:4px solid var(--err); padding:8px 12px; border-radius:0 8px 8px 0;}
+.legend b{display:inline-block; padding:1px 9px; border-radius:20px; color:var(--surface); background:var(--accent); margin-right:5px;}
+.legend span:nth-child(2) b{background:var(--cmd-bg); color:var(--cmd-ink);}
+.legend span:nth-child(3) b{background:var(--warn);}
+.legend span:nth-child(4) b{background:var(--err);}
+
+/* slide 8 table: "You see" column = output colour */
+.r8 > div:nth-child(3n) pre{background:var(--out-soft); border-left:4px solid var(--warn);}
+.r8 > .hd:nth-child(3){color:var(--warn);}
+.r8 > .hd:nth-child(2){color:var(--accent-ink);}
+/* checks, progress, step headers */
+.done{margin:0; padding:10px 14px; border:2px solid var(--accent); border-radius:9px; background:var(--accent-soft); color:var(--ink); font-size:.95rem; font-weight:600;}
+.done b{display:inline-block; background:var(--accent); color:var(--surface); padding:1px 10px; border-radius:20px; margin-right:8px; font-size:.78rem;}
+
+.check{background:var(--surface); border:2px solid var(--line-strong);}
+.check span{color:var(--ink); font-weight:600;}
+.check:has(input:checked){background:var(--accent); border-color:var(--accent);}
+.check:has(input:checked) span{color:var(--surface); text-decoration-color:var(--surface);}
+.progress{border:1.5px solid var(--line-strong);}
+.bar{background:var(--line);}
+.step{border-top:2px solid var(--line-strong);}
+.step-no{background:var(--accent); color:var(--surface);}
+@media print{ .s4,.card,.track,.progress{box-shadow:none !important;} pre{overflow:visible;} pre code{white-space:pre-wrap; overflow-wrap:anywhere;} .check:has(input:checked){background:var(--surface); border-color:var(--accent);} .check:has(input:checked) span{color:var(--ink);} }
+
+/* ─── 10장: 그림 + 목록 나란히 ─────────── */
+.g-fig{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:16px; align-items:start;}
+.slide.dgs .g-fig .rung{padding:7px 0;}
+.slide.dgs .g-fig .rung span{font-size:.95rem; line-height:1.45;}
+@media (max-width:760px){ .g-fig{grid-template-columns:minmax(0,1fr);} }
+
+/* ─── 11장: 누가 하는 단계인가 (PM · Reviewer · Every member) ─── */
+.who{display:inline-block; font-family:var(--body); font-size:.74rem; font-weight:700; letter-spacing:.02em; padding:2px 10px; border-radius:20px; background:var(--cmd-bg); color:var(--cmd-ink); white-space:nowrap;}
+.who.rev{background:var(--warn); color:var(--surface);}
+.s4 .opt{margin:8px 0 2px; font-weight:700; color:var(--accent-ink);}
+table.map td, table.map th{font-size:.93rem;}
+.slide table.map td, .slide table.map th{font-size:1rem;}
+@media print{ .scroll-x{overflow:visible;} td code.cmd, li code.cmd{white-space:normal !important;} }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <b>Project Kickoff</b>
+    <span>Open Source Software · Chapter 11 · Fall 2026</span>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Class blocks">
+    <button class="tab" role="tab" id="tab-lecture" aria-controls="pane-lecture" aria-selected="true">Lecture <span class="min">20 min</span></button>
+    <button class="tab" role="tab" id="tab-lab" aria-controls="pane-lab" aria-selected="false">Lab <span class="min">115 min</span></button>
+    <button class="tab" role="tab" id="tab-task" aria-controls="pane-task" aria-selected="false">Assignment <span class="min">15 min</span></button>
+  </div>
+</header>
+
+<!-- ══════════ Lecture ══════════ -->
+<section class="pane" id="pane-lecture" role="tabpanel" aria-labelledby="tab-lecture">
+  <div class="stage">
+
+    <article class="slide cover">
+      <p class="eyebrow">Chapter 11 · 2026 Fall</p>
+      <h1>Project Kickoff:<br>Your Team Repository</h1>
+      <p class="sub">Today your team gets its own repository on GitHub. First, your team plan goes into this repository. Then each member starts one task on their own branch.</p>
+      <dl>
+        <div><dt>Course</dt><dd>Open Source Software</dd></div>
+        <div><dt>New today</dt><dd>team repository · protected <code>main</code> · feature branch</dd></div>
+        <div><dt>Today</dt><dd>20 min lecture · 115 min lab · 15 min team check</dd></div>
+      </dl>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Where we stopped</p>
+      <h2>Your plan moves into your repository</h2>
+      <div class="rule"></div>
+      <p class="lead">In Chapter 10, your team wrote a <code>[Team plan]</code> issue in <code>practice-pr</code>. <code>practice-pr</code> is one practice repository for the whole class. From today, your team works in its own repository. All the project work goes there.</p>
+      <p>At the end of this class, your team can:</p>
+      <ul>
+        <li><b>Find your team repository</b> and clone it to this PC.</li>
+        <li><b>Put your team plan into <code>docs/project-plan.md</code></b> through a pull request (PR).</li>
+        <li><b>Open three issues</b>, one for each task.</li>
+        <li><b>Start one task per member</b> on a feature branch, and push this branch.</li>
+        <li><b>Sign out</b>, so that the next student cannot use your login.</li>
+      </ul>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">Where the work is</p>
+      <h2>One repository for each team</h2>
+      <div class="rule"></div>
+      <p class="lead">The instructor made ten repositories from the course template (the starting files): <code>team-a-project</code> to <code>team-j-project</code>. Every member of a team can write to the team's repository. So you do not fork, and you do not make a new repository.</p>
+      <div class="dg" role="img" aria-label="Left: GitHub, the organization OSS-202602-ISS. The box oss-project-template, the course template. Arrows go from it to the team repositories team-a-project, team-b-project, team-c-project and so on to team-j-project. team-c-project is marked: Team C, all members can write. Right: your PC, the folder D:\oss\your ID. Inside it is the folder team-c-project with data, docs, src, tests and .venv. .venv is only on this PC. An arrow git clone goes from team-c-project on GitHub to the PC. An arrow git push, a branch, goes back from the PC to GitHub." style="max-width:820px;">
+        <svg viewBox="0 0 720 230" aria-hidden="true">
+          <defs><marker id="ah11a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-s2 s-line" x="4" y="4" width="392" height="222" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="18" y="28" font-size="15" font-weight="700">GitHub</text><text class="mono t-mut" x="80" y="28" font-size="12">OSS-202602-ISS</text>
+          <text class="t-mut" x="232" y="50" font-size="11.5" font-weight="600">made from the template:</text>
+          <rect class="f-surf s-line" x="18" y="92" width="168" height="56" rx="9" stroke-width="1.5"/>
+          <text class="mono t-ink" x="30" y="116" font-size="12">oss-project-template</text><text class="t-mut" x="30" y="136" font-size="11.5">the course template</text>
+          <line class="s-acc" x1="188" y1="112" x2="226" y2="76" stroke-width="2" marker-end="url(#ah11a)"/>
+          <line class="s-acc" x1="188" y1="120" x2="226" y2="146" stroke-width="2" marker-end="url(#ah11a)"/>
+          <line class="s-acc" x1="188" y1="128" x2="226" y2="196" stroke-width="2" marker-end="url(#ah11a)"/>
+          <rect class="f-surf s-line" x="232" y="60" width="154" height="30" rx="7" stroke-width="1.2"/><text class="mono t-ink" x="244" y="80" font-size="12.5">team-a-project</text>
+          <rect class="f-surf s-line" x="232" y="96" width="154" height="30" rx="7" stroke-width="1.2"/><text class="mono t-ink" x="244" y="116" font-size="12.5">team-b-project</text>
+          <rect class="f-soft s-acc" x="232" y="132" width="154" height="30" rx="7" stroke-width="2.2"/><text class="mono t-acc" x="244" y="152" font-size="12.5" font-weight="700">team-c-project</text>
+          <text class="t-mut" x="309" y="178" font-size="14" font-weight="700" text-anchor="middle">⋮</text>
+          <rect class="f-surf s-line" x="232" y="184" width="154" height="30" rx="7" stroke-width="1.2"/><text class="mono t-ink" x="244" y="204" font-size="12.5">team-j-project</text>
+          <text class="t-acc" x="18" y="184" font-size="12" font-weight="700">Team C → team-c-project</text>
+          <text class="t-mut" x="18" y="202" font-size="11.5">all members can write</text>
+          <line class="s-acc" x1="390" y1="140" x2="484" y2="140" stroke-width="2.5" marker-end="url(#ah11a)"/>
+          <text class="mono t-acc" x="436" y="131" font-size="12" font-weight="700" text-anchor="middle">git clone</text>
+          <line class="s-acc" x1="488" y1="166" x2="394" y2="166" stroke-width="2.5" marker-end="url(#ah11a)"/>
+          <text class="mono t-acc" x="436" y="184" font-size="12" font-weight="700" text-anchor="middle">git push</text>
+          <text class="t-mut" x="436" y="200" font-size="11" text-anchor="middle">a branch</text>
+          <rect class="f-s2 s-line" x="476" y="4" width="240" height="222" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="490" y="28" font-size="15" font-weight="700">Your PC</text><text class="mono t-ink" x="560" y="28" font-size="11.5">D:\oss\&lt;your ID&gt;\</text>
+          <rect class="f-surf s-acc" x="490" y="44" width="212" height="170" rx="10" stroke-width="1.8"/>
+          <text class="mono t-acc" x="502" y="68" font-size="13.5" font-weight="700">team-c-project\</text>
+          <g font-size="12"><text class="mono t-ink" x="514" y="94">data\</text><text class="mono t-ink" x="514" y="116">docs\</text><text class="mono t-ink" x="514" y="138">src\</text><text class="mono t-ink" x="514" y="160">tests\</text></g>
+          <text class="mono t-bad" x="514" y="190" font-size="12" font-weight="700">.venv\</text><text class="t-bad" x="568" y="190" font-size="11.5" font-weight="700">only on this PC</text>
+        </svg>
+      </div>
+      <p class="places-cap">The repository name has your team letter in small letters: Team C &rarr; <code style="white-space:nowrap">team-c-project</code>. <code>.venv</code> stays on the PC, because the file <code>.gitignore</code> lists <code>.venv/</code>.</p>
+      <div class="callout">
+        <span class="mk">Why one repository per team</span>
+        <p>All the work of a team is in one place. Every commit, issue and review on GitHub shows the name of the person who made it. So the repository also shows who did which part.</p>
+      </div>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">The rule for main</p>
+      <h2>Nobody can push to main</h2>
+      <div class="rule"></div>
+      <p class="lead">In your team repository, <code>main</code> is protected. This means that GitHub rejects a direct push to <code>main</code>. A change goes into <code>main</code> only through a pull request. One teammate must approve this pull request first.</p>
+      <div class="dg" role="img" aria-label="Two paths from your PC to main on GitHub. Top path: a commit on main, then git push. GitHub rejects it: a red X before main. Bottom path: a commit on the branch feature/ada-plan, then git push. On GitHub: the branch, then a pull request, then Approve by a teammate, then Merge into main." style="max-width:820px;">
+        <svg viewBox="0 0 720 190" aria-hidden="true">
+          <defs><marker id="ah11b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker>
+          <marker id="ah11bx" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-bad" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-s2 s-line" x="4" y="4" width="192" height="182" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="18" y="26" font-size="14" font-weight="700">Your PC</text>
+          <rect class="f-s2 s-line" x="206" y="4" width="510" height="182" rx="12" stroke-width="1.5"/>
+          <text class="t-ink" x="220" y="26" font-size="14" font-weight="700">GitHub</text><text class="mono t-mut" x="280" y="26" font-size="12">team-c-project</text>
+          <rect class="f-badsoft s-bad" x="18" y="40" width="164" height="44" rx="9" stroke-width="1.6"/>
+          <text class="t-bad" x="30" y="58" font-size="12" font-weight="700">a commit on</text><text class="mono t-bad" x="30" y="76" font-size="12.5" font-weight="700">main</text>
+          <line class="s-bad" x1="184" y1="62" x2="546" y2="62" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#ah11bx)"/>
+          <text class="mono t-bad" x="240" y="54" font-size="12" font-weight="700">git push</text>
+          <text class="t-bad" x="470" y="54" font-size="12" font-weight="700" text-anchor="middle">rejected</text>
+          <circle class="f-bad" cx="566" cy="62" r="12"/>
+          <line x1="560" y1="56" x2="572" y2="68" stroke="#fff" stroke-width="2.5"/><line x1="572" y1="56" x2="560" y2="68" stroke="#fff" stroke-width="2.5"/>
+          <rect class="f-soft s-acc" x="610" y="40" width="94" height="136" rx="10" stroke-width="2.2"/>
+          <text class="mono t-acc" x="657" y="104" font-size="15" font-weight="700" text-anchor="middle">main</text>
+          <text class="t-mut" x="657" y="124" font-size="11.5" text-anchor="middle">protected</text>
+          <rect class="f-surf s-acc" x="18" y="126" width="164" height="44" rx="9" stroke-width="1.6"/>
+          <text class="t-ink" x="30" y="144" font-size="12" font-weight="700">a commit on</text><text class="mono t-acc" x="30" y="162" font-size="11.5" font-weight="700">feature/ada-…</text>
+          <line class="s-acc" x1="184" y1="148" x2="242" y2="148" stroke-width="2.5" marker-end="url(#ah11b)"/>
+          <text class="mono t-acc" x="213" y="140" font-size="11" font-weight="700" text-anchor="middle">push</text>
+          <rect class="f-surf s-line" x="246" y="126" width="90" height="44" rx="8" stroke-width="1.5"/>
+          <text class="t-ink" x="291" y="146" font-size="12" font-weight="700" text-anchor="middle">branch</text><text class="mono t-mut" x="291" y="162" font-size="10.5" text-anchor="middle">feature/ada-…</text>
+          <line class="s-acc" x1="338" y1="148" x2="352" y2="148" stroke-width="2.5" marker-end="url(#ah11b)"/>
+          <rect class="f-surf s-acc" x="356" y="126" width="96" height="44" rx="8" stroke-width="1.5"/>
+          <text class="t-ink" x="404" y="146" font-size="12" font-weight="700" text-anchor="middle">pull request</text><text class="t-mut" x="404" y="162" font-size="10.5" text-anchor="middle">by the author</text>
+          <line class="s-acc" x1="454" y1="148" x2="468" y2="148" stroke-width="2.5" marker-end="url(#ah11b)"/>
+          <rect class="f-soft s-acc" x="472" y="126" width="92" height="44" rx="8" stroke-width="2"/>
+          <text class="t-acc" x="518" y="146" font-size="12.5" font-weight="700" text-anchor="middle">Approve</text><text class="t-ink" x="518" y="162" font-size="10.5" text-anchor="middle">a teammate</text>
+          <line class="s-acc" x1="566" y1="148" x2="606" y2="148" stroke-width="2.5" marker-end="url(#ah11b)"/>
+          <text class="t-acc" x="586" y="140" font-size="11" font-weight="700" text-anchor="middle">Merge</text>
+        </svg>
+      </div>
+      <p class="places-cap">Top: a direct push to <code>main</code> is rejected. Bottom: the way into <code>main</code>. The approval comes from a teammate. GitHub does not let the author approve their own pull request.</p>
+      <div class="callout warn">
+        <span class="mk">What a rejected push looks like</span>
+        <p>The push fails, and Git prints several lines. Look for these two: one line has <code>Changes must be made through a pull request</code>, and one line has <code>! [remote rejected] main -&gt; main</code>. Nothing changed on GitHub. Lab PART 1, step 3 shows how to move your commit to a branch.</p>
+      </div>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">The path of one task</p>
+      <h2>Seven steps from an issue to main</h2>
+      <div class="rule"></div>
+      <p class="lead">Every task in the project goes the same way. The author does steps 1 to 5. A teammate reviews in step 6. After the approval, the author merges in step 7.</p>
+      <div class="dg" role="img" aria-label="Seven boxes in a row. 1 Issue, number 999, on GitHub. 2 Branch, feature/…, on your PC. 3 Commit, add: …, on your PC. 4 Push, git push, from the PC to GitHub. 5 Pull request, Closes #999, on GitHub. 6 Review, Approve, on GitHub, done by a teammate. 7 Merge into main, on GitHub, done by the author. Below: steps 1 to 5 and 7 are the author's, step 6 is the reviewer's. Today: PART 1 does steps 2 to 7 once for project-plan.md. PART 2 is step 1. PART 3 is steps 2 to 4. Steps 5 to 7 for your task are in the next class." style="max-width:860px;">
+        <svg viewBox="0 0 720 206" aria-hidden="true">
+          <defs><marker id="ah11c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
+          <rect class="f-s2 s-line" x="10" y="8" width="88" height="24" rx="6" stroke-width="1"/><text class="t-ink" x="54" y="25" font-size="11.5" font-weight="700" text-anchor="middle">GitHub</text>
+          <rect class="f-ground s-line" x="112" y="8" width="190" height="24" rx="6" stroke-width="1"/><text class="t-ink" x="207" y="25" font-size="11.5" font-weight="700" text-anchor="middle">Your PC</text>
+          <rect class="f-ground s-line" x="316" y="8" width="88" height="24" rx="6" stroke-width="1"/><text class="t-ink" x="360" y="25" font-size="11" font-weight="700" text-anchor="middle">PC → GitHub</text>
+          <rect class="f-s2 s-line" x="418" y="8" width="292" height="24" rx="6" stroke-width="1"/><text class="t-ink" x="564" y="25" font-size="11.5" font-weight="700" text-anchor="middle">GitHub</text>
+          <g font-size="12.5">
+            <rect class="f-surf s-acc" x="10" y="42" width="88" height="60" rx="9" stroke-width="1.6"/><text class="t-ink" x="54" y="66" font-weight="700" text-anchor="middle">1 Issue</text><text class="mono t-mut" x="54" y="88" font-size="11" text-anchor="middle">#999</text>
+            <rect class="f-surf s-acc" x="112" y="42" width="88" height="60" rx="9" stroke-width="1.6"/><text class="t-ink" x="156" y="66" font-weight="700" text-anchor="middle">2 Branch</text><text class="mono t-mut" x="156" y="88" font-size="11" text-anchor="middle">feature/…</text>
+            <rect class="f-surf s-acc" x="214" y="42" width="88" height="60" rx="9" stroke-width="1.6"/><text class="t-ink" x="258" y="66" font-weight="700" text-anchor="middle">3 Commit</text><text class="mono t-mut" x="258" y="88" font-size="11" text-anchor="middle">add: …</text>
+            <rect class="f-surf s-acc" x="316" y="42" width="88" height="60" rx="9" stroke-width="1.6"/><text class="t-ink" x="360" y="66" font-weight="700" text-anchor="middle">4 Push</text><text class="mono t-mut" x="360" y="88" font-size="11" text-anchor="middle">git push</text>
+            <rect class="f-surf s-acc" x="418" y="42" width="88" height="60" rx="9" stroke-width="1.6"/><text class="t-ink" x="462" y="66" font-weight="700" text-anchor="middle">5 PR</text><text class="mono t-mut" x="462" y="88" font-size="11" text-anchor="middle">Closes #999</text>
+            <rect class="f-badsoft s-bad" x="520" y="42" width="88" height="60" rx="9" stroke-width="1.6"/><text class="t-ink" x="564" y="66" font-weight="700" text-anchor="middle">6 Review</text><text class="t-bad" x="564" y="88" font-size="11.5" font-weight="700" text-anchor="middle">Approve</text>
+            <rect class="f-soft s-acc" x="622" y="42" width="88" height="60" rx="9" stroke-width="2.2"/><text class="t-acc" x="666" y="66" font-weight="700" text-anchor="middle">7 Merge</text><text class="mono t-acc" x="666" y="88" font-size="11" text-anchor="middle">into main</text>
+          </g>
+          <g class="s-acc" stroke-width="2.2">
+            <line x1="99" y1="72" x2="110" y2="72" marker-end="url(#ah11c)"/><line x1="201" y1="72" x2="212" y2="72" marker-end="url(#ah11c)"/><line x1="303" y1="72" x2="314" y2="72" marker-end="url(#ah11c)"/><line x1="405" y1="72" x2="416" y2="72" marker-end="url(#ah11c)"/><line x1="507" y1="72" x2="518" y2="72" marker-end="url(#ah11c)"/><line x1="609" y1="72" x2="620" y2="72" marker-end="url(#ah11c)"/>
+          </g>
+          <rect class="f-soft" x="10" y="110" width="496" height="22" rx="5"/><text class="t-acc" x="258" y="126" font-size="12" font-weight="700" text-anchor="middle">the author</text>
+          <rect class="f-badsoft" x="520" y="110" width="88" height="22" rx="5"/><text class="t-bad" x="564" y="126" font-size="12" font-weight="700" text-anchor="middle">a teammate</text>
+          <rect class="f-soft" x="622" y="110" width="88" height="22" rx="5"/><text class="t-acc" x="666" y="126" font-size="12" font-weight="700" text-anchor="middle">the author</text>
+          <text class="t-ink" x="10" y="156" font-size="12" font-weight="700">Today:</text>
+          <rect class="f-surf s-acc" x="112" y="142" width="598" height="22" rx="5" stroke-width="1.2"/><text class="t-ink" x="411" y="158" font-size="11.5" text-anchor="middle"><tspan font-weight="700">PART 1</tspan> · steps 2 to 7, once, for docs/project-plan.md</text>
+          <rect class="f-surf s-acc" x="10" y="172" width="88" height="22" rx="5" stroke-width="1.2"/><text class="t-ink" x="54" y="188" font-size="11.5" font-weight="700" text-anchor="middle">PART 2</text>
+          <rect class="f-surf s-acc" x="112" y="172" width="292" height="22" rx="5" stroke-width="1.2"/><text class="t-ink" x="258" y="188" font-size="11.5" text-anchor="middle"><tspan font-weight="700">PART 3</tspan> · your own task</text>
+          <rect class="f-ground s-line" x="418" y="172" width="292" height="22" rx="5" stroke-width="1.2" stroke-dasharray="5 4"/><text class="t-mut" x="564" y="188" font-size="11.5" text-anchor="middle">your task: next class</text>
+        </svg>
+      </div>
+      <p class="places-cap">Top row: where each step happens. Middle row: who does it. Bottom rows: which Lab part does which steps today.</p>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">From plan to tasks</p>
+      <h2>Your plan gives you three issues</h2>
+      <div class="rule"></div>
+      <p class="lead">Your plan has three lines: Input, Process and Output. Each line is one piece of work, so each line becomes one issue. Each issue goes to the member who does the work. The syllabus asks for 3 or more issues (week 12).</p>
+      <div class="scroll-x">
+        <table class="map">
+          <thead><tr><th>Plan line (example from Chapter 10)</th><th>Issue title</th></tr></thead>
+          <tbody>
+            <tr><td><b>Input:</b> <code>servers.csv</code> (name, cpu, status)</td><td><code>[Task] Input: our sample servers.csv</code></td></tr>
+            <tr><td><b>Process:</b> keep the servers with status <code>warn</code></td><td><code>[Task] Process: keep the warn servers</code></td></tr>
+            <tr><td><b>Output:</b> a table on the screen and <code>result.xlsx</code></td><td><code>[Task] Output: our table title</code></td></tr>
+            <tr><td><i>A team of four:</i> one more issue</td><td><code>[Task] Docs: README name and sentence</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Every issue uses the <b>Task</b> form of your repository. The form has four headings: <b>What needs to be done</b>, <b>Why</b>, <b>Done when</b> and <b>Who / when</b>. On the right side of the issue, <b>Assignees</b> shows who does the task.</p>
+      <div class="callout">
+        <span class="mk">Team size</span>
+        <p>Team of two: one member takes two issues. Team of three or four: one issue each. A team of four also opens the fourth issue, for <code>README.md</code> (last row).</p>
+      </div>
+    </article>
+
+    <article class="slide dgs" hidden>
+      <p class="eyebrow">Your first branch</p>
+      <h2>One member, one branch, one first commit</h2>
+      <div class="rule"></div>
+      <p class="lead">Each member works on their own branch. The branch name says who and what: <code>feature/&lt;name&gt;-&lt;task&gt;</code>. <code>&lt;name&gt;</code> is your first name in small letters. <code>&lt;task&gt;</code> is two or three words from your issue title, with <code>-</code> between the words.</p>
+      <div class="dg" role="img" aria-label="A line for main from left to right. Commit 1: the template. Commit 2: the plan, merged in PART 1. Three branches start at commit 2: feature/ada-sample-data, feature/ben-table-title and feature/chen-warn-servers. Each branch has one commit and is pushed. The pull requests come in the next class." style="max-width:820px;">
+        <svg viewBox="0 0 720 196" aria-hidden="true">
+          <line class="s-acc" x1="24" y1="160" x2="700" y2="160" stroke-width="3"/>
+          <text class="mono t-acc" x="24" y="150" font-size="13" font-weight="700">main</text>
+          <circle class="f-surf s-acc" cx="90" cy="160" r="8" stroke-width="2.5"/><text class="t-mut" x="90" y="186" font-size="11.5" text-anchor="middle">the template</text>
+          <circle class="f-acc" cx="210" cy="160" r="8"/><text class="t-ink" x="210" y="186" font-size="11.5" font-weight="700" text-anchor="middle">plan merged · PART 1</text>
+          <g fill="none" class="s-line" stroke-width="2.2">
+            <path d="M210 160 C 240 160, 250 40, 290 40 L 560 40"/>
+            <path d="M210 160 C 245 160, 255 82, 290 82 L 560 82"/>
+            <path d="M210 160 C 250 160, 260 124, 290 124 L 560 124"/>
+          </g>
+          <g font-size="12"><text class="mono t-ink" x="300" y="33">feature/ada-sample-data</text><text class="mono t-ink" x="300" y="75">feature/ben-table-title</text><text class="mono t-ink" x="300" y="117">feature/chen-warn-servers</text></g>
+          <g class="f-surf s-acc" stroke-width="2.5"><circle cx="530" cy="40" r="7"/><circle cx="530" cy="82" r="7"/><circle cx="530" cy="124" r="7"/></g>
+          <g font-size="11.5" font-weight="700"><text class="t-acc" x="572" y="44">1 commit · pushed</text><text class="t-acc" x="572" y="86">1 commit · pushed</text><text class="t-acc" x="572" y="128">1 commit · pushed</text></g>
+          <text class="t-mut" x="700" y="186" font-size="11.5" text-anchor="end">pull requests: next class</text>
+        </svg>
+      </div>
+      <p class="places-cap">All three branches start after the plan is in <code>main</code>. Each member changes a different file. So the branches do not change the same lines.</p>
+      <p>Start each commit message with one word from <code>CONTRIBUTING.md</code>: <code>add:</code> (a new feature or file), <code>fix:</code> (something broken), <code>docs:</code> (documentation only), <code>style:</code> (formatting only) or <code>test:</code> (tests only). For example: <code>add: our sample input data</code>.</p>
+      <div class="callout warn">
+        <span class="mk">Your name on your commit</span>
+        <p>This PC is shared. So you tell Git your name in your team repository (Lab PART 0, step 3). Without this, your commit can show another person's name. Then the commit does not count as your work.</p>
+      </div>
+    </article>
+
+    <article class="slide" hidden>
+      <p class="eyebrow">Before you switch tabs</p>
+      <h2>What we check in your team repository</h2>
+      <div class="rule"></div>
+      <p class="lead">There is no individual issue today. Instead, we check three things in your team repository:</p>
+      <ol class="todo">
+        <li><code>docs/project-plan.md</code> is in <code>main</code>. It came through a pull request with one approval (Lab PART 1).</li>
+        <li>The repository has 3 or more issues (slide 6, Lab PART 2).</li>
+        <li>Each member pushed one branch with at least one commit by that member (slide 7, Lab PART 3). The PM's plan branch from PART 1 does not count for check 3: each member needs one feature branch for their own issue.</li>
+      </ol>
+      <p>Checks 1 and 2 are for the whole team. Check 3 is for each member. Your own commits, pull requests and reviews are your record in the project. This record also goes into your individual coefficient (0.8 / 1.0 / 1.1, in the syllabus).</p>
+      <p><b>Due:</b> 11:59 PM the night before the next class.</p>
+      <p class="lead">Now sit with your team. Open the <b>Lab</b> tab above and start PART 0.</p>
+    </article>
+
+  </div>
+
+  <nav class="slidenav" aria-label="Slide navigation">
+    <button class="navbtn edge" id="first" type="button" title="First slide (Home)" aria-label="First slide">⇤</button>
+    <button class="navbtn" id="prev" type="button">← Prev</button>
+    <button class="navbtn" id="next" type="button">Next →</button>
+    <button class="navbtn edge" id="last" type="button" title="Last slide (End)" aria-label="Last slide">⇥</button>
+    <div class="dots" id="dots"></div>
+    <span class="counter" id="counter">1 / 8</span>
+  </nav>
+</section>
+
+<!-- ══════════ Lab ══════════ -->
+<section class="pane" id="pane-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Lab · 115 min · Step by step</p>
+      <h2>Your team repository: the plan, three issues, first branches</h2>
+      <p>Sit with your team. Do the parts in order. Some steps are for one member only. The step title then says who: <span class="who">PM</span> or <span class="who rev">Reviewer</span>. Each part ends with a <b>Done when</b> line. Check that line before you go on. This PC is shared, so your work is saved only when you push it to GitHub.</p>
+      <div class="legend">
+        <span><b>Do</b> what to do</span>
+        <span><b>Copy</b> type or paste this</span>
+        <span><b>You should see</b> the result</span>
+        <span><b>If not</b> how to fix it</span>
+      </div>
+      <div class="callout">
+        <span class="mk">AI, same as always</span>
+        <p>When you ask AI, do four things: 1. <b>Paste the error exactly.</b> 2. Add one line: what you wanted. 3. <b>Ask why</b> the fix works. 4. Explain the fixed code yourself. Use AI to understand. But do not let AI write your work.</p>
+      </div>
+    </div>
+
+    <!-- PART 0 -->
+    <div class="step">
+      <div class="step-head"><span class="step-no">PART 0</span><h3>Shared PC start, then get your team repository</h3><span class="budget">20 min</span></div>
+      <p class="goal">Every member does PART 0 on their own PC. All students use the same Windows account on this PC. So steps 1 and 2 make sure that GitHub shows your work under your name. Work only in <code>D:\oss\&lt;your ID&gt;\</code>. Slide 3 shows where the folders go.</p>
+
+      <div class="s4">
+        <h4>1. Sign in to GitHub</h4>
+        <span class="k">Do</span><div class="v">Open GitHub in the browser. Sign in with your own account.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Your own picture (avatar) in the top-right corner.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>It is another person's avatar? Click the avatar. Click <b>Sign out</b>. Then sign in again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Open a cmd terminal. Check for an old Git login</h4>
+        <span class="k">Do</span><div class="v">In VS Code: <b>File &rsaquo; Open Folder…</b> &rarr; <code>D:\oss\&lt;your ID&gt;</code> &rarr; <b>Select Folder</b>. Then <b>Terminal &rsaquo; New Terminal</b>. In the terminal, find a saved GitHub login.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cmdkey /list | findstr github</code></pre></div>
+        <span class="k see">You should see</span><div class="v">No lines. The prompt appears again. The prompt ends with <code style="white-space:nowrap">D:\oss\&lt;your ID&gt;&gt;</code>. There is no <code>PS</code> at the start of the prompt.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The prompt starts with <code>PS</code>? This is PowerShell. Type <code class="cmd" style="white-space:nowrap">cmd</code> and press Enter. Then type the command again.</li>
+          <li>You see a line like <code>Target: LegacyGeneric:target=git:https://github.com</code>? Another person's login is saved. Delete it:
+<pre data-kind="cmd"><code>cmdkey /delete:git:https://github.com</code></pre></li>
+          <li>VS Code asks you to sign in, or a chat panel is open on the right side? Close it. Why: a sign-in in VS Code stays on this shared PC.</li>
+          <li>There is no folder <code>D:\oss\&lt;your ID&gt;</code>? Type <code class="cmd" style="white-space:nowrap">mkdir D:\oss\&lt;your ID&gt;</code>. Then open it in VS Code.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Clone your team repository</h4>
+        <span class="k">Do</span><div class="v">Find your team letter (A to J) in <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/pod-chart.md" target="_blank" rel="noopener">pod-chart.md</a> in <code>course-notice</code>. In line 2 below, change <code>c</code> to your team letter, in a small letter. In line 3, change <code>c</code> again. In line 4, write your own GitHub username. In line 5, write your noreply e-mail. It must look like <code>12345678+name@users.noreply.github.com</code>. Type the lines one by one. Press Enter after each line.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>set ORG=https://github.com/OSS-202602-ISS
+git clone %ORG%/team-c-project.git
+cd team-c-project
+git config user.name "&lt;your GitHub username&gt;"
+git config user.email "&lt;your noreply e-mail&gt;"</code></pre>
+          <p class="why">Why lines 1 and 2: the address is long. So line 1 saves the first part of the address under the name <code>ORG</code>. Then line 2 uses this part as <code>%ORG%</code>.</p>
+          <p class="why">Why lines 4 and 5: they put your name on your commits, in this repository only. Never use <code>--global</code> on this shared PC. To make your noreply e-mail: open <code>https://api.github.com/users/&lt;your-username&gt;</code> in the browser. Find the number after <code>"id":</code>. Your noreply e-mail is <code>&lt;that number&gt;+&lt;your-username&gt;@users.noreply.github.com</code>. It looks like <code>12345678+name@users.noreply.github.com</code>. Or see it on GitHub: avatar &rsaquo; <b>Settings</b> &rsaquo; <b>Emails</b>, under <b>Keep my email addresses private</b>.</p></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'team-c-project'...</code></pre>and a few more lines. Then the prompt ends with <code>\team-c-project&gt;</code>. The folder name has <b>your</b> team letter. The two <code class="cmd" style="white-space:nowrap">git config</code> lines print nothing. Team repositories are public, so the clone needs no login.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>A window <b>Connect to GitHub</b> opens during the clone? The repository name is wrong. Close the window. Check the letter in line 2: one small letter, for example <code>team-c-project</code>. Then type line 2 again.</li>
+          <li><code>fatal: repository '%ORG%/team-c-project.git' does not exist</code>? You skipped line 1, or the prompt starts with <code>PS</code>. If it starts with <code>PS</code>, type <code class="cmd" style="white-space:nowrap">cmd</code> first. Then type all the lines again.</li>
+          <li><code>fatal: destination path 'team-c-project' already exists and is not an empty directory.</code>? You cloned it before. Type <code class="cmd" style="white-space:nowrap">cd team-c-project</code>. Then type <code class="cmd" style="white-space:nowrap">git pull --no-edit</code>. Then type lines 4 and 5. <code>--no-edit</code> stops Git from opening an editor.</li>
+          <li>Not sure of your team? Ask the instructor now.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Make <code>.venv</code> and install the libraries</h4>
+        <span class="k">Do</span><div class="v">Check the prompt: it ends with <code>\team-c-project&gt;</code>. Make a new <code>.venv</code> inside your team repository. Then activate it, and install the libraries in <code>requirements.txt</code>. The install takes one or two minutes.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt</code></pre>
+          <p class="why">Why a new <code>.venv</code>: <code>requirements.txt</code> of your team pins (fixes) the exact versions for the project. So everyone in the team gets the same versions. Git never adds <code>.venv</code>, because <code>.gitignore</code> lists it.</p></div>
+        <span class="k see">You should see</span><div class="v">After line 2, the prompt starts with <code>(.venv)</code>. After line 3: many <code>Collecting</code> lines. At the end, one long line, for example:
+<pre data-kind="out"><code>Successfully installed PyYAML-6.0.3 certifi-2026.11.20 ...</code></pre>
+          <code>pandas-3.0.5</code>, <code>pytest-9.1.1</code> and <code>rich-15.0.0</code> must be in that line. You may also see a notice about a new pip. You can ignore that notice.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirements.txt'</code>? You are not in your team repository. Type <code class="cmd" style="white-space:nowrap">cd team-c-project</code> (with your letter). Then type the three lines again.</li>
+          <li>The first line of the install is <code>Defaulting to user installation because normal site-packages is not writeable</code>? Your <code>.venv</code> is not active. Type <code class="cmd" style="white-space:nowrap">.venv\Scripts\activate</code>. Then type line 3 again.</li>
+          <li>The prompt starts with <code>PS</code>? Type <code class="cmd" style="white-space:nowrap">cmd</code> and press Enter. Then type lines 2 and 3 again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>5. Run the tests</h4>
+        <span class="k">Do</span><div class="v">Run the tests of the template. Check the prompt first: it starts with <code>(.venv)</code> and ends with <code>\team-c-project&gt;</code>.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python -m pytest</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Red text with <code>NotImplementedError</code>. Then the last line:
+<pre data-kind="out"><code>==== 2 failed, 1 passed in 0.80s ====</code></pre>
+          Your line has more <code>=</code> signs, and your time can be different. <b>Two failed tests are expected.</b> They check the two blanks in <code>src/process.py</code>. Your team fills these blanks in the next class.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>No module named pytest</code>? Your <code>.venv</code> is not active. Type <code class="cmd" style="white-space:nowrap">.venv\Scripts\activate</code>. Then run the tests again.</li>
+          <li><code>ModuleNotFoundError: No module named 'src'</code>? You are in the wrong folder. Type <code class="cmd" style="white-space:nowrap">cd team-c-project</code> (with your letter). The prompt must end with <code>\team-c-project&gt;</code>. Then run the tests again.</li>
+        </ul></div>
+      </div>
+      <p class="done"><b>Done when</b> my own avatar · cmd terminal, no PS · no github line in cmdkey · team repository cloned · git config set · (.venv) in the prompt · pytest: 2 failed, 1 passed</p>
+      <p class="goal"><b>10-minute break</b>, then PART 1.</p>
+    </div>
+
+    <!-- PART 1 -->
+    <div class="step">
+      <div class="step-head" id="part1"><span class="step-no">PART 1</span><h3>Put the plan into the repository through a PR</h3><span class="budget">30 min</span></div>
+      <p class="goal">The PM does steps 1 to 4 on the PM's PC. Then a teammate reviews in step 5, on their own PC. The other members sit with the PM and check each line against the plan. This is the path of slide 5, steps 2 to 7. Your PM is not here today? Choose another member as PM for today.</p>
+
+      <div class="s4">
+        <h4><span class="who">PM</span> 1. Make the plan branch</h4>
+        <span class="k">Do</span><div class="v">Check the prompt: it starts with <code>(.venv)</code> and ends with <code>\team-c-project&gt;</code>. Make a branch for the plan and go to it. Change <code>ada</code> to your first name, in small letters.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git switch -c feature/ada-plan</code></pre>
+          <p class="why">Why a branch: <code>main</code> is protected (slide 4). So every change starts on a branch.</p></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Switched to a new branch 'feature/ada-plan'</code></pre></div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>fatal: a branch named 'feature/ada-plan' already exists</code>? You made it before. Type the same line without <code>-c</code>: <code class="cmd" style="white-space:nowrap">git switch feature/ada-plan</code>.</li>
+          <li>The prompt starts with <code>PS</code>? Type <code class="cmd" style="white-space:nowrap">cmd</code> and press Enter.</li>
+          <li>The prompt does not end with <code>\team-c-project&gt;</code>? Type <code class="cmd" style="white-space:nowrap">cd team-c-project</code> (with your letter).</li>
+          <li>No <code>(.venv)</code> at the start of the prompt? Type <code class="cmd" style="white-space:nowrap">.venv\Scripts\activate</code>. Why: a new terminal starts with <code>.venv</code> not active.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4><span class="who">PM</span> 2. Copy the plan into <code>docs/project-plan.md</code></h4>
+        <span class="k">Do</span><div class="v">Open your team's <code>[Team plan]</code> issue: this <a href="https://github.com/OSS-202602-ISS/practice-pr/issues?q=is%3Aissue+in%3Atitle+%22Team+plan%22" target="_blank" rel="noopener">list of <code>[Team plan]</code> issues in <code>practice-pr</code></a> shows only the team plans. Or open the issue list of <code>practice-pr</code> and type <code>Team plan</code> in the search box. In the VS Code Explorer (the file list on the left), open <code>team-c-project</code> &rsaquo; <code>docs</code> &rsaquo; <code>project-plan.md</code>. Near the top of this file, a table shows where each part of the issue goes. In sections 1 to 4, replace each <code>\&lt;...\&gt;</code> with the text from the issue. Also write a project <b>Name</b>, and keep one <b>Category</b>. Where the file says <i>keep one</i>, delete the other choice. Save with <kbd>Ctrl + S</kbd>.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">For example, find this line (press <kbd>Ctrl + F</kbd> and type <code>Input**</code>):</p>
+<pre data-kind="code"><code>| **Input** | \&lt;file, values, or API response - be specific\&gt; |</code></pre>
+<p class="lbl">Change it to your Input line from the issue:</p>
+<pre data-kind="code"><code>| **Input** | servers.csv (name, cpu, status) |</code></pre>
+<p class="lbl">In section 3, write one row for each library. For example:</p>
+<pre data-kind="code"><code>| pandas | reads servers.csv | yes |</code></pre>
+          <p class="why">Why copy and not write new ideas: your team already agreed on the issue. The file only moves the plan into the repository.</p></div>
+        <span class="k see">You should see</span><div class="v">Sections 1 to 4 have no <code>\&lt;</code> left. Sections 5 and 6 can stay as they are today. The roles table in section 4 has GitHub usernames, for example <code>@gildong-hong</code>. Write GitHub usernames, not real names. Why: your team repository is public.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Two <code>[Team plan]</code> issues for your team? Use the open one.</li>
+          <li>Your team has no <code>[Team plan]</code> issue yet? Write the plan directly into <code>docs/project-plan.md</code> now, together. Fill sections 1 to 4: topic, track, input, process, output, libraries and roles. In steps 4 and 5, use the sentences for this case.</li>
+          <li>A team of two or three? In section 4, one person takes two roles.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4><span class="who">PM</span> 3. Commit and push the branch</h4>
+        <span class="k">Do</span><div class="v">Save the file first. Then add <code>docs/project-plan.md</code>, commit, and push your branch. Use your branch name from step 1 in line 3.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git add docs/project-plan.md
+git commit -m "docs: add team project plan"
+git push -u origin feature/ada-plan</code></pre>
+          <p class="why">Why <code>-u origin</code>: this branch is new on GitHub. <code>-u</code> links your branch to the branch on GitHub. After this first push, <code class="cmd" style="white-space:nowrap">git push</code> is enough on this branch.</p></div>
+        <span class="k see">You should see</span><div class="v">After <code>commit</code>, for example:
+<pre data-kind="out"><code>[feature/ada-plan 1a2b3c4] docs: add team project plan
+ 1 file changed, 22 insertions(+), 20 deletions(-)</code></pre>
+          Your numbers are different. After <code>push</code>, a small window <b>Connect to GitHub</b> may open. Click <b>Sign in with your browser</b>. Check that the avatar is yours. Click <b>Authorize</b>. Near the end you see:
+<pre data-kind="out"><code> * [new branch]      feature/ada-plan -&gt; feature/ada-plan</code></pre></div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The first part of the commit line is <code>[main</code>, and the push shows <code>Changes must be made through a pull request</code> and <code>! [remote rejected] main -&gt; main</code>? You committed on <code>main</code>, and <code>main</code> is protected (slide 4). Nothing changed on GitHub. Type <code class="cmd" style="white-space:nowrap">git switch -c feature/ada-plan</code>. Your commit is now on this branch too. Then type line 3 again.</li>
+          <li><code>remote: Permission to OSS-202602-ISS/team-c-project.git denied to &lt;name&gt;.</code>, with <code>error: 403</code>? <code>&lt;name&gt;</code> is not you, so another person's login is saved. Type <code class="cmd" style="white-space:nowrap">cmdkey /delete:git:https://github.com</code>. Then type line 3 again and sign in as yourself.</li>
+          <li><code>denied to &lt;name&gt;</code>, and <code>&lt;name&gt;</code> is you? You cloned another team's repository. Check your team letter in pod-chart.md. Then ask the instructor.</li>
+          <li><code>nothing to commit, working tree clean</code>? You did not save the file. Press <kbd>Ctrl + S</kbd>. Then type the three lines again.</li>
+          <li>You see <code>warning: in the working copy of 'docs/project-plan.md', LF will be replaced by CRLF</code>? You can ignore this warning.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4><span class="who">PM</span> 4. Open the pull request</h4>
+        <span class="k">Do</span><div class="v">Open your team repository in the browser. Change <code>c</code> to your team letter. A yellow bar shows your branch. Click <b>Compare &amp; pull request</b>. The title box shows <code>docs: add team project plan</code>. In the text box, under <b>What this pull request does</b>, write the sentence below. Then delete the line <code>Closes #</code>. Why: no issue in this repository is about the plan. Leave the <b>Checklist</b> boxes empty today. On the right side, click <b>Reviewers</b> and choose the teammate who reviews. Click <b>Create pull request</b>.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com/OSS-202602-ISS/team-c-project</code></pre>
+<pre data-kind="edit"><code>Adds our team plan from the [Team plan] issue in practice-pr.</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The page of your pull request. Under the title: your branch goes into <code>main</code>. Near the bottom: <b>Review required</b> and <b>Merging is blocked</b>. This is the protection of <code>main</code>. It waits for one approval.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>There is no yellow bar? Click the <b>Pull requests</b> tab &rsaquo; <b>New pull request</b>. Choose <b>base: main</b> and <b>compare: feature/ada-plan</b>. Then click <b>Create pull request</b>.</li>
+          <li>Your team has no <code>[Team plan]</code> issue (step 2)? Write this sentence instead: <code>Adds our team plan. We wrote it together in class.</code></li>
+          <li>Your teammate is not in the <b>Reviewers</b> list? Under the <b>Reviewer</b> heading in the text, write their username, for example <code>@gildong-hong</code>. Then tell your teammate the title of the pull request.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4><span class="who rev">Reviewer</span> <span class="who">PM</span> 5. Approve, then merge</h4>
+        <span class="k">Do</span><div class="v"><b>The reviewer</b>, on their own PC: open the team repository &rsaquo; <b>Pull requests</b> tab &rsaquo; <code>docs: add team project plan</code>. Click the <b>Files changed</b> tab. Compare <code>docs/project-plan.md</code> with the <code>[Team plan]</code> issue. Click <b>Review changes</b>. Write one sentence: what you compared. Choose <b>Approve</b>. Click <b>Submit review</b>.<br>
+          <b>Then the PM</b>: on the same pull request page, click <b>Merge pull request</b>. Then click <b>Confirm merge</b>.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">The reviewer's sentence, for example:</p>
+<pre data-kind="edit"><code>I compared sections 1 to 4 with our [Team plan] issue. They match.</code></pre>
+          <p class="why">Why a written sentence: the review is your record. It shows what you checked.</p></div>
+        <span class="k see">You should see</span><div class="v">On the <b>Conversation</b> tab: <code>&lt;reviewer&gt; approved these changes</code>. After <b>Confirm merge</b>: a purple <b>Merged</b> label. Open <b>Code</b> &rsaquo; <code>docs</code> &rsaquo; <code>project-plan.md</code>: it shows your plan. Do not click <b>Delete branch</b>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The PM cannot choose <b>Approve</b>? GitHub does not let the author approve their own pull request. Another member reviews.</li>
+          <li>You cannot find <b>Review changes</b>? Look at the top right of the <b>Files changed</b> tab. On some screens, the button is called <b>Submit review</b>.</li>
+          <li>The reviewer chose <b>Request changes</b>? The PM fixes <code>docs/project-plan.md</code> on the same branch. Then the PM types <code class="cmd" style="white-space:nowrap">git add docs/project-plan.md</code>, a new <code class="cmd" style="white-space:nowrap">git commit -m "docs: fix team plan"</code> and <code class="cmd" style="white-space:nowrap">git push</code>. Then the reviewer reviews again.</li>
+          <li><b>Merge pull request</b> is grey? There is no approval yet. Wait for the reviewer.</li>
+          <li>Your reviewer is not here? Go on with PART 2. Send them the pull request address. They approve before the deadline. Then you merge.</li>
+          <li>Your team has no <code>[Team plan]</code> issue? The reviewer writes this sentence instead: <code>I read sections 1 to 4. They match what we agreed in class.</code></li>
+        </ul></div>
+      </div>
+      <p class="done"><b>Done when</b> pull request merged · one approval from a teammate · docs/project-plan.md on main shows our plan</p>
+    </div>
+
+    <!-- PART 2 -->
+    <div class="step">
+      <div class="step-head" id="part2"><span class="step-no">PART 2</span><h3>Open three issues from the plan</h3><span class="budget">20 min</span></div>
+      <p class="goal">Each line of your plan (Input, Process, Output) becomes one issue (slide 6). The member who does the task opens its issue, on their own PC. Team of two: one member takes two issues. Team of three or four: one issue each. A team of four also opens the fourth issue, for <code>README.md</code>. The last column shows the first change for each issue. You make this change in PART 3.</p>
+      <div class="scroll-x">
+        <table class="map">
+          <thead><tr><th>Plan line</th><th>Issue title (example)</th><th>First change today (PART 3)</th></tr></thead>
+          <tbody>
+            <tr><td>Input</td><td><code>[Task] Input: our sample servers.csv</code></td><td>a new file in <code>data/</code></td></tr>
+            <tr><td>Process</td><td><code>[Task] Process: keep the warn servers</code></td><td>one row in <code>docs/manual-test-table.md</code></td></tr>
+            <tr><td>Output</td><td><code>[Task] Output: our table title</code></td><td>the <code>title:</code> line in <code>config.yaml</code></td></tr>
+            <tr><td><i>Team of four</i></td><td><code>[Task] Docs: README name and sentence</code></td><td>the first lines of <code>README.md</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="s4">
+        <h4>1. Open the Task form</h4>
+        <span class="k">Do</span><div class="v">Open the <b>Issues</b> tab of your team repository. Change <code>c</code> to your team letter. Click <b>New issue</b>. Choose <b>Task</b>.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com/OSS-202602-ISS/team-c-project/issues</code></pre></div>
+        <span class="k see">You should see</span><div class="v">A new issue. The title box starts with <code>[Task]</code>. The text box has four headings: <code>## What needs to be done</code>, <code>## Why</code>, <code>## Done when</code> and <code>## Who / when</code>.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>You see no <b>Task</b> in the list? Ask the instructor. Do not use a blank issue, because the four headings are missing there.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Write your issue</h4>
+        <span class="k">Do</span><div class="v">Finish the title with your line of the plan (see the table above). Write under each heading. Do not delete the headings. The example below is the Input issue of the servers example. Write your own task.</div>
+        <span class="k">Copy</span><div class="v"><p class="lbl">The title box:</p>
+<pre data-kind="edit"><code>[Task] Input: our sample servers.csv</code></pre>
+<p class="lbl">The text box, under the four headings:</p>
+<pre data-kind="edit"><code>## What needs to be done
+Add data/servers.csv with 5 rows: name, cpu, status.
+
+## Why
+The tool needs our own input to test our rule.
+
+## Done when
+- [ ] data/servers.csv has 5 rows of made-up data
+- [ ] the columns are the same as in our plan
+
+## Who / when
+Assignee: @ada-lee
+Target chapter: 11</code></pre>
+          <p class="why"><code>Target chapter</code> = the chapter when the task should be done. For the Process issue, write <code>12</code>, because the two blanks are for the next class.</p></div>
+        <span class="k see">You should see</span><div class="v">Something under every heading. The title says which part of the plan this task is.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Not sure what to write? On GitHub, open <b>Code</b> &rsaquo; <code>docs</code> &rsaquo; <code>project-plan.md</code> (not merged yet? Open your <code>[Team plan]</code> issue). Copy your line from section 2.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Assign the issue, then create it</h4>
+        <span class="k">Do</span><div class="v">On the right side, click <b>Assignees</b>. Choose the member who does this task. Then click <b>Create</b>.</div>
+        <span class="k">Copy</span><div class="v">Nothing to type.</div>
+        <span class="k see">You should see</span><div class="v">The page of the new issue. The title has a number at the end, for example <code>#999</code>. Under <b>Assignees</b>: the avatar of the member.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>There is no <b>Create</b> button? On some screens, the button is called <b>Submit new issue</b>.</li>
+          <li>The member is not in the <b>Assignees</b> list? Type their GitHub username in the search box of the list.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Check the issue list</h4>
+        <span class="k">Do</span><div class="v">Open the <b>Issues</b> tab again (the address in step 1).</div>
+        <span class="k">Copy</span><div class="v">Nothing to type.</div>
+        <span class="k see">You should see</span><div class="v">3 or more open issues. Each title starts with <code>[Task]</code>. Each issue has one avatar on the right side of the list, the assignee. Every member has at least one issue.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Two issues for the same task? Open the second one. Click <b>Close issue</b>.</li>
+          <li>An issue without an avatar? Open it and do step 3 again.</li>
+        </ul></div>
+      </div>
+      <p class="done"><b>Done when</b> 3 or more [Task] issues · each issue has an assignee · every member has an issue</p>
+      <p class="goal"><b>10-minute break</b>, then PART 3.</p>
+    </div>
+
+    <!-- PART 3 -->
+    <div class="step">
+      <div class="step-head" id="part3"><span class="step-no">PART 3</span><h3>Your first feature branch</h3><span class="budget">40 min</span></div>
+      <p class="goal">Every member does PART 3 on their own PC, for their own issue. You make one small real change: the first part of your task. Each member changes a different file, so the branches do not change the same lines (slide 7). Then you push your branch. A pull request for your task comes in the next class.</p>
+
+      <div class="s4">
+        <h4>1. Get the newest main</h4>
+        <span class="k">Do</span><div class="v">Check the prompt: it starts with <code>(.venv)</code> and ends with <code>\team-c-project&gt;</code>. Go to <code>main</code>. Then get the plan from PART 1.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git switch main
+git pull --no-edit</code></pre>
+          <p class="why">Why: your branch starts from the newest <code>main</code>. Then your branch already has the plan.</p></div>
+        <span class="k see">You should see</span><div class="v">After line 1: <code>Switched to branch 'main'</code> (or <code>Already on 'main'</code>). After line 2, for example:
+<pre data-kind="out"><code>Updating a0b0422..813bdc3
+Fast-forward
+ docs/project-plan.md | 42 ++++++++++++++++++++----------
+ 1 file changed, 22 insertions(+), 20 deletions(-)</code></pre>
+          Your numbers are different. <code>Already up to date.</code> means the plan is not merged yet. That is fine: go on with step 2.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>fatal: Need to specify how to reconcile divergent branches.</code>? Type <code class="cmd" style="white-space:nowrap">git config pull.rebase false</code> (no <code>--global</code>). Then type <code class="cmd" style="white-space:nowrap">git pull --no-edit</code> again.</li>
+          <li>The prompt starts with <code>PS</code>? Type <code class="cmd" style="white-space:nowrap">cmd</code> and press Enter.</li>
+          <li>The prompt does not end with <code>\team-c-project&gt;</code>? Type <code class="cmd" style="white-space:nowrap">cd team-c-project</code> (with your letter).</li>
+          <li>No <code>(.venv)</code> at the start of the prompt? Type <code class="cmd" style="white-space:nowrap">.venv\Scripts\activate</code>. Why: a new terminal starts with <code>.venv</code> not active.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Make your branch</h4>
+        <span class="k">Do</span><div class="v">Make your branch and go to it. Use <code>feature/&lt;name&gt;-&lt;task&gt;</code>: your first name in small letters, then two or three words from your issue title. Put <code>-</code> between the words, not spaces.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git switch -c feature/ada-sample-data</code></pre></div>
+        <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Switched to a new branch 'feature/ada-sample-data'</code></pre>with your own branch name.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>fatal: invalid reference: ...</code> or <code>fatal: only one reference expected</code>? Your name has a space. Type the line again with <code>-</code> instead of each space.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Make your first change</h4>
+        <span class="k">Do</span><div class="v">Find your issue in the table of PART 2. Do the change for your issue below. Use made-up data only: no real names and no personal data. Save with <kbd>Ctrl + S</kbd>.</div>
+        <span class="k">Copy</span><div class="v">
+          <p class="opt">Input issue: a new file in <code>data/</code></p>
+          <p>In the Explorer, right-click <code>team-c-project</code> &rsaquo; <code>data</code> &rarr; <b>New File…</b> &rarr; type the file name from your plan, for example <code>servers.csv</code>. Write the first line with your column names. Then write 5 rows. For example:</p>
+<pre data-kind="file"><code>name,cpu,status
+web-01,35,ok
+web-02,91,warn
+db-01,77,warn
+backup-01,12,ok
+mail-01,48,ok</code></pre>
+          <p class="opt">Process issue: one row in <code>docs/manual-test-table.md</code></p>
+          <p class="lbl">Open <code>docs/manual-test-table.md</code>. Find this line (<kbd>Ctrl + F</kbd>, type <code>your own case</code>):</p>
+<pre data-kind="code"><code>| 6 | \&lt;your own case\&gt; | | | | ☐ |</code></pre>
+          <p class="lbl">Change it to one case of your rule. Leave the 5th cell (What actually happened) empty. Keep ☐ in the last cell. For example:</p>
+<pre data-kind="code"><code>| 6 | Warn rows only | data/servers.csv | 2 rows | | ☐ |</code></pre>
+          <p class="opt">Output issue: the <code>title:</code> line in <code>config.yaml</code></p>
+          <p class="lbl">Open <code>config.yaml</code>. Find this text at the start of line 2:</p>
+<pre data-kind="code"><code>title: "Server Check Results"</code></pre>
+          <p class="lbl">Change only the words in quotes to the title of your table. Keep the rest of the line (the comment after <code>#</code>). For example:</p>
+<pre data-kind="code"><code>title: "Servers With Warnings"</code></pre>
+          <p class="opt">Docs issue (team of four): the first lines of <code>README.md</code></p>
+          <p class="lbl">Open <code>README.md</code>. Find line 1:</p>
+<pre data-kind="code"><code># \&lt;PROJECT NAME - fill this in\&gt;</code></pre>
+          <p class="lbl">Change it to the project name from <code>docs/project-plan.md</code> (not merged yet? from your <code>[Team plan]</code> issue). For example:</p>
+<pre data-kind="code"><code># Server Warning Report</code></pre>
+          <p class="lbl">Then lines 3 and 4 start with <code>&gt;</code>. Change these two lines to one line: <code>&gt;</code> and your one sentence from <code>docs/project-plan.md</code> (not merged yet? from your <code>[Team plan]</code> issue). For example:</p>
+<pre data-kind="code"><code>&gt; Reads servers.csv and lists the warn servers.</code></pre>
+          <p class="why">Why different files: two branches that change the same line make a merge conflict later (Chapter 6). One file per member avoids that.</p></div>
+        <span class="k see">You should see</span><div class="v">Your change in the file. The tab of the file in VS Code shows no dot, because the file is saved.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Your new file is not inside <code>team-c-project</code> &rsaquo; <code>data</code>? In the Explorer, drag it onto <code>data</code>.</li>
+          <li>Your team uses a different input file name? Use the name from your plan.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Commit your change</h4>
+        <span class="k">Do</span><div class="v">First, check which file changed. Then add your file and commit. Use the two lines for your issue from the table.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git status</code></pre>
+          <div class="scroll-x">
+            <table>
+              <thead><tr><th>Issue</th><th>Type in cmd</th></tr></thead>
+              <tbody>
+                <tr><td>Input</td><td><code class="cmd" style="white-space:nowrap">git add data/servers.csv</code><br><code class="cmd" style="white-space:nowrap">git commit -m "add: our sample input data"</code></td></tr>
+                <tr><td>Process</td><td><code class="cmd" style="white-space:nowrap">git add docs/manual-test-table.md</code><br><code class="cmd" style="white-space:nowrap">git commit -m "docs: add our test case"</code></td></tr>
+                <tr><td>Output</td><td><code class="cmd" style="white-space:nowrap">git add config.yaml</code><br><code class="cmd" style="white-space:nowrap">git commit -m "add: our table title"</code></td></tr>
+                <tr><td>Docs</td><td><code class="cmd" style="white-space:nowrap">git add README.md</code><br><code class="cmd" style="white-space:nowrap">git commit -m "docs: add name and one sentence"</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="why">Input issue with another file name? Change <code>servers.csv</code> in <code class="cmd" style="white-space:nowrap">git add</code> to your file name.</p></div>
+        <span class="k see">You should see</span><div class="v"><code>git status</code> shows your branch on the first line, and your file in red. After <code>commit</code>, for example:
+<pre data-kind="out"><code>[feature/ada-sample-data 5d6e7f8] add: our sample input data
+ 1 file changed, 6 insertions(+)
+ create mode 100644 data/servers.csv</code></pre>
+          The first part must be your branch name, not <code>main</code>. Your numbers are different.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The first part is <code>[main</code>? You committed on <code>main</code>. Type <code class="cmd" style="white-space:nowrap">git switch -c feature/ada-sample-data</code> (with your branch name). Your commit is now on this branch. Then go to step 5.</li>
+          <li><code>Author identity unknown</code> and <code>*** Please tell me who you are.</code>? Type lines 4 and 5 of PART 0, step 3. Never use <code>--global</code>. Then commit again.</li>
+          <li><code>nothing added to commit</code>, <code>no changes added to commit</code> or <code>nothing to commit</code>? You did not save, or you did not add the file. Press <kbd>Ctrl + S</kbd>. Then type both lines again.</li>
+          <li><code>fatal: pathspec '…' did not match any files</code>? The file name in <code class="cmd" style="white-space:nowrap">git add</code> is wrong, or you are in the wrong folder. Type <code class="cmd" style="white-space:nowrap">git status</code>. Use the file name in red.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>5. Push your branch</h4>
+        <span class="k">Do</span><div class="v">Push your branch to GitHub. Use your branch name from step 2. Then open the branch list of your team repository (change <code>c</code> to your team letter).</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git push -u origin feature/ada-sample-data</code></pre>
+<pre data-kind="url"><code>https://github.com/OSS-202602-ISS/team-c-project/branches</code></pre></div>
+        <span class="k see">You should see</span><div class="v">A <b>Connect to GitHub</b> window may open. Then sign in as in PART 1, step 3. Near the end you see:
+<pre data-kind="out"><code style="font-size:.76rem"> * [new branch]      feature/ada-sample-data -&gt; feature/ada-sample-data</code></pre>
+          On the branch page: your branch is in the list. Click it. The newest commit shows your avatar and username. Click the username: your profile opens.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li><code>error: src refspec feature/ada-sample-data does not match any</code>? The name is not the same as in step 2. Type <code class="cmd" style="white-space:nowrap">git branch</code>. Your branch has a <code>*</code> in front. Push with that name.</li>
+          <li><code>denied to &lt;name&gt;</code> and <code>403</code>, and <code>&lt;name&gt;</code> is not you? Type <code class="cmd" style="white-space:nowrap">cmdkey /delete:git:https://github.com</code>. Then push again and sign in as yourself.</li>
+          <li><code>denied to &lt;name&gt;</code>, and <code>&lt;name&gt;</code> is you? You cloned another team's repository. Check your team letter in pod-chart.md. Then ask the instructor.</li>
+          <li>The commit shows another person's name? Your <code class="cmd" style="white-space:nowrap">git config</code> lines are missing or wrong. Tell the instructor. Do not delete anything.</li>
+        </ul></div>
+      </div>
+      <div class="callout">
+        <span class="mk">Finished early?</span>
+        <p>You can open a pull request from your branch now, as in PART 1, step 4. Under <b>What this pull request does</b>, change <code>Closes #</code> to <code>Part of</code> and your issue number, for example <code>Part of #999</code>. Why: your task is not finished yet, and <code>Closes</code> would close the issue at the merge. Leave the <b>Checklist</b> boxes empty today. A teammate reviews it as in PART 1, step 5. Do not click <b>Delete branch</b>. This is optional today.</p>
+      </div>
+      <p class="goal">Next: <a href="#" onclick="document.getElementById('tab-task').click();window.scrollTo(0,0);return false;">open the Assignment tab</a> and check your team repository together.</p>
+      <p class="done"><b>Done when</b> on my branch feature/&lt;name&gt;-&lt;task&gt; · one commit with my name · branch pushed and in the branch list on GitHub</p>
+    </div>
+
+    <!-- PART 4 -->
+    <div class="step">
+      <div class="step-head" id="part4"><span class="step-no">PART 4</span><h3>Shared PC: end routine</h3><span class="budget">5 min</span></div>
+      <p class="goal">Do this <b>after</b> the team check in the Assignment tab. Why: after you sign out, you cannot check your team repository. Your work is safe only on GitHub, so check your push first.</p>
+
+      <div class="s4">
+        <h4>1. Your branch is on GitHub</h4>
+        <span class="k">Do</span><div class="v">Open the branch list of your team repository (PART 3, step 5).</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com/OSS-202602-ISS/team-c-project/branches</code></pre></div>
+        <span class="k see">You should see</span><div class="v">Your branch <code>feature/&lt;name&gt;-&lt;task&gt;</code> in the list.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Your branch is not there? Do PART 3, step 5 again.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>2. Sign out everywhere</h4>
+        <span class="k">Do</span><div class="v">Sign out of GitHub. Sign out of every site you used today (ChatGPT, Google, Claude).</div>
+        <span class="k">Copy</span><div class="v">Nothing to type. In the browser: avatar &rarr; <b>Sign out</b>.</div>
+        <span class="k see">You should see</span><div class="v">Each site shows a <b>Sign in</b> button.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>Still signed in? Open the site again and sign out.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>3. Delete the saved Git login</h4>
+        <span class="k">Do</span><div class="v">In a cmd terminal, delete the saved GitHub login. Then check again.</div>
+        <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cmdkey /delete:git:https://github.com
+cmdkey /list | findstr github</code></pre></div>
+        <span class="k see">You should see</span><div class="v">The second command shows no lines.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>The first command says <code>CMDKEY: Element not found.</code>? This means no login was saved. That is fine.</li>
+          <li>The prompt starts with <code>PS</code>? Type <code class="cmd" style="white-space:nowrap">cmd</code> first.</li>
+        </ul></div>
+      </div>
+
+      <div class="s4">
+        <h4>4. Close VS Code</h4>
+        <span class="k">Do</span><div class="v">Close VS Code.</div>
+        <span class="k">Copy</span><div class="v">Nothing to type.</div>
+        <span class="k see">You should see</span><div class="v">No VS Code window.</div>
+        <span class="k ifnot">If not</span><div class="v"><ul>
+          <li>VS Code asks to save a file? Click <b>Save</b>.</li>
+        </ul></div>
+      </div>
+      <p class="done"><b>Done when</b> my branch is on GitHub · signed out of every site · Git login deleted · VS Code closed</p>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Stuck?</span><h3>Prompts you can copy and paste</h3></div>
+      <p class="goal">Ask for help in this order: 1. ask AI, 2. read the recipe card for the library and the course FAQ, 3. ask your team, 4. ask the instructor. Replace the parts in &lt; &gt; with what is on your own screen.</p>
+      <pre><code>I am in my team repository team-&lt;letter&gt;-project, in a cmd terminal.
+I typed: &lt;paste the command&gt;
+Git printed:
+&lt;paste all the lines&gt;
+What does this mean, and what should I type next? Explain why.
+
+I ran "python -m pytest" in my team repository.
+The last line is: &lt;paste the last line&gt;
+Is this the expected result for the course template? Answer in
+three short sentences.
+
+I want to change &lt;file name&gt; for my issue "&lt;issue title&gt;".
+Here is the part of the file:
+&lt;paste the lines&gt;
+What is one small first change? Do not write the whole task.
+</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ Assignment ══════════ -->
+<section class="pane" id="pane-task" role="tabpanel" aria-labelledby="tab-task" hidden>
+  <div class="doc">
+    <div class="doc-head">
+      <p class="eyebrow">Team checkpoint · Chapter 11 · 15 min</p>
+      <h2>One team checkpoint, no individual issue</h2>
+      <p>Today there is no <code>[Ch11]</code> issue. Instead, we check your team repository on GitHub. Do this check with your team at the end of the class (15 min). Then fix what is missing.</p>
+      <div class="callout">
+        <span class="mk">Not in class today?</span>
+        <p>Ask your team which issue is yours. On a PC with Python and Git, do Lab PART 0, steps 3 to 5. Then do Lab PART 3 for your issue. Your branch must be on GitHub by the deadline below. Is a pull request waiting for your review? Approve it.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Team</span><h3>Check three things in your team repository</h3><span class="budget">15 min</span></div>
+      <p class="goal">Open your team repository: <code>https://github.com/OSS-202602-ISS/team-&lt;letter&gt;-project</code>. Check each row together.</p>
+      <div class="scroll-x">
+        <table class="map">
+          <thead><tr><th>What we check</th><th>Where you see it on GitHub</th><th>Missing? Do</th></tr></thead>
+          <tbody>
+            <tr><td><b>1.</b> <code>docs/project-plan.md</code> is in <code>main</code>. It came through a pull request with one approval.</td><td><b>Pull requests</b> tab &rsaquo; <b>Closed</b>. Your plan pull request shows <b>Merged</b>. Inside it: <code>&lt;reviewer&gt; approved these changes</code>.</td><td style="white-space:nowrap">Lab PART 1</td></tr>
+            <tr><td><b>2.</b> 3 or more issues.</td><td><b>Issues</b> tab. Each issue has an assignee.</td><td style="white-space:nowrap">Lab PART 2</td></tr>
+            <tr><td><b>3.</b> Each member pushed one branch with at least one commit by that member. The PM's plan branch from PART 1 does not count for check 3: each member needs one feature branch for their own issue.</td><td>The branch list: <code>…/team-&lt;letter&gt;-project/branches</code>. Click each branch. The newest commit shows the member's avatar and username. Click the username: the member's profile opens.</td><td style="white-space:nowrap">Lab PART 3</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="mk">Your own record</span>
+        <p>Checks 1 and 2 are for the whole team. Check 3 is for each member. Your commits, pull requests and reviews in the team repository are your own record in the project. This record also goes into your individual coefficient (0.8 / 1.0 / 1.1, in the syllabus). So commit with your own name (Lab PART 0, step 3), and push your own branch.</p>
+      </div>
+      <div class="callout warn">
+        <span class="mk">Deadline</span>
+        <p><b>11:59 PM the night before the next class.</b> All three checks have this deadline. Why: in the next class, each member continues on their own branch.</p>
+      </div>
+      <p class="done"><b>Team check done?</b> <a href="#" onclick="document.getElementById('tab-lab').click();document.getElementById('part4').scrollIntoView();return false;">Go back to the Lab tab</a> and do PART 4. PART 4 signs you out of this shared PC.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-no">Next</span><h3>Preview of Chapter 12</h3></div>
+      <p class="goal"><b>Core features:</b> your team fills the two blanks in <code>src/process.py</code>, so that <code>python -m pytest</code> shows 3 passed. Each member continues on their own branch. Then each member opens a pull request, and a teammate reviews it.</p>
+      <ul style="margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:.4em; font-size:.95rem;">
+        <li>In the next class, sit with your project team again.</li>
+        <li>Your branch is on GitHub. Is the folder <code>team-&lt;letter&gt;-project</code> missing on your PC next class? Then clone it again (Lab PART 0, steps 3 to 5).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>Open Source Software · Fall 2026 · Chapter 11 course material — based on the official syllabus</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── Tabs ── */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var pane = document.getElementById(t.getAttribute('aria-controls'));
+      var on = (t === tab);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      pane.hidden = !on;
+    });
+    window.scrollTo(0, 0);
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ selectTab(t); });
+    t.addEventListener('keydown', function(e){
+      var i = tabs.indexOf(t), n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowLeft')  n = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (n){ e.preventDefault(); n.focus(); selectTab(n); }
+    });
+  });
+
+  /* ── Slides ── */
+  var slides  = Array.prototype.slice.call(document.querySelectorAll('#pane-lecture .slide'));
+  var dotsBox = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var firstBtn = document.getElementById('first');
+  var lastBtn = document.getElementById('last');
+  var cur = 0;
+
+  slides.forEach(function(s, i){
+    var h = s.querySelector('h1, h2');
+    var t = h ? h.textContent.replace(/\s+/g, ' ').trim() : '';
+    var d = document.createElement('button');
+    d.type = 'button';
+    d.className = 'dot';
+    d.textContent = (i + 1);
+    d.title = (i + 1) + (t ? '. ' + t : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1) + (t ? ': ' + t : ''));
+    d.addEventListener('click', function(){ go(i); });
+    dotsBox.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function go(i){
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function(s, n){ s.hidden = (n !== cur); });
+    dots.forEach(function(d, n){ d.setAttribute('aria-current', n === cur ? 'true' : 'false'); });
+    counter.textContent = (cur + 1) + ' / ' + slides.length;
+    prevBtn.disabled = firstBtn.disabled = (cur === 0);
+    nextBtn.disabled = lastBtn.disabled = (cur === slides.length - 1);
+    window.scrollTo(0, 0);
+  }
+  prevBtn.addEventListener('click', function(){ go(cur - 1); });
+  nextBtn.addEventListener('click', function(){ go(cur + 1); });
+  firstBtn.addEventListener('click', function(){ go(0); });
+  lastBtn.addEventListener('click', function(){ go(slides.length - 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (document.getElementById('pane-lecture').hidden) return;
+    var t = e.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp'){   e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home'){ e.preventDefault(); go(0); }
+    if (e.key === 'End'){  e.preventDefault(); go(slides.length - 1); }
+  });
+  go(0);
+
+})();
+</script>
+</body>
+</html>
