@@ -782,7 +782,7 @@ pip install -r requirements.txt</code></pre>
     <!-- PART 1 -->
     <div class="step">
       <div class="step-head" id="part1"><span class="step-no">PART 1</span><h3>Put the plan into the repository through a PR</h3><span class="budget">30 min</span></div>
-      <p class="goal">The PM does steps 1 to 4 on the PM's PC. Then a teammate reviews in step 5, on their own PC. The other members sit with the PM and check each line against the plan. This is the path of slide 5, steps 2 to 7. Your PM is not here today? Choose another member as PM for today.</p>
+      <p class="goal">The PM does steps 1 to 4 on the PM's PC. The other members start <a href="#part2">PART 2</a> now: each member opens their own issue. The reviewer comes back for step 5 when the pull request is ready. This is the path of slide 5, steps 2 to 7. Your PM is not here today? Choose another member as PM for today.</p>
 
       <div class="s4">
         <h4><span class="who">PM</span> 1. Make the plan branch</h4>
@@ -800,7 +800,7 @@ pip install -r requirements.txt</code></pre>
 
       <div class="s4">
         <h4><span class="who">PM</span> 2. Copy the plan into <code>docs/project-plan.md</code></h4>
-        <span class="k">Do</span><div class="v">Open your team's <code>[Team plan]</code> issue: this <a href="https://github.com/OSS-202602-ISS/practice-pr/issues?q=is%3Aissue+in%3Atitle+%22Team+plan%22" target="_blank" rel="noopener">list of <code>[Team plan]</code> issues in <code>practice-pr</code></a> shows only the team plans. Or open the issue list of <code>practice-pr</code> and type <code>Team plan</code> in the search box. In the VS Code Explorer (the file list on the left), open <code>team-c-project</code> &rsaquo; <code>docs</code> &rsaquo; <code>project-plan.md</code>. Near the top of this file, a table shows where each part of the issue goes. In sections 1 to 4, replace each <code>\&lt;...\&gt;</code> with the text from the issue. Also write a project <b>Name</b>, and keep one <b>Category</b>. Where the file says <i>keep one</i>, delete the other choice. Save with <kbd>Ctrl + S</kbd>.</div>
+        <span class="k">Do</span><div class="v">Open your team's <code>[Team plan]</code> issue: this <a href="https://github.com/OSS-202602-ISS/practice-pr/issues?q=is%3Aissue+is%3Aopen+in%3Atitle+%22Team+plan%22" target="_blank" rel="noopener">list of <code>[Team plan]</code> issues in <code>practice-pr</code></a> shows only the team plans. Or open the issue list of <code>practice-pr</code> and type <code>Team plan</code> in the search box. In the VS Code Explorer (the file list on the left), open <code>team-c-project</code> &rsaquo; <code>docs</code> &rsaquo; <code>project-plan.md</code>. Near the top of this file, a table shows where each part of the issue goes. In sections 1 to 4, replace each <code>\&lt;...\&gt;</code> with the text from the issue. Also write a project <b>Name</b>, and keep one <b>Category</b>. Where the file says <i>keep one</i>, delete the other choice. Save with <kbd>Ctrl + S</kbd>.</div>
         <span class="k">Copy</span><div class="v"><p class="lbl">For example, find this line (press <kbd>Ctrl + F</kbd> and type <code>Input**</code>):</p>
 <pre data-kind="code"><code>| **Input** | \&lt;file, values, or API response - be specific\&gt; |</code></pre>
 <p class="lbl">Change it to your Input line from the issue:</p>
@@ -808,7 +808,7 @@ pip install -r requirements.txt</code></pre>
 <p class="lbl">In section 3, write one row for each library. For example:</p>
 <pre data-kind="code"><code>| pandas | reads servers.csv | yes |</code></pre>
           <p class="why">Why copy and not write new ideas: your team already agreed on the issue. The file only moves the plan into the repository.</p></div>
-        <span class="k see">You should see</span><div class="v">Sections 1 to 4 have no <code>\&lt;</code> left. Sections 5 and 6 can stay as they are today. The roles table in section 4 has GitHub usernames, for example <code>@gildong-hong</code>. Write GitHub usernames, not real names. Why: your team repository is public.</div>
+        <span class="k see">You should see</span><div class="v">Sections 1 to 4 have no <code>\&lt;</code> left. Sections 5 and 6 can stay as they are today. The roles table in section 4 has GitHub usernames, for example <code>@gildong-hong</code>. Write GitHub usernames, not real names. Why: your team repository is public. Your instructor's comment on your <code>[Team plan]</code> issue has your usernames.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>Two <code>[Team plan]</code> issues for your team? Use the open one.</li>
           <li>Your team has no <code>[Team plan]</code> issue yet? Write the plan directly into <code>docs/project-plan.md</code> now, together. Fill sections 1 to 4: topic, track, input, process, output, libraries and roles. In steps 4 and 5, use the sentences for this case.</li>
@@ -873,7 +873,7 @@ git push -u origin feature/ada-plan</code></pre>
     <!-- PART 2 -->
     <div class="step">
       <div class="step-head" id="part2"><span class="step-no">PART 2</span><h3>Open three issues from the plan</h3><span class="budget">20 min</span></div>
-      <p class="goal">Each line of your plan (Input, Process, Output) becomes one issue (slide 6). The member who does the task opens its issue, on their own PC. Team of two: one member takes two issues. Team of three or four: one issue each. A team of four also opens the fourth issue, for <code>README.md</code>. The last column shows the first change for each issue. You make this change in PART 3.</p>
+      <p class="goal">Each line of your plan (Input, Process, Output) becomes one issue (slide 6). Start now. You do not wait for PART 1. The member who does the task opens its issue, on their own PC. Team of two: one member takes two issues. Team of three or four: one issue each. A team of four also opens the fourth issue, for <code>README.md</code>. A simple way: PM &rarr; Input, Developer &rarr; Process, Reviewer &rarr; Output, Documentation &rarr; Docs (team of four only). A team of three takes Input, Process and Output, one each. In a team of two, one member also takes Output. The last column shows the first change for each issue. You make this change in PART 3.</p>
       <div class="scroll-x">
         <table class="map">
           <thead><tr><th>Plan line</th><th>Issue title (example)</th><th>First change today (PART 3)</th></tr></thead>
@@ -1000,6 +1000,7 @@ mail-01,48,ok</code></pre>
           <p class="lbl">Change it to one case of your rule. Leave the 5th cell (What actually happened) empty. Keep ☐ in the last cell. For example:</p>
 <pre data-kind="code"><code>| 6 | Warn rows only | data/servers.csv | 2 rows | | ☐ |</code></pre>
           <p class="opt">Output issue: the <code>title:</code> line in <code>config.yaml</code></p>
+          <p>Only the Output person changes <code>config.yaml</code>. Why: next class, the Process person changes <code>min_score</code> in the same file. One change at a time avoids a conflict.</p>
           <p class="lbl">Open <code>config.yaml</code>. Find this text at the start of line 2:</p>
 <pre data-kind="code"><code>title: "Server Check Results"</code></pre>
           <p class="lbl">Change only the words in quotes to the title of your table. Keep the rest of the line (the comment after <code>#</code>). For example:</p>
