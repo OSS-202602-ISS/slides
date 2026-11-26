@@ -810,6 +810,7 @@ table.map td, table.map th{font-size:.93rem;}
         <span class="k see">You should see</span><div class="v">No lines. The prompt appears again. The prompt ends with <code style="white-space:nowrap">D:\oss\&lt;your ID&gt;&gt;</code>. There is no <code>PS</code> at the start of the prompt.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>The prompt starts with <code>PS</code>? This is PowerShell. Type <code class="cmd" style="white-space:nowrap">cmd</code> and press Enter. Then type the command again.</li>
+          <li>The prompt ends with <code>$</code>, or you see <code>MINGW64</code>? This is Git Bash. Type <code class="cmd" style="white-space:nowrap">cmd</code> and press Enter. Then type the command again.</li>
           <li>You see a line like <code>Target: LegacyGeneric:target=git:https://github.com</code>? Another person's login is saved. Delete it:
 <pre data-kind="cmd"><code>cmdkey /delete:git:https://github.com</code></pre></li>
           <li>VS Code asks you to sign in, or a chat panel is open on the right side? Close it. Why: a sign-in in VS Code stays on this shared PC.</li>
@@ -830,7 +831,7 @@ git config user.email "&lt;your noreply e-mail&gt;"</code></pre>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Cloning into 'team-c-project'...</code></pre>and a few more lines. Then the prompt ends with <code>\team-c-project&gt;</code>. The folder name has <b>your</b> team letter. The two <code class="cmd" style="white-space:nowrap">git config</code> lines print nothing. Team repositories are public, so the clone needs no login.<br><b>Check:</b> type <code class="cmd" style="white-space:nowrap">git config user.email</code>. You see your own number and your own username, for example <code>87654321+ada-lee@users.noreply.github.com</code>. Do you see <code>&lt;</code> or <code>12345678</code>? Type line 5 again with your own noreply e-mail.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>A window <b>Connect to GitHub</b> opens during the clone? The repository name is wrong. Close the window. Check the letter in line 2: one small letter, for example <code>team-c-project</code>. Then type line 2 again.</li>
-          <li><code>fatal: repository '%ORG%/team-c-project.git' does not exist</code>? You skipped line 1, or the prompt starts with <code>PS</code>. If it starts with <code>PS</code>, type <code class="cmd" style="white-space:nowrap">cmd</code> first. Then type all the lines again.</li>
+          <li><code>fatal: repository '%ORG%/team-c-project.git' does not exist</code>? You skipped line 1, or the terminal is not cmd: the prompt starts with <code>PS</code>, or it ends with <code>$</code>. Then type <code class="cmd" style="white-space:nowrap">cmd</code> first. Then type all the lines again.</li>
           <li><code>fatal: destination path 'team-c-project' already exists and is not an empty directory.</code>? You cloned it before. Type <code class="cmd" style="white-space:nowrap">cd team-c-project</code>. Then type <code class="cmd" style="white-space:nowrap">git pull --no-edit</code>. Then type lines 4 and 5. <code>--no-edit</code> stops Git from opening an editor.</li>
           <li>Not sure of your team? Ask the instructor now.</li>
         </ul></div>
