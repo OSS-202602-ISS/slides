@@ -427,6 +427,73 @@ pre[data-kind="file"]::before, pre[data-kind="edit"]::before{background:var(--ac
 table.map td, table.map th{font-size:.93rem;}
 .slide table.map td, .slide table.map th{font-size:1rem;}
 @media print{ .scroll-x{overflow:visible;} td code.cmd, li code.cmd{white-space:normal !important;} }
+
+/* ─── 11장 (11-26): 한 줄 한 문장 · 접두어 표 · 출력 인용 ─── */
+.slide ul.lines{list-style:none; padding-left:0; gap:.6em;}
+.slide.dgs ul.lines{gap:.45em;}
+.slide ul.lines > li > b:first-child{color:var(--ink);}
+.callout .cbody{display:flex; flex-direction:column; gap:8px; flex:1; min-width:0;}
+.callout pre{margin:0;}
+.callout pre code{white-space:pre;}
+.duo{display:flex; flex-direction:column; gap:inherit;}
+.duo > .cbody{display:flex; flex-direction:column; gap:10px; min-width:0;}
+.slide table.pfx td{overflow-wrap:normal; word-break:normal;}
+.slide table.pfx th, .slide table.pfx td{font-size:1rem; text-align:center; padding:7px 8px;}
+.slide table.pfx th code{font-size:.95em; font-weight:600; color:var(--accent-ink);}
+.slide table.chk td.forwho, .slide table.chk td.part{white-space:nowrap;}
+.slide p.note{font-size:clamp(1rem,1.6vw,1.2rem);}
+.presbtn{font-family:var(--mono);}
+.presbtn[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--surface);}
+
+/* ─── 두 단계 강조 (11-26): .kw 문장 핵심어 = 굵게만 · .kf 장 초점어 = 굵게 + 그림 속 그 말의 색 ─── */
+:root{--kf-go:#095643; --kf-stop:#B3261E;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--kf-go:#7FD9BA; --kf-stop:#FF7A6B;} }
+:root[data-theme="dark"]{--kf-go:#7FD9BA; --kf-stop:#FF7A6B;}
+.slide .kw{font-weight:700; color:var(--ink);}
+.slide .kf{font-weight:700;}
+.slide .kf.go{color:var(--kf-go);}
+.slide .kf.stop{color:var(--kf-stop);}
+
+/* ─── 발표 모드 (P): 강의 탭 화면에만. 기본 화면·인쇄는 그대로 ─── */
+@media screen{
+  html.pres #pane-lecture{--pf:24px;}
+  html.pres #pane-lecture .stage{padding:12px 5vw; min-height:calc(100vh - var(--topbar) - 48px);}
+  html.pres #pane-lecture .stage:has(> .slide.dgs:not([hidden])){padding-top:12px; padding-bottom:12px;}
+  html.pres #pane-lecture .slide{max-width:none; font-size:var(--pf); gap:calc(var(--pf) * .55);}
+  html.pres #pane-lecture .rule{display:none;}
+  html.pres #pane-lecture .slide .eyebrow{font-size:.62em;}
+  html.pres #pane-lecture .slide h2{font-size:1.7em;}
+  html.pres #pane-lecture .cover h1{font-size:2.7em;}
+  html.pres #pane-lecture .cover .sub{font-size:1.1em; max-width:none;}
+  html.pres #pane-lecture .cover dt{font-size:.6em;}
+  html.pres #pane-lecture .cover dd{font-size:.9em;}
+  html.pres #pane-lecture .slide p,
+  html.pres #pane-lecture .slide ul,
+  html.pres #pane-lecture .slide ol{font-size:1em; max-width:none;}
+  html.pres #pane-lecture .slide .lead{font-size:1.06em;}
+  html.pres #pane-lecture .slide .places-cap{font-size:.92em !important; margin-top:0 !important;}
+  html.pres #pane-lecture .slide p.note{font-size:.88em;}
+  html.pres #pane-lecture .slide table{font-size:.9em;}
+  html.pres #pane-lecture .slide table th{font-size:.8em;}
+  html.pres #pane-lecture .slide table td,
+  html.pres #pane-lecture .slide table.pfx th,
+  html.pres #pane-lecture .slide table.pfx td{font-size:1em;}
+  html.pres #pane-lecture .slide th, html.pres #pane-lecture .slide td{padding:.35em .55em;}
+  html.pres #pane-lecture .callout{padding:.5em .8em;}
+  html.pres #pane-lecture .callout .mk{font-size:.6em;}
+  html.pres #pane-lecture pre code{font-size:.9em;}
+  html.pres #pane-lecture pre[data-kind]::before{font-size:.5em;}
+  html.pres #pane-lecture .dg{max-width:calc(var(--pf) * 48) !important;}
+  html.pres #pane-lecture .slide table.pfx td{font-size:.88em;}
+  html.pres #pane-lecture .duo{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:calc(var(--pf) * .9); align-items:start;}
+  html.pres #pane-lecture .slidenav{padding-top:5px; padding-bottom:5px;}
+  /* 단계: 지난 덩이 흐리게 · 현재 강조 · 다음은 자리만 */
+  html.pres #pane-lecture [data-step]{transition:opacity .2s ease;}
+  html.pres #pane-lecture .st-past{opacity:.7;}
+  html.pres #pane-lecture .st-now{outline:3px solid var(--accent-line); outline-offset:5px; border-radius:6px;}
+  html.pres #pane-lecture .st-future{visibility:hidden;}
+}
+@media screen and (prefers-reduced-motion: reduce){ html.pres #pane-lecture [data-step]{transition:none;} }
 </style>
 </head>
 <body>
@@ -450,7 +517,7 @@ table.map td, table.map th{font-size:.93rem;}
     <article class="slide cover">
       <p class="eyebrow">Chapter 11 · 2026 Fall</p>
       <h1>Project Kickoff:<br>Your Team Repository</h1>
-      <p class="sub">Today your team gets its own repository on GitHub. First, your team plan goes into this repository. Then each member starts one task on their own branch.</p>
+      <p class="sub">Today your team gets its <strong class="kw">own</strong> repository on GitHub. First, your team <strong class="kw">plan</strong> goes into this repository. Then each member starts one task on their own <strong class="kw">branch</strong>.</p>
       <dl>
         <div><dt>Course</dt><dd>Open Source Software</dd></div>
         <div><dt>New today</dt><dd>team repository · protected <code>main</code> · feature branch</dd></div>
@@ -462,9 +529,9 @@ table.map td, table.map th{font-size:.93rem;}
       <p class="eyebrow">Where we stopped</p>
       <h2>Your plan moves into your repository</h2>
       <div class="rule"></div>
-      <p class="lead">In Chapter 10, your team wrote a <code>[Team plan]</code> issue in <code>practice-pr</code>. <code>practice-pr</code> is one practice repository for the whole class. From today, your team works in its own repository. All the project work goes there.</p>
-      <p>At the end of this class, your team can:</p>
-      <ul>
+      <p class="lead" data-step="1">In Chapter 10, your team <strong class="kw">wrote</strong> a <code>[Team plan]</code> issue in <code>practice-pr</code>. <code>practice-pr</code> is one practice repository for the <strong class="kw">whole</strong> class. From today, your team works in its <strong class="kw">own</strong> repository. <strong class="kw">All</strong> the project work goes there.</p>
+      <p data-step="2">At the end of this class, your team can:</p>
+      <ul data-step="2">
         <li><b>Find your team repository</b> and clone it to this PC.</li>
         <li><b>Put your team plan into <code>docs/project-plan.md</code></b> through a pull request (PR).</li>
         <li><b>Open three issues</b>, one for each task.</li>
@@ -477,8 +544,8 @@ table.map td, table.map th{font-size:.93rem;}
       <p class="eyebrow">Where the work is</p>
       <h2>One repository for each team</h2>
       <div class="rule"></div>
-      <p class="lead">The instructor made ten repositories from the course template (the starting files): <code>team-a-project</code> to <code>team-j-project</code>. Every member of a team can write to the team's repository. So you do not fork, and you do not make a new repository.</p>
-      <div class="dg" role="img" aria-label="Left: GitHub, the organization OSS-202602-ISS. The box oss-project-template, the course template. Arrows go from it to the team repositories team-a-project, team-b-project, team-c-project and so on to team-j-project. team-c-project is marked: Team C, all members can write. Right: your PC, the folder D:\oss\your ID. Inside it is the folder team-c-project with data, docs, src, tests and .venv. .venv is only on this PC. An arrow git clone goes from team-c-project on GitHub to the PC. An arrow git push, a branch, goes back from the PC to GitHub." style="max-width:820px;">
+      <p class="lead" data-step="1">The instructor made <strong class="kw">ten</strong> repositories from the course template (the starting files): <code>team-a-project</code> to <code>team-j-project</code>.</p>
+      <div class="dg" data-step="2" role="img" aria-label="Left: GitHub, the organization OSS-202602-ISS. The box oss-project-template, the course template. Arrows go from it to the team repositories team-a-project, team-b-project, team-c-project and so on to team-j-project. team-c-project is marked: Team C, all members can write. Right: your PC, the folder D:\oss\your ID. Inside it is the folder team-c-project with data, docs, src, tests and .venv. .venv is only on this PC. An arrow git clone goes from team-c-project on GitHub to the PC. An arrow git push, a branch, goes back from the PC to GitHub." style="max-width:820px;">
         <svg viewBox="0 0 720 230" aria-hidden="true">
           <defs><marker id="ah11a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
           <rect class="f-s2 s-line" x="4" y="4" width="392" height="222" rx="12" stroke-width="1.5"/>
@@ -509,19 +576,19 @@ table.map td, table.map th{font-size:.93rem;}
           <text class="mono t-bad" x="514" y="190" font-size="12" font-weight="700">.venv\</text><text class="t-bad" x="568" y="190" font-size="11.5" font-weight="700">only on this PC</text>
         </svg>
       </div>
-      <p class="places-cap">The repository name has your team letter in small letters: Team C &rarr; <code style="white-space:nowrap">team-c-project</code>. <code>.venv</code> stays on the PC, because the file <code>.gitignore</code> lists <code>.venv/</code>.</p>
-      <div class="callout">
-        <span class="mk">Why one repository per team</span>
-        <p>All the work of a team is in one place. Every commit, issue and review on GitHub shows the name of the person who made it. So the repository also shows who did which part.</p>
-      </div>
+      <p class="places-cap" data-step="2">The repository name has your team letter in <strong class="kw">small</strong> letters: <strong class="kf go">Team C</strong> &rarr; <code style="white-space:nowrap">team-c-project</code>. <code>.venv</code> <strong class="kw">stays</strong> on the PC, because the file <code>.gitignore</code> lists <code>.venv/</code>.</p>
+      <ul class="lines">
+        <li data-step="3"><b>No fork</b> — Every member of a team can <strong class="kw">write</strong> to the team's repository. So you do <strong class="kw">not</strong> fork, and you do not make a new repository.</li>
+        <li data-step="4"><b>Why one per team</b> — Every commit, issue and review on GitHub shows the <strong class="kw">name</strong> of the person who made it. So the repository also shows <strong class="kw">who</strong> did which part.</li>
+      </ul>
     </article>
 
     <article class="slide dgs" hidden>
       <p class="eyebrow">The rule for main</p>
       <h2>Nobody can push to main</h2>
       <div class="rule"></div>
-      <p class="lead">In your team repository, <code>main</code> is protected. This means that GitHub rejects a direct push to <code>main</code>. A change goes into <code>main</code> only through a pull request. One teammate must approve this pull request first.</p>
-      <div class="dg" role="img" aria-label="Two paths from your PC to main on GitHub. Top path: a commit on main, then git push. GitHub rejects it: a red X before main. Bottom path: a commit on the branch feature/ada-plan, then git push. On GitHub: the branch, then a pull request, then Approve by a teammate, then Merge into main." style="max-width:820px;">
+      <p class="lead" data-step="1">In your team repository, <code>main</code> is <strong class="kw">protected</strong>: GitHub rejects a direct push. A change goes into <code>main</code> only through a <strong class="kf go">pull request</strong>.</p>
+      <div class="dg" data-step="2" role="img" aria-label="Two paths from your PC to main on GitHub. Top path: a commit on main, then git push. GitHub rejects it: a red X before main. Bottom path: a commit on the branch feature/ada-plan, then git push. On GitHub: the branch, then a pull request, then Approve by a teammate, then Merge into main." style="max-width:820px;">
         <svg viewBox="0 0 720 190" aria-hidden="true">
           <defs><marker id="ah11b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker>
           <marker id="ah11bx" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-bad" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
@@ -547,7 +614,7 @@ table.map td, table.map th{font-size:.93rem;}
           <text class="t-ink" x="291" y="146" font-size="12" font-weight="700" text-anchor="middle">branch</text><text class="mono t-mut" x="291" y="162" font-size="10.5" text-anchor="middle">feature/ada-…</text>
           <line class="s-acc" x1="338" y1="148" x2="352" y2="148" stroke-width="2.5" marker-end="url(#ah11b)"/>
           <rect class="f-surf s-acc" x="356" y="126" width="96" height="44" rx="8" stroke-width="1.5"/>
-          <text class="t-ink" x="404" y="146" font-size="12" font-weight="700" text-anchor="middle">pull request</text><text class="t-mut" x="404" y="162" font-size="10.5" text-anchor="middle">by the author</text>
+          <text class="t-acc" x="404" y="146" font-size="12" font-weight="700" text-anchor="middle">pull request</text><text class="t-mut" x="404" y="162" font-size="10.5" text-anchor="middle">by the author</text>
           <line class="s-acc" x1="454" y1="148" x2="468" y2="148" stroke-width="2.5" marker-end="url(#ah11b)"/>
           <rect class="f-soft s-acc" x="472" y="126" width="92" height="44" rx="8" stroke-width="2"/>
           <text class="t-acc" x="518" y="146" font-size="12.5" font-weight="700" text-anchor="middle">Approve</text><text class="t-ink" x="518" y="162" font-size="10.5" text-anchor="middle">a teammate</text>
@@ -555,10 +622,15 @@ table.map td, table.map th{font-size:.93rem;}
           <text class="t-acc" x="586" y="140" font-size="11" font-weight="700" text-anchor="middle">Merge</text>
         </svg>
       </div>
-      <p class="places-cap">Top: a direct push to <code>main</code> is rejected. Bottom: the way into <code>main</code>. The approval comes from a teammate. GitHub does not let the author approve their own pull request.</p>
-      <div class="callout warn">
+      <p class="places-cap" data-step="2">The approval comes from a <strong class="kw">teammate</strong>, because GitHub does not let the author approve their own pull request.</p>
+      <div class="callout warn" data-step="3">
         <span class="mk">What a rejected push looks like</span>
-        <p>The push fails, and Git prints several lines. Look for these two: one line has <code>Changes must be made through a pull request</code>, and one line has <code>! [remote rejected] main -&gt; main</code>. Nothing changed on GitHub. Lab PART 1, step 3 shows how to move your commit to a branch.</p>
+        <div class="cbody">
+          <p>The push <strong class="kf stop">fails</strong>, and Git prints several lines. Look for these <strong class="kw">two</strong> parts:</p>
+          <pre data-kind="out"><code>Changes must be made through a pull request
+! [remote rejected] main -&gt; main</code></pre>
+          <p><strong class="kw">Nothing</strong> changed on GitHub. Lab PART 1, step 3 shows how to <strong class="kw">move</strong> your commit to a branch.</p>
+        </div>
       </div>
     </article>
 
@@ -566,8 +638,8 @@ table.map td, table.map th{font-size:.93rem;}
       <p class="eyebrow">The path of one task</p>
       <h2>Seven steps from an issue to main</h2>
       <div class="rule"></div>
-      <p class="lead">Every task in the project goes the same way. The author does steps 1 to 5. A teammate reviews in step 6. After the approval, the author merges in step 7.</p>
-      <div class="dg" role="img" aria-label="Seven boxes in a row. 1 Issue, number 999, on GitHub. 2 Branch, feature/…, on your PC. 3 Commit, add: …, on your PC. 4 Push, git push, from the PC to GitHub. 5 Pull request, Closes #999, on GitHub. 6 Review, Approve, on GitHub, done by a teammate. 7 Merge into main, on GitHub, done by the author. Below: steps 1 to 5 and 7 are the author's, step 6 is the reviewer's. Today: PART 1 does steps 2 to 7 once for project-plan.md. PART 2 is step 1. PART 3 is steps 2 to 4. Steps 5 to 7 for your task are in the next class." style="max-width:860px;">
+      <p class="lead" data-step="1">Every task in the project goes the <strong class="kw">same</strong> way. After the <strong class="kw">approval</strong> in step 6, the <strong class="kf go">author</strong> merges in step 7.</p>
+      <div class="dg" data-step="2" role="img" aria-label="Seven boxes in a row. 1 Issue, number 999, on GitHub. 2 Branch, feature/…, on your PC. 3 Commit, add: …, on your PC. 4 Push, git push, from the PC to GitHub. 5 Pull request, Closes #999, on GitHub. 6 Review, Approve, on GitHub, done by a teammate. 7 Merge into main, on GitHub, done by the author. Below: steps 1 to 5 and 7 are the author's, step 6 is the reviewer's. Today: PART 1 does steps 2 to 7 once for project-plan.md. PART 2 is step 1. PART 3 is steps 2 to 4. Steps 5 to 7 for your task are in the next class." style="max-width:860px;">
         <svg viewBox="0 0 720 206" aria-hidden="true">
           <defs><marker id="ah11c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-acc" d="M0 0 L10 5 L0 10 Z"/></marker></defs>
           <rect class="f-s2 s-line" x="10" y="8" width="88" height="24" rx="6" stroke-width="1"/><text class="t-ink" x="54" y="25" font-size="11.5" font-weight="700" text-anchor="middle">GitHub</text>
@@ -596,15 +668,15 @@ table.map td, table.map th{font-size:.93rem;}
           <rect class="f-ground s-line" x="418" y="172" width="292" height="22" rx="5" stroke-width="1.2" stroke-dasharray="5 4"/><text class="t-mut" x="564" y="188" font-size="11.5" text-anchor="middle">your task: next class</text>
         </svg>
       </div>
-      <p class="places-cap">Top row: where each step happens. Middle row: who does it. Bottom rows: which Lab part does which steps today.</p>
+      <p class="places-cap" data-step="2">Top row: <strong class="kw">where</strong> each step happens. Middle row: <strong class="kw">who</strong> does it. Bottom rows: which Lab <strong class="kw">part</strong> does which steps today.</p>
     </article>
 
     <article class="slide" hidden>
       <p class="eyebrow">From plan to tasks</p>
       <h2>Your plan gives you three issues</h2>
       <div class="rule"></div>
-      <p class="lead">Your plan has three lines: Input, Process and Output. Each line is one piece of work, so each line becomes one issue. Each issue goes to the member who does the work. The syllabus asks for 3 or more issues (week 12).</p>
-      <div class="scroll-x">
+      <p class="lead" data-step="1">Each line of your plan (Input, Process, Output) is one <strong class="kw">piece</strong> of work. So each line becomes <strong class="kw">one</strong> issue.</p>
+      <div class="scroll-x" data-step="2">
         <table class="map">
           <thead><tr><th>Plan line (example from Chapter 10)</th><th>Issue title</th></tr></thead>
           <tbody>
@@ -615,19 +687,20 @@ table.map td, table.map th{font-size:.93rem;}
           </tbody>
         </table>
       </div>
-      <p>Every issue uses the <b>Task</b> form of your repository. The form has four headings: <b>What needs to be done</b>, <b>Why</b>, <b>Done when</b> and <b>Who / when</b>. On the right side of the issue, <b>Assignees</b> shows who does the task.</p>
-      <div class="callout">
-        <span class="mk">Team size</span>
-        <p>Team of two: one member takes two issues. Team of three or four: one issue each. A team of four also opens the fourth issue, for <code>README.md</code> (last row).</p>
-      </div>
+      <ul class="lines">
+        <li data-step="3"><b>Who</b> — Each issue goes to the member who <strong class="kw">does</strong> the task. <b>Assignees</b>, on the right side of the issue, shows this member.</li>
+        <li data-step="4"><b>Team size</b> — Team of two: one member takes <strong class="kw">two</strong> issues. Team of three: one issue <strong class="kw">each</strong>. Team of four: one issue each, and a <strong class="kw">fourth</strong> issue for <code>README.md</code> (last row).</li>
+        <li data-step="5"><b>Form</b> — Every issue uses the <b>Task</b> form of your repository (Lab PART 2, step 1).</li>
+        <li data-step="5"><b>Why three</b> — The syllabus asks for <strong class="kw">3 or more</strong> issues (week 12).</li>
+      </ul>
     </article>
 
     <article class="slide dgs" hidden>
       <p class="eyebrow">Your first branch</p>
       <h2>One member, one branch, one first commit</h2>
       <div class="rule"></div>
-      <p class="lead">Each member works on their own branch. The branch name says who and what: <code>feature/&lt;name&gt;-&lt;task&gt;</code>. <code>&lt;name&gt;</code> is your first name in small letters. <code>&lt;task&gt;</code> is two or three words from your issue title, with <code>-</code> between the words.</p>
-      <div class="dg" role="img" aria-label="A line for main from left to right. Commit 1: the template. Commit 2: the plan, merged in PART 1. Three branches start at commit 2: feature/ada-sample-data, feature/ben-table-title and feature/chen-warn-servers. Each branch has one commit and is pushed. The pull requests come in the next class." style="max-width:820px;">
+      <p class="lead" data-step="1">Each member works on their <strong class="kw">own</strong> branch: <code style="white-space:nowrap">feature/&lt;name&gt;-&lt;task&gt;</code>. <code>&lt;name&gt;</code> is your <strong class="kw">first name</strong> in small letters. <code>&lt;task&gt;</code> is two or three words from your <strong class="kw">issue title</strong>, with <code>-</code> between the words.</p>
+      <div class="dg" data-step="2" role="img" aria-label="A line for main from left to right. Commit 1: the template. Commit 2: the plan, merged in PART 1. Three branches start at commit 2: feature/ada-sample-data, feature/ben-table-title and feature/chen-warn-servers. Each branch has one commit and is pushed. The pull requests come in the next class." style="max-width:820px;">
         <svg viewBox="0 0 720 196" aria-hidden="true">
           <line class="s-acc" x1="24" y1="160" x2="700" y2="160" stroke-width="3"/>
           <text class="mono t-acc" x="24" y="150" font-size="13" font-weight="700">main</text>
@@ -644,11 +717,19 @@ table.map td, table.map th{font-size:.93rem;}
           <text class="t-mut" x="700" y="186" font-size="11.5" text-anchor="end">pull requests: next class</text>
         </svg>
       </div>
-      <p class="places-cap">All three branches start after the plan is in <code>main</code>. Each member changes a different file. So the branches do not change the same lines.</p>
-      <p>Start each commit message with one word from <code>CONTRIBUTING.md</code>: <code>add:</code> (a new feature or file), <code>fix:</code> (something broken), <code>docs:</code> (documentation only), <code>style:</code> (formatting only) or <code>test:</code> (tests only). For example: <code>add: our sample input data</code>.</p>
-      <div class="callout warn">
-        <span class="mk">Your name on your commit</span>
-        <p>This PC is shared. So you tell Git your name in your team repository (Lab PART 0, step 3). Without this, your commit can show another person's name. Then the commit does not count as your work.</p>
+      <p class="places-cap" data-step="2">All three branches start <strong class="kw">after</strong> the plan is in <code>main</code>. Each member changes a <strong class="kw">different</strong> file. So the branches do not change the <strong class="kw">same</strong> lines.</p>
+      <div class="duo">
+        <div class="cbody" data-step="3">
+          <p>Start each <strong class="kf go">commit</strong> message with one word from <code>CONTRIBUTING.md</code>. For example: <code style="white-space:nowrap">add: our sample input data</code>.</p>
+          <table class="map pfx">
+            <thead><tr><th><code>add:</code></th><th><code>fix:</code></th><th><code>docs:</code></th><th><code>style:</code></th><th><code>test:</code></th></tr></thead>
+            <tbody><tr><td>a new feature or file</td><td>something broken</td><td>documentation only</td><td>formatting only</td><td>tests only</td></tr></tbody>
+          </table>
+        </div>
+        <div class="callout warn" data-step="4">
+          <span class="mk">Your name on your commit</span>
+          <p>This PC is <strong class="kw">shared</strong>. So you tell Git your <strong class="kw">name</strong> in your team repository (Lab PART 0, step 3). Without this, your commit can show <strong class="kw">another</strong> person's name. Then the commit does <strong class="kw">not count</strong> as your work.</p>
+        </div>
       </div>
     </article>
 
@@ -656,15 +737,23 @@ table.map td, table.map th{font-size:.93rem;}
       <p class="eyebrow">Before you switch tabs</p>
       <h2>What we check in your team repository</h2>
       <div class="rule"></div>
-      <p class="lead">There is no individual issue today. Instead, we check three things in your team repository:</p>
-      <ol class="todo">
-        <li><code>docs/project-plan.md</code> is in <code>main</code>. It came through a pull request with one approval (Lab PART 1).</li>
-        <li>The repository has 3 or more issues (slide 6, Lab PART 2).</li>
-        <li>Each member pushed one branch with at least one commit by that member (slide 7, Lab PART 3). The PM's plan branch from PART 1 does not count for check 3: each member needs one feature branch for their own issue.</li>
-      </ol>
-      <p>Checks 1 and 2 are for the whole team. Check 3 is for each member. Your own commits, pull requests and reviews are your record in the project. This record also goes into your individual coefficient (0.8 / 1.0 / 1.1, in the syllabus).</p>
-      <p><b>Due:</b> 11:59 PM the night before the next class.</p>
-      <p class="lead">Now sit with your team. Open the <b>Lab</b> tab above and start PART 0.</p>
+      <p class="lead" data-step="1">There is <strong class="kw">no</strong> individual issue today. Instead, we <strong class="kw">check</strong> three things in your team repository.</p>
+      <div class="scroll-x" data-step="2">
+        <table class="map chk">
+          <thead><tr><th>Check</th><th>For</th><th>Lab</th></tr></thead>
+          <tbody>
+            <tr><td><b>1.</b> <code>docs/project-plan.md</code> is in <code>main</code>. It came through a pull request with one approval.</td><td class="forwho">the whole team</td><td class="part">PART 1</td></tr>
+            <tr><td><b>2.</b> The repository has 3 or more issues.</td><td class="forwho">the whole team</td><td class="part">PART 2 (slide 6)</td></tr>
+            <tr><td><b>3.</b> Each member pushed one branch with at least one commit by that member.</td><td class="forwho">each member</td><td class="part">PART 3 (slide 7)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note" data-step="2">The PM's plan branch from PART 1 does <strong class="kw">not</strong> count for check 3. Each member needs one feature branch for their <strong class="kw">own</strong> issue.</p>
+      <ul class="lines">
+        <li data-step="3"><b>Your record</b> — Your own commits, pull requests and reviews are your <strong class="kw">record</strong> in the project. This record also goes into your individual <strong class="kw">coefficient</strong> (0.8 / 1.0 / 1.1, in the syllabus).</li>
+        <li data-step="4"><b>Due</b> — 11:59 PM the night before the next class.</li>
+        <li data-step="5"><b>Now</b> — <strong class="kw">Sit</strong> with your team. Open the <b>Lab</b> tab above and <strong class="kw">start</strong> PART 0.</li>
+      </ul>
     </article>
 
   </div>
@@ -675,6 +764,7 @@ table.map td, table.map th{font-size:.93rem;}
     <button class="navbtn" id="next" type="button">Next →</button>
     <button class="navbtn edge" id="last" type="button" title="Last slide (End)" aria-label="Last slide">⇥</button>
     <div class="dots" id="dots"></div>
+    <button class="navbtn edge presbtn" id="presbtn" type="button" title="Presentation mode (P). Then ↓ or Space: next part. ↑: back." aria-pressed="false">P</button>
     <span class="counter" id="counter">1 / 8</span>
   </nav>
 </section>
@@ -1245,6 +1335,66 @@ What is one small first change? Do not write the whole task.
   });
   var dots = Array.prototype.slice.call(dotsBox.children);
 
+  /* ── Presentation mode (P): lecture tab only. Default view and print stay the same. ── */
+  var root     = document.documentElement;
+  var lecture  = document.getElementById('pane-lecture');
+  var stageEl  = lecture.querySelector('.stage');
+  var navEl    = lecture.querySelector('.slidenav');
+  var topbarEl = document.querySelector('.topbar');
+  var presBtn  = document.getElementById('presbtn');
+  var pres = false, part = 1;
+  var PRES_KEY = 'oss-deck-presentation';
+
+  function partsOf(s){
+    var m = 0;
+    s.querySelectorAll('[data-step]').forEach(function(el){ m = Math.max(m, parseInt(el.getAttribute('data-step'), 10) || 0); });
+    return m;
+  }
+  function paintParts(){
+    slides.forEach(function(s, n){
+      s.querySelectorAll('[data-step]').forEach(function(el){
+        el.classList.remove('st-past', 'st-now', 'st-future');
+        if (!pres || n !== cur) return;
+        var k = parseInt(el.getAttribute('data-step'), 10) || 0;
+        el.classList.add(k < part ? 'st-past' : (k === part ? 'st-now' : 'st-future'));
+      });
+    });
+    var m = partsOf(slides[cur]);
+    counter.textContent = (cur + 1) + ' / ' + slides.length + (pres && m > 1 ? ' · ' + part + '/' + m + (part < m ? ' · ↓ next' : '') : '');
+  }
+  /* largest font size (--pf) at which the whole slide, all parts shown, fits on one screen */
+  function fit(){
+    if (!pres || lecture.hidden) return;
+    var s = slides[cur], cs = getComputedStyle(stageEl);
+    var avail = window.innerHeight - topbarEl.offsetHeight - navEl.offsetHeight
+              - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - 6;
+    var pf = Math.floor(Math.max(14, Math.min(34, window.innerWidth / 56, window.innerHeight / 30)));
+    lecture.style.setProperty('--pf', pf + 'px');
+    while (s.offsetHeight > avail && pf > 12){
+      pf -= 1;
+      lecture.style.setProperty('--pf', pf + 'px');
+    }
+  }
+  function setPres(on){
+    pres = !!on;
+    root.classList.toggle('pres', pres);
+    presBtn.setAttribute('aria-pressed', pres ? 'true' : 'false');
+    if (!pres) lecture.style.removeProperty('--pf');
+    part = 1;
+    paintParts();
+    fit();
+  }
+  function stepPart(d){
+    var m = partsOf(slides[cur]);
+    if (!pres || m < 2) return;
+    part = Math.max(1, Math.min(m, part + d));
+    paintParts();
+  }
+  presBtn.addEventListener('click', function(){ setPres(!pres); presBtn.blur(); });
+  window.addEventListener('resize', fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ setTimeout(fit, 0); }); });
+
   function go(i){
     cur = Math.max(0, Math.min(slides.length - 1, i));
     slides.forEach(function(s, n){ s.hidden = (n !== cur); });
@@ -1252,6 +1402,9 @@ What is one small first change? Do not write the whole task.
     counter.textContent = (cur + 1) + ' / ' + slides.length;
     prevBtn.disabled = firstBtn.disabled = (cur === 0);
     nextBtn.disabled = lastBtn.disabled = (cur === slides.length - 1);
+    part = 1;
+    paintParts();
+    fit();
     window.scrollTo(0, 0);
   }
   prevBtn.addEventListener('click', function(){ go(cur - 1); });
@@ -1263,6 +1416,9 @@ What is one small first change? Do not write the whole task.
     if (document.getElementById('pane-lecture').hidden) return;
     var t = e.target.tagName;
     if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (e.code === 'KeyP' && !e.ctrlKey && !e.metaKey && !e.altKey){ e.preventDefault(); setPres(!pres); return; }
+    if (pres && (e.key === 'ArrowDown' || (e.key === ' ' && !e.shiftKey))){ e.preventDefault(); stepPart(1); return; }
+    if (pres && (e.key === 'ArrowUp' || (e.key === ' ' && e.shiftKey))){ e.preventDefault(); stepPart(-1); return; }
     if (e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); go(cur + 1); }
     if (e.key === 'ArrowLeft'  || e.key === 'PageUp'){   e.preventDefault(); go(cur - 1); }
     if (e.key === 'Home'){ e.preventDefault(); go(0); }
