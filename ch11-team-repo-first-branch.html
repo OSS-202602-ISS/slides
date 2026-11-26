@@ -432,6 +432,7 @@ table.map td, table.map th{font-size:.93rem;}
 .slide ul.lines{list-style:none; padding-left:0; gap:.6em;}
 .slide.dgs ul.lines{gap:.45em;}
 .slide ul.lines > li > b:first-child{color:var(--ink);}
+ol.do{margin:0; padding-left:1.4em;} ol.do > li{margin:.18rem 0;} ol.do > li::marker{font-weight:700; color:var(--accent-ink);}
 details.fullex{margin:.6rem 0 .2rem;} details.fullex > summary{cursor:pointer; font-weight:700; color:var(--accent-ink);} details.fullex[open] > summary{margin-bottom:.4rem;}
 @media print{ details.fullex > *{display:block;} }
 .callout .cbody{display:flex; flex-direction:column; gap:8px; flex:1; min-width:0;}
@@ -797,7 +798,7 @@ details.fullex{margin:.6rem 0 .2rem;} details.fullex > summary{cursor:pointer; f
 
       <div class="s4">
         <h4>1. Sign in to GitHub</h4>
-        <span class="k">Do</span><div class="v">Open GitHub in the browser. Sign in with your own account.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Open GitHub in the browser.</li><li>Sign in with your own account.</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com</code></pre></div>
         <span class="k see">You should see</span><div class="v">Your own picture (avatar) in the top-right corner.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
@@ -807,7 +808,7 @@ details.fullex{margin:.6rem 0 .2rem;} details.fullex > summary{cursor:pointer; f
 
       <div class="s4">
         <h4>2. Open a cmd terminal. Check for an old Git login</h4>
-        <span class="k">Do</span><div class="v">In VS Code: <b>File &rsaquo; Open Folder…</b> &rarr; <code>D:\oss\&lt;your ID&gt;</code> &rarr; <b>Select Folder</b>. Then <b>Terminal &rsaquo; New Terminal</b>. In the terminal, find a saved GitHub login.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>In VS Code: <b>File &rsaquo; Open Folder…</b> &rarr; <code>D:\oss\&lt;your ID&gt;</code> &rarr; <b>Select Folder</b>.</li><li><b>Terminal &rsaquo; New Terminal</b>.</li><li>In the terminal, find a saved GitHub login.</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cmdkey /list | findstr github</code></pre></div>
         <span class="k see">You should see</span><div class="v">No lines. The prompt appears again. The prompt ends with <code style="white-space:nowrap">D:\oss\&lt;your ID&gt;&gt;</code>. There is no <code>PS</code> at the start of the prompt.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
@@ -822,7 +823,7 @@ details.fullex{margin:.6rem 0 .2rem;} details.fullex > summary{cursor:pointer; f
 
       <div class="s4">
         <h4>3. Clone your team repository</h4>
-        <span class="k">Do</span><div class="v">Find your team letter (A to J) in <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/pod-chart.md" target="_blank" rel="noopener">pod-chart.md</a> in <code>course-notice</code>. In line 2 below, change <code>c</code> to your team letter, in a small letter. In line 3, change <code>c</code> again. In line 4, write your own GitHub username. In line 5, write your noreply e-mail. It must look like <code>12345678+name@users.noreply.github.com</code>. Type the lines one by one. Press Enter after each line.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Find your team letter (A to J) in <a href="https://github.com/OSS-202602-ISS/course-notice/blob/main/pod-chart.md" target="_blank" rel="noopener">pod-chart.md</a> in <code>course-notice</code>.</li><li>In line 2 below, change <code>c</code> to your team letter, in a small letter.</li><li>In line 3, change <code>c</code> again.</li><li>In line 4, write your own GitHub username.</li><li>In line 5, write your noreply e-mail. It must look like <code>12345678+name@users.noreply.github.com</code>.</li><li>Type the lines one by one. Press Enter after each line.</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>set ORG=https://github.com/OSS-202602-ISS
 git clone %ORG%/team-c-project.git
 cd team-c-project
@@ -841,7 +842,7 @@ git config user.email "&lt;your noreply e-mail&gt;"</code></pre>
 
       <div class="s4">
         <h4>4. Make <code>.venv</code> and install the libraries</h4>
-        <span class="k">Do</span><div class="v">Check the prompt: it ends with <code>\team-c-project&gt;</code>. Make a new <code>.venv</code> inside your team repository. Then activate it, and install the libraries in <code>requirements.txt</code>. The install takes one or two minutes.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Check the prompt: it ends with <code>\team-c-project&gt;</code>.</li><li>Make a new <code>.venv</code> inside your team repository.</li><li>Activate it, and install the libraries in <code>requirements.txt</code>. The install takes one or two minutes.</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt</code></pre>
@@ -858,7 +859,7 @@ pip install -r requirements.txt</code></pre>
 
       <div class="s4">
         <h4>5. Run the tests</h4>
-        <span class="k">Do</span><div class="v">Run the tests of the template. Check the prompt first: it starts with <code>(.venv)</code> and ends with <code>\team-c-project&gt;</code>.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Check the prompt: it starts with <code>(.venv)</code> and ends with <code>\team-c-project&gt;</code>.</li><li>Run the tests of the template.</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>python -m pytest</code></pre></div>
         <span class="k see">You should see</span><div class="v">Red text with <code>NotImplementedError</code>. Then the last line:
 <pre data-kind="out"><code>==== 2 failed, 1 passed in 0.80s ====</code></pre>
@@ -879,7 +880,7 @@ pip install -r requirements.txt</code></pre>
 
       <div class="s4">
         <h4><span class="who">PM</span> 1. Make the plan branch</h4>
-        <span class="k">Do</span><div class="v">Check the prompt: it starts with <code>(.venv)</code> and ends with <code>\team-c-project&gt;</code>. Make a branch for the plan and go to it. Change <code>ada</code> to your first name, in small letters.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Check the prompt: it starts with <code>(.venv)</code> and ends with <code>\team-c-project&gt;</code>.</li><li>Make a branch for the plan and go to it. Change <code>ada</code> to your first name, in small letters.</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git switch -c feature/ada-plan</code></pre>
           <p class="why">Why a branch: <code>main</code> is protected (slide 4). So every change starts on a branch.</p></div>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Switched to a new branch 'feature/ada-plan'</code></pre></div>
@@ -893,7 +894,7 @@ pip install -r requirements.txt</code></pre>
 
       <div class="s4">
         <h4><span class="who">PM</span> 2. Copy the plan into <code>docs/project-plan.md</code></h4>
-        <span class="k">Do</span><div class="v">Open your team's <code>[Team plan]</code> issue: this <a href="https://github.com/OSS-202602-ISS/practice-pr/issues?q=is%3Aissue+is%3Aopen+in%3Atitle+%22Team+plan%22" target="_blank" rel="noopener">list of <code>[Team plan]</code> issues in <code>practice-pr</code></a> shows only the team plans. Or open the issue list of <code>practice-pr</code> and type <code>Team plan</code> in the search box. In the VS Code Explorer (the file list on the left), open <code>team-c-project</code> &rsaquo; <code>docs</code> &rsaquo; <code>project-plan.md</code>. Near the top of this file, a table shows where each part of the issue goes. In sections 1 to 4, replace each <code>\&lt;...\&gt;</code> with the text from the issue. Also write a project <b>Name</b>, and keep one <b>Category</b>. Where the file says <i>keep one</i>, delete the other choice. Save with <kbd>Ctrl + S</kbd>.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Open your team's <code>[Team plan]</code> issue: this <a href="https://github.com/OSS-202602-ISS/practice-pr/issues?q=is%3Aissue+is%3Aopen+in%3Atitle+%22Team+plan%22" target="_blank" rel="noopener">list of <code>[Team plan]</code> issues in <code>practice-pr</code></a> shows only the team plans. Or open the issue list of <code>practice-pr</code> and type <code>Team plan</code> in the search box.</li><li>In the VS Code Explorer (the file list on the left), open <code>team-c-project</code> &rsaquo; <code>docs</code> &rsaquo; <code>project-plan.md</code>. Near the top of this file, a table shows where each part of the issue goes.</li><li>In sections 1 to 4, replace each <code>\&lt;...\&gt;</code> with the text from the issue.</li><li>Also write a project <b>Name</b>, and keep one <b>Category</b>.</li><li>Where the file says <i>keep one</i>, delete the other choice.</li><li>Save with <kbd>Ctrl + S</kbd>.</li></ol></div>
         <span class="k">Copy</span><div class="v"><p class="lbl">For example, find this line (press <kbd>Ctrl + F</kbd> and type <code>Input**</code>):</p>
 <pre data-kind="code"><code>| **Input** | \&lt;file, values, or API response - be specific\&gt; |</code></pre>
 <p class="lbl">Change it to your Input line from the issue:</p>
@@ -939,7 +940,7 @@ pip install -r requirements.txt</code></pre>
 
       <div class="s4">
         <h4><span class="who">PM</span> 3. Commit and push the branch</h4>
-        <span class="k">Do</span><div class="v">Save the file first. Then add <code>docs/project-plan.md</code>, commit, and push your branch. Use your branch name from step 1 in line 3.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Save the file first.</li><li>Add <code>docs/project-plan.md</code>, commit, and push your branch. Use your branch name from step 1 in line 3.</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git add docs/project-plan.md
 git commit -m "docs: add team project plan"
 git push -u origin feature/ada-plan</code></pre>
@@ -960,7 +961,7 @@ git push -u origin feature/ada-plan</code></pre>
 
       <div class="s4">
         <h4><span class="who">PM</span> 4. Open the pull request</h4>
-        <span class="k">Do</span><div class="v">Open your team repository in the browser. Change <code>c</code> to your team letter. A yellow bar shows your branch. Click <b>Compare &amp; pull request</b>. The title box shows <code>docs: add team project plan</code>. In the text box, under <b>What this pull request does</b>, write the sentence below. Then delete the line <code>Closes #</code>. Why: no issue in this repository is about the plan. Leave the <b>Checklist</b> boxes empty today. On the right side, click <b>Reviewers</b> and choose the teammate who reviews. Click <b>Create pull request</b>.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Open your team repository in the browser. Change <code>c</code> to your team letter.</li><li>A yellow bar shows your branch. Click <b>Compare &amp; pull request</b>.</li><li>The title box shows <code>docs: add team project plan</code>. In the text box, under <b>What this pull request does</b>, write the sentence below.</li><li>Delete the line <code>Closes #</code>.</li><li>Leave the <b>Checklist</b> boxes empty today.</li><li>On the right side, click <b>Reviewers</b> and choose the teammate who reviews.</li><li>Click <b>Create pull request</b>.</li></ol><p class="why">Why delete <code>Closes #</code> (number 4): no issue in this repository is about the plan.</p></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com/OSS-202602-ISS/team-c-project</code></pre>
 <pre data-kind="edit"><code>Adds our team plan from the [Team plan] issue in practice-pr.</code></pre></div>
         <span class="k see">You should see</span><div class="v">The page of your pull request. Under the title: your branch goes into <code>main</code>. Near the bottom: <b>Review required</b> and <b>Merging is blocked</b>. This is the protection of <code>main</code>. It waits for one approval.</div>
@@ -973,8 +974,7 @@ git push -u origin feature/ada-plan</code></pre>
 
       <div class="s4">
         <h4><span class="who rev">Reviewer</span> <span class="who">PM</span> 5. Approve, then merge</h4>
-        <span class="k">Do</span><div class="v"><b>The reviewer</b>, on their own PC: open the team repository &rsaquo; <b>Pull requests</b> tab &rsaquo; <code>docs: add team project plan</code>. Click the <b>Files changed</b> tab. Compare <code>docs/project-plan.md</code> with the <code>[Team plan]</code> issue. Click <b>Review changes</b>. Write one sentence: what you compared. Choose <b>Approve</b>. Click <b>Submit review</b>.<br>
-          <b>Then the PM</b>: on the same pull request page, click <b>Merge pull request</b>. Then click <b>Confirm merge</b>.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li><b>The reviewer</b>, on their own PC: open the team repository &rsaquo; <b>Pull requests</b> tab &rsaquo; <code>docs: add team project plan</code>.</li><li>Click the <b>Files changed</b> tab.</li><li>Compare <code>docs/project-plan.md</code> with the <code>[Team plan]</code> issue.</li><li>Click <b>Review changes</b>.</li><li>Write one sentence: what you compared.</li><li>Choose <b>Approve</b>.</li><li>Click <b>Submit review</b>.</li><li><b>Then the PM</b>: on the same pull request page, click <b>Merge pull request</b>.</li><li>Click <b>Confirm merge</b>.</li></ol></div>
         <span class="k">Copy</span><div class="v"><p class="lbl">The reviewer's sentence, for example:</p>
 <pre data-kind="edit"><code>I compared sections 1 to 4 with our [Team plan] issue. They match.</code></pre>
           <p class="why">Why a written sentence: the review is your record. It shows what you checked.</p></div>
@@ -1009,7 +1009,7 @@ git push -u origin feature/ada-plan</code></pre>
 
       <div class="s4">
         <h4>1. Open the Task form</h4>
-        <span class="k">Do</span><div class="v">Open the <b>Issues</b> tab of your team repository. Change <code>c</code> to your team letter. Click <b>New issue</b>. Choose <b>Task</b>.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Open the <b>Issues</b> tab of your team repository. Change <code>c</code> to your team letter.</li><li>Click <b>New issue</b>.</li><li>Choose <b>Task</b>.</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="url"><code>https://github.com/OSS-202602-ISS/team-c-project/issues</code></pre></div>
         <span class="k see">You should see</span><div class="v">A new issue. The title box starts with <code>[Task]</code>. The text box has four headings: <code>## What needs to be done</code>, <code>## Why</code>, <code>## Done when</code> and <code>## Who / when</code>.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
@@ -1019,7 +1019,7 @@ git push -u origin feature/ada-plan</code></pre>
 
       <div class="s4">
         <h4>2. Write your issue</h4>
-        <span class="k">Do</span><div class="v">Finish the title with your line of the plan (see the table above). Write under each heading. Do not delete the headings. The example below is the Input issue of the servers example. Write your own task.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Finish the title with your line of the plan (see the table above).</li><li>Write under each heading.</li><li>Do not delete the headings.</li><li>The example below is the Input issue of the servers example.</li><li>Write your own task.</li></ol></div>
         <span class="k">Copy</span><div class="v"><p class="lbl">The title box:</p>
 <pre data-kind="edit"><code>[Task] Input: our sample servers.csv</code></pre>
 <p class="lbl">The text box, under the four headings:</p>
@@ -1045,7 +1045,7 @@ Target chapter: 11</code></pre>
 
       <div class="s4">
         <h4>3. Assign the issue, then create it</h4>
-        <span class="k">Do</span><div class="v">On the right side, click <b>Assignees</b>. Choose the member who does this task. Then click <b>Create</b>.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>On the right side, click <b>Assignees</b>.</li><li>Choose the member who does this task.</li><li>Click <b>Create</b>.</li></ol></div>
         <span class="k">Copy</span><div class="v">Nothing to type.</div>
         <span class="k see">You should see</span><div class="v">The page of the new issue. The title has a number at the end, for example <code>#999</code>. Under <b>Assignees</b>: the avatar of the member.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
@@ -1075,7 +1075,7 @@ Target chapter: 11</code></pre>
 
       <div class="s4">
         <h4>1. Get the newest main</h4>
-        <span class="k">Do</span><div class="v">Check the prompt: it starts with <code>(.venv)</code> and ends with <code>\team-c-project&gt;</code>. Go to <code>main</code>. Then get the plan from PART 1.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Check the prompt: it starts with <code>(.venv)</code> and ends with <code>\team-c-project&gt;</code>.</li><li>Go to <code>main</code>.</li><li>Get the plan from PART 1.</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git switch main
 git pull --no-edit</code></pre>
           <p class="why">Why: your branch starts from the newest <code>main</code>. Then your branch already has the plan.</p></div>
@@ -1095,7 +1095,7 @@ Fast-forward
 
       <div class="s4">
         <h4>2. Make your branch</h4>
-        <span class="k">Do</span><div class="v">Make your branch and go to it. Use <code>feature/&lt;name&gt;-&lt;task&gt;</code>: your first name in small letters, then two or three words from your issue title. Put <code>-</code> between the words, not spaces.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Make your branch and go to it.</li><li>Use <code>feature/&lt;name&gt;-&lt;task&gt;</code>: your first name in small letters, then two or three words from your issue title. Put <code>-</code> between the words, not spaces.</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git switch -c feature/ada-sample-data</code></pre></div>
         <span class="k see">You should see</span><div class="v"><pre data-kind="out"><code>Switched to a new branch 'feature/ada-sample-data'</code></pre>with your own branch name.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
@@ -1105,7 +1105,7 @@ Fast-forward
 
       <div class="s4">
         <h4>3. Make your first change</h4>
-        <span class="k">Do</span><div class="v">Find your issue in the table of PART 2. Do the change for your issue below. Use made-up data only: no real names and no personal data. Save with <kbd>Ctrl + S</kbd>.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Find your issue in the table of PART 2.</li><li>Do the change for your issue below.</li><li>Use made-up data only: no real names and no personal data.</li><li>Save with <kbd>Ctrl + S</kbd>.</li></ol></div>
         <span class="k">Copy</span><div class="v">
           <p class="opt">Input issue: a new file in <code>data/</code></p>
           <p>In the Explorer, right-click <code>team-c-project</code> &rsaquo; <code>data</code> &rarr; <b>New File…</b> &rarr; type the file name from your plan, for example <code>servers.csv</code>. Write the first line with your column names. Then write 5 rows. For example:</p>
@@ -1143,7 +1143,7 @@ mail-01,48,ok</code></pre>
 
       <div class="s4">
         <h4>4. Commit your change</h4>
-        <span class="k">Do</span><div class="v">First, check which file changed. Then add your file and commit. Use the two lines for your issue from the table.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Check which file changed.</li><li>Add your file and commit.</li><li>Use the two lines for your issue from the table.</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git status</code></pre>
           <div class="scroll-x">
             <table>
@@ -1172,7 +1172,7 @@ mail-01,48,ok</code></pre>
 
       <div class="s4">
         <h4>5. Push your branch</h4>
-        <span class="k">Do</span><div class="v">Push your branch to GitHub. Use your branch name from step 2. Then open the branch list of your team repository (change <code>c</code> to your team letter).</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Push your branch to GitHub. Use your branch name from step 2.</li><li>Open the branch list of your team repository (change <code>c</code> to your team letter).</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>git push -u origin feature/ada-sample-data</code></pre>
 <pre data-kind="url"><code>https://github.com/OSS-202602-ISS/team-c-project/branches</code></pre></div>
         <span class="k see">You should see</span><div class="v">A <b>Connect to GitHub</b> window may open. Then sign in as in PART 1, step 3. Near the end you see:
@@ -1211,7 +1211,7 @@ mail-01,48,ok</code></pre>
 
       <div class="s4">
         <h4>2. Sign out everywhere</h4>
-        <span class="k">Do</span><div class="v">Sign out of GitHub. Sign out of every site you used today (ChatGPT, Google, Claude).</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>Sign out of GitHub.</li><li>Sign out of every site you used today (ChatGPT, Google, Claude).</li></ol></div>
         <span class="k">Copy</span><div class="v">Nothing to type. In the browser: avatar &rarr; <b>Sign out</b>.</div>
         <span class="k see">You should see</span><div class="v">Each site shows a <b>Sign in</b> button.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
@@ -1221,7 +1221,7 @@ mail-01,48,ok</code></pre>
 
       <div class="s4">
         <h4>3. Delete the saved Git login</h4>
-        <span class="k">Do</span><div class="v">In a cmd terminal, delete the saved GitHub login. Then check again.</div>
+        <span class="k">Do</span><div class="v"><ol class="do"><li>In a cmd terminal, delete the saved GitHub login.</li><li>Check again.</li></ol></div>
         <span class="k">Copy</span><div class="v"><pre data-kind="cmd"><code>cmdkey /delete:git:https://github.com
 cmdkey /list | findstr github</code></pre></div>
         <span class="k see">You should see</span><div class="v">The second command shows no lines.</div>
