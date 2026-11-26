@@ -432,6 +432,8 @@ table.map td, table.map th{font-size:.93rem;}
 .slide ul.lines{list-style:none; padding-left:0; gap:.6em;}
 .slide.dgs ul.lines{gap:.45em;}
 .slide ul.lines > li > b:first-child{color:var(--ink);}
+details.fullex{margin:.6rem 0 .2rem;} details.fullex > summary{cursor:pointer; font-weight:700; color:var(--accent-ink);} details.fullex[open] > summary{margin-bottom:.4rem;}
+@media print{ details.fullex > *{display:block;} }
 .callout .cbody{display:flex; flex-direction:column; gap:8px; flex:1; min-width:0;}
 .callout pre{margin:0;}
 .callout pre code{white-space:pre;}
@@ -898,8 +900,36 @@ pip install -r requirements.txt</code></pre>
 <pre data-kind="code"><code>| **Input** | servers.csv (name, cpu, status) |</code></pre>
 <p class="lbl">In section 3, write one row for each library. For example:</p>
 <pre data-kind="code"><code>| pandas | reads servers.csv | yes |</code></pre>
-          <p class="why">Why copy and not write new ideas: your team already agreed on the issue. The file only moves the plan into the repository.</p></div>
-        <span class="k see">You should see</span><div class="v">Sections 1 to 4 have no <code>\&lt;</code> left. Sections 5 and 6 can stay as they are today. The roles table in section 4 has GitHub usernames, for example <code>@gildong-hong</code>. Write GitHub usernames, not real names. Why: your team repository is public. Your instructor's comment on your <code>[Team plan]</code> issue has your usernames.</div>
+          <p class="why">Why copy and not write new ideas: your team already agreed on the issue. The file only moves the plan into the repository.</p>
+          <p class="lbl"><b>Choices:</b> a line with <code>/</code> between words? Keep one choice. Delete the others and the words <code>(keep one)</code>.</p>
+          <details class="fullex"><summary>See a full example: sections 1 to 4, finished</summary>
+<pre data-kind="code"><code>## 1. The tool
+
+- **Name**: Server Checker
+- **One sentence**: Shows the warn servers, for a lab admin.
+- **Category**: data processing
+- **Track**: A only
+
+## 2. Scope - input, one processing step, output
+
+| **Input** | servers.csv (name, cpu, status) |
+| **Processing step** | keep the servers with status warn |
+| **Output** | a table on the screen and result.xlsx |
+
+## 3. Open source we plan to use
+
+| pandas | reads servers.csv | yes |
+| rich | prints the table | yes |
+
+## 4. Team and roles
+
+| PM | @gildong-hong |
+| Developer | @ada-lee |
+| Documentation | @ming-tran |
+| Reviewer | @sam-rai |</code></pre>
+          <p class="lbl">Only the changed lines are shown. Keep the other lines of the file, and keep every <code>|</code>.</p></details>
+          </div>
+        <span class="k see">You should see</span><div class="v">Sections 1 to 4 have no <code>\&lt;</code> left. To find what is left, press <kbd>Ctrl + F</kbd> and type <code>&lt;</code>. Sections 5 and 6 can stay as they are today. The roles table in section 4 has GitHub usernames, for example <code>@gildong-hong</code>. Write GitHub usernames, not real names. Why: your team repository is public. Your instructor's comment on your <code>[Team plan]</code> issue has your usernames.</div>
         <span class="k ifnot">If not</span><div class="v"><ul>
           <li>Two <code>[Team plan]</code> issues for your team? Use the open one.</li>
           <li>Your team has no <code>[Team plan]</code> issue yet? Write the plan directly into <code>docs/project-plan.md</code> now, together. Fill sections 1 to 4: topic, track, input, process, output, libraries and roles. In steps 4 and 5, use the sentences for this case.</li>
